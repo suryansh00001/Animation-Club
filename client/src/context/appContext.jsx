@@ -313,6 +313,10 @@ export const AppContextProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Get user activity error:', error);
+            if (error.response?.status === 401) {
+                // Don't throw the error for auth issues, just return empty array
+                return [];
+            }
             throw error;
         }
     }, []);
@@ -341,6 +345,10 @@ export const AppContextProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Get user stats error:', error);
+            if (error.response?.status === 401) {
+                // Don't throw the error for auth issues, just return empty object
+                return {};
+            }
             throw error;
         }
     }, []);
@@ -356,6 +364,10 @@ export const AppContextProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Get user registrations error:', error);
+            if (error.response?.status === 401) {
+                // Don't throw the error for auth issues, just return empty array
+                return [];
+            }
             throw error;
         }
     }, []);
@@ -371,6 +383,10 @@ export const AppContextProvider = ({ children }) => {
             }
         } catch (error) {
             console.error('Get user submissions error:', error);
+            if (error.response?.status === 401) {
+                // Don't throw the error for auth issues, just return empty array
+                return [];
+            }
             throw error;
         }
     }, []);
@@ -387,8 +403,9 @@ export const AppContextProvider = ({ children }) => {
             return profileData;
         }
         
-        // Don't load if no user
-        if (!user || !user._id) {
+        // Don't load if no user or not authenticated
+        if (!user || !user._id || !isAuthenticated) {
+            console.log('Not loading profile data - user not authenticated');
             return profileData;
         }
 
@@ -397,12 +414,17 @@ export const AppContextProvider = ({ children }) => {
         try {
             console.log('Loading centralized profile data...');
             
-            // Load all profile data in parallel
-            const [registrations, submissions, activity, stats] = await Promise.all([
+            // Load all profile data in parallel with individual error handling
+            const [registrations, submissions, activity, stats] = await Promise.allSettled([
                 fetchUserRegistrations(),
                 fetchUserSubmissions(),
                 getUserActivity(),
                 getUserStats()
+            ]).then(results => [
+                results[0].status === 'fulfilled' ? results[0].value : [],
+                results[1].status === 'fulfilled' ? results[1].value : [],
+                results[2].status === 'fulfilled' ? results[2].value : [],
+                results[3].status === 'fulfilled' ? results[3].value : {}
             ]);
 
             const newProfileData = {
@@ -421,6 +443,16 @@ export const AppContextProvider = ({ children }) => {
 
         } catch (error) {
             console.error('Error loading profile data:', error);
+            
+            // If it's an authentication error, clear the session
+            if (error.response?.status === 401) {
+                console.log('Authentication failed - clearing session');
+                localStorage.removeItem('userAuth');
+                localStorage.removeItem('authToken');
+                setUser(null);
+                setIsAuthenticated(false);
+            }
+            
             const errorProfileData = {
                 registrations: [],
                 submissions: [],
@@ -451,7 +483,18 @@ export const AppContextProvider = ({ children }) => {
     // Auto-load profile data when user logs in
     useEffect(() => {
         if (user && user._id && isAuthenticated && !profileData.loaded && !profileData.loading) {
+            console.log('Auto-loading profile data for authenticated user');
             loadProfileData();
+        } else if (!isAuthenticated && profileData.loaded) {
+            console.log('User not authenticated - clearing profile data');
+            setProfileData({
+                registrations: [],
+                submissions: [],
+                activity: [],
+                stats: {},
+                loaded: false,
+                loading: false
+            });
         }
     }, [user, isAuthenticated, profileData.loaded, profileData.loading, loadProfileData]);
 
