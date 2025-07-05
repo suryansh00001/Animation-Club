@@ -160,11 +160,4 @@ Ready to go live? Build the production version:
 npm run build
 ```
 
-Deploy to:
-- **Vercel** (recommended for React apps)
-- **Netlify** (easy with GitHub integration)  
-- **GitHub Pages** (free option)
 
----
-
-Need help? Check the main project README or ask the team!
