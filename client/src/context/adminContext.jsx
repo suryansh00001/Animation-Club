@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
+// Note: axios interceptors are configured in appContext.jsx to avoid duplication
+
 export const AdminContext = createContext();
 
 export const AdminContextProvider = ({ children }) => {
@@ -174,6 +176,8 @@ export const AdminContextProvider = ({ children }) => {
                 // Store token if provided in response (for API calls without cookies)
                 if (response.data.token) {
                     localStorage.setItem('authToken', response.data.token);
+                    // Set the Authorization header immediately for subsequent requests
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                 }
                 
                 toast.success('Admin login successful!');
@@ -202,6 +206,10 @@ export const AdminContextProvider = ({ children }) => {
             setIsAdminAuthenticated(false);
             localStorage.removeItem('adminAuth');
             localStorage.removeItem('authToken');
+            
+            // Clear axios Authorization header
+            delete axios.defaults.headers.common['Authorization'];
+            
             toast.success('Logged out successfully');
             navigate('/');
         } catch (error) {
@@ -211,6 +219,10 @@ export const AdminContextProvider = ({ children }) => {
             setIsAdminAuthenticated(false);
             localStorage.removeItem('adminAuth');
             localStorage.removeItem('authToken');
+            
+            // Clear axios Authorization header
+            delete axios.defaults.headers.common['Authorization'];
+            
             toast.success('Logged out successfully');
             navigate('/');
         }

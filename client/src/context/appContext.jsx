@@ -24,6 +24,35 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
+// Add axios request interceptor to include auth token
+axios.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
+// Add axios response interceptor to handle auth errors
+axios.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            // Clear both user and admin auth data on 401 errors
+            localStorage.removeItem('userAuth');
+            localStorage.removeItem('adminAuth');
+            localStorage.removeItem('authToken');
+            console.log('401 error - clearing authentication');
+        }
+        return Promise.reject(error);
+    }
+);
+
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
@@ -191,6 +220,8 @@ export const AppContextProvider = ({ children }) => {
                 // Store token if provided in response (for API calls without cookies)
                 if (response.data.token) {
                     localStorage.setItem('authToken', response.data.token);
+                    // Set the Authorization header immediately for subsequent requests
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                 }
                 
                 toast.success(response.data.message || 'Login successful!');
@@ -225,6 +256,8 @@ export const AppContextProvider = ({ children }) => {
                 // Store token if provided in response (for API calls without cookies)
                 if (response.data.token) {
                     localStorage.setItem('authToken', response.data.token);
+                    // Set the Authorization header immediately for subsequent requests
+                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
                 }
                 
                 toast.success(response.data.message || 'Registration successful!');
@@ -261,6 +294,10 @@ export const AppContextProvider = ({ children }) => {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userRegistrations');
         localStorage.removeItem('userSubmissions');
+        
+        // Clear axios Authorization header
+        delete axios.defaults.headers.common['Authorization'];
+        
         toast.success('Logged out successfully');
         navigate('/');
     };
