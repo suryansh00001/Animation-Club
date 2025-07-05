@@ -119,17 +119,3 @@ node scripts/createSampleData.js
 - Verify your MongoDB connection string
 - Check network access if using MongoDB Atlas
 
-## 🤝 For Developers
-
-Want to add new features? Here's how the code is organized:
-
-1. **Models** define what data looks like
-2. **Controllers** handle the business logic  
-3. **Routes** define the API endpoints
-4. **Middlewares** handle security and validation
-
-Always add proper error handling and validation for new endpoints!
-
----
-
-Questions? Check the main README or create an issue!
