@@ -15,7 +15,7 @@ import {
 } from '../controllers/adminEventController.js';
 
 // Import middlewares
-import { authenticateToken, requireAdmin } from '../middlewares/authMiddleware.js';
+import { authenticateToken, requireAdminOrManager } from '../middlewares/authMiddleware.js';
 import { apiRateLimit, uploadRateLimit } from '../middlewares/rateLimitMiddleware.js';
 import { uploadImage } from '../configs/multer.js';
 
@@ -23,7 +23,7 @@ const router = express.Router();
 
 // All admin routes require authentication and admin role
 router.use(authenticateToken);
-router.use(requireAdmin);
+router.use(requireAdminOrManager);
 
 // ============================================================================
 // ADMIN EVENT MANAGEMENT ROUTES
