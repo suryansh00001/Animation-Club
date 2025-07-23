@@ -93,7 +93,7 @@ export const requireUser = async (req, res, next) => {
             });
         }
 
-        if (!['student', 'admin'].includes(req.user.role)) {
+        if (!['student', 'admin','manager'].includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
                 message: 'User access required'
