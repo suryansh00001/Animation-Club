@@ -54,29 +54,6 @@ npm run dev     # Development mode
 npm start       # Production mode
 ```
 
-## 🛣️ API Endpoints
-
-### Public (anyone can access)
-- `GET /api/v1/events` - Get all events
-- `GET /api/v1/gallery` - Get gallery images  
-- `GET /api/v1/artworks` - Get approved artworks
-- `GET /api/v1/achievements` - Get achievements
-- `POST /api/v1/contact` - Send contact message
-
-### User (need to be logged in)
-- `POST /api/v1/auth/login` - Login
-- `POST /api/v1/auth/register` - Sign up
-- `GET /api/v1/user/profile` - Get your profile
-- `POST /api/v1/artworks` - Submit artwork
-- `POST /api/v1/events/:id/register` - Register for event
-
-### Admin (admin access only)
-- `POST /api/v1/admin/auth/login` - Admin login
-- `GET /api/v1/admin/dashboard` - Dashboard stats
-- `POST /api/v1/admin/events` - Create event
-- `PUT /api/v1/admin/artworks/:id/status` - Approve/reject artwork
-- `POST /api/v1/admin/achievements` - Add achievement
-
 ## 🔒 Security & Features
 
 - **Password protection** with hashing
@@ -104,3 +81,7 @@ npm start       # Production mode
 ### Achievement Data
 - Club accomplishments with photos
 - Awards, partnerships, and recognition details
+
+### Opportunities Data
+- Opportunities provied by the club reach
+- Details and status for the opportunity

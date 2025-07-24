@@ -3,6 +3,7 @@ import Event from '../models/Event.js';
 import Registration from '../models/Registration.js';
 import Submission from '../models/Submission.js';
 import Member from '../models/Member.js';
+import Opportunity from '../models/Opportunity.js';
 
 // Helper function to validate image URLs
 const isValidImageUrl = (url) => {
@@ -251,6 +252,144 @@ const getAdminMembers = async (req, res) => {
         });
     }
 };
+
+
+// Edit opportunity
+const editOpportunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updateData = req.body;
+        const opportunity = await Opportunity.findByIdAndUpdate(
+            id,
+            { ...updateData, updatedAt: new Date() },
+            { new: true, runValidators: true }
+        );
+        if (!opportunity) {
+            return res.status(404).json({
+                success: false,
+                message: 'Opportunity not found'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Opportunity updated successfully',
+            opportunity
+        });
+    } catch (error) {
+        console.error('Edit opportunity error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update opportunity',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+};
+
+// Update opportunity status
+const updateOpportunityStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const validStatuses = ['open', 'closed'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid status'
+            });
+        }
+        const opportunity = await Opportunity.findByIdAndUpdate(
+            id,
+            { status, updatedAt: new Date() },
+            { new: true }
+        );
+        if (!opportunity) {
+            return res.status(404).json({
+                success: false,
+                message: 'Opportunity not found'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Opportunity status updated successfully',
+            opportunity
+        });
+    } catch (error) {
+        console.error('Update opportunity status error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update opportunity status',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+};
+
+// Delete opportunity
+const deleteOpportunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const opportunity = await Opportunity.findByIdAndDelete(id);
+        if (!opportunity) {
+            return res.status(404).json({
+                success: false,
+                message: 'Opportunity not found'
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Opportunity deleted successfully'
+        });
+    } catch (error) {
+        console.error('Delete opportunity error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete opportunity',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+};
+
+//create opportunity
+const createOpportunity = async (req, res) => {
+    try {
+        const {
+            title,
+            description,
+            compensation,
+            tag
+        } = req.body;
+
+        // Validate required fields
+        if (!title || !description) {
+            return res.status(400).json({
+                success: false,
+                message: 'Title and description are required.'
+            });
+        }
+
+        const opportunity = await Opportunity.create({
+            title,
+            description,
+            compensation,
+            tag 
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Opportunity created successfully.',
+            opportunity
+        });
+
+    } catch (error) {
+        console.error('Create opportunity error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to create opportunity',
+            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+        });
+    }
+};
+
+
 
 // Create new member
 const createMember = async (req, res) => {
@@ -948,5 +1087,9 @@ export {
     updateRegistrationStatus,
     updateSubmissionStatus,
     updateSubmissionAward,
-    getSystemStatus
+    getSystemStatus,
+    createOpportunity,
+    editOpportunity,
+    updateOpportunityStatus,
+    deleteOpportunity
 };

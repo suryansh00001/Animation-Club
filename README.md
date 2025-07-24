@@ -131,6 +131,7 @@ Visit [http://localhost:5173](http://localhost:5173) to view the site.
 - Artwork submission and approval
 - Gallery management with categories and featured images
 - Achievements tracking
+- Freelancing Opportunities tracking
 - Admin and event manager roles with restricted access
 - Secure authentication and rate limiting
 - Lazy loading for fast admin experience

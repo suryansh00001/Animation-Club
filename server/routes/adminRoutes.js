@@ -15,7 +15,11 @@ import {
     updateSubmissionStatus,
     updateSubmissionAward,
     getAdminDashboard,
-    getSystemStatus
+    getSystemStatus,
+    updateOpportunityStatus,
+    editOpportunity,
+    deleteOpportunity,
+    createOpportunity,
 } from '../controllers/adminController.js';
 
 import {
@@ -49,6 +53,9 @@ import {
     adminUpdateArtwork,
     deleteArtwork
 } from '../controllers/artworkController.js';
+import { 
+    getAllOpportunities 
+} from '../controllers/opportunityController.js';
 
 const router = express.Router();
 
@@ -114,5 +121,13 @@ router.get('/artworks', getAllArtworks);
 router.post('/artworks', adminCreateArtwork);
 router.put('/artworks/:id', adminUpdateArtwork);
 router.delete('/artworks/:id', deleteArtwork);
+
+// Opportunites routes
+router.get('/opportunities',getAllOpportunities);
+router.put('/opportunity/:id/status',updateOpportunityStatus);
+router.patch('/opportunity/:id/edit',editOpportunity);
+router.delete('/opportunity/:id',deleteOpportunity);
+router.post('/opportunity',createOpportunity);
+
 
 export default router;

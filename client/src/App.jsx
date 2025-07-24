@@ -25,6 +25,7 @@ const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const Artworks = React.lazy(() => import('./pages/Artworks'));
 const ArtworkSubmission = React.lazy(() => import('./pages/ArtworkSubmission'));
 const ContactUs = React.lazy(()=> import('./pages/ContactUs'));
+const Opportunities = React.lazy(()=> import('./pages/Opportunities'));
 // Admin
 const AdminLayout = React.lazy(() => import('./admin/AdminLayout'));
 const AdminDashboard = React.lazy(() => import('./admin/AdminDashboard'));
@@ -150,6 +151,7 @@ const App = () => {
                     <Route path="/profile/:id" element={<Profile />} />
                     <Route path="/login" element={<UserLogin />} />
                     <Route path="/profile" element={<UserProfile />} />
+                    <Route path="/freelancing-opportunities" element={<Opportunities />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </React.Suspense>
