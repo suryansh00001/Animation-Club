@@ -48,7 +48,7 @@ export const uploadSingle = (fieldname = 'file') => upload.single(fieldname);
 export const uploadMultiple = (fieldname = 'files', maxCount = parseInt(process.env.MAX_FILES_PER_SUBMISSION) || 5) => upload.array(fieldname, maxCount);
 export const uploadAvatar = upload.single('avatar');
 export const uploadSubmission = upload.array('files', parseInt(process.env.MAX_FILES_PER_SUBMISSION) || 5);
-export const uploadImage = upload.single('image');
+
 
 // Error handling middleware for multer
 export const handleUploadError = (error, req, res, next) => {

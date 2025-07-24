@@ -10,20 +10,19 @@ import {
     getEventSubmissions,
     updateEventStatus,
     toggleEventFeatured,
-    uploadEventImage,
     getEventAnalytics
 } from '../controllers/adminEventController.js';
 
 // Import middlewares
-import { authenticateToken, requireAdmin } from '../middlewares/authMiddleware.js';
-import { apiRateLimit, uploadRateLimit } from '../middlewares/rateLimitMiddleware.js';
-import { uploadImage } from '../configs/multer.js';
+import { authenticateToken, requireAdminOrManager } from '../middlewares/authMiddleware.js';
+import { apiRateLimit } from '../middlewares/rateLimitMiddleware.js';
+
 
 const router = express.Router();
 
 // All admin routes require authentication and admin role
 router.use(authenticateToken);
-router.use(requireAdmin);
+router.use(requireAdminOrManager);
 
 // ============================================================================
 // ADMIN EVENT MANAGEMENT ROUTES
@@ -52,9 +51,6 @@ router.put('/:id/status', apiRateLimit, updateEventStatus);
 
 // Toggle event featured status
 router.put('/:id/featured', apiRateLimit, toggleEventFeatured);
-
-// Upload event image
-router.post('/:id/upload-image', uploadRateLimit, uploadImage, uploadEventImage);
 
 // Get event analytics
 router.get('/:id/analytics', apiRateLimit, getEventAnalytics);

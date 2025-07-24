@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken, requireAdmin } from '../middlewares/authMiddleware.js';
+import { authenticateToken, requireAdmin, requireAdminOrManager } from '../middlewares/authMiddleware.js';
 import {
     getAdminStats,
     getAdminRegistrations,
@@ -58,7 +58,16 @@ router.get('/system/status', getSystemStatus);
 
 // All other admin routes require authentication and admin role
 router.use(authenticateToken);
-router.use(requireAdmin);
+
+// Allow both admin and manager for submissions and event submissions
+router.use((req, res, next) => {
+  // Allow admin or manager for any route containing 'submission' or 'event' (for event submissions)
+  if (/\/submissions(\/|$)/.test(req.path) || /\/events(\/|$)/.test(req.path)) {
+    return requireAdminOrManager(req, res, next);
+  }
+  // Default: admin only
+  return requireAdmin(req, res, next);
+});
 
 // Admin dashboard and stats
 router.get('/dashboard', getAdminDashboard);
