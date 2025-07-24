@@ -1,7 +1,6 @@
 import Event from '../models/Event.js';
 import Registration from '../models/Registration.js';
 import Submission from '../models/Submission.js';
-import { uploadToCloudinary, deleteFromCloudinary } from '../configs/cloudinary.js';
 
 // ============================================================================
 // ADMIN EVENT MANAGEMENT ENDPOINTS (Admin Authentication Required)

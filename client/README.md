@@ -34,8 +34,7 @@ npm install
 
 2. **Add your environment file (`.env`):**
 ```env
-VITE_BACKEND_URL=http://localhost:5000
-VITE_APP_NAME=Animation Club
+VITE_BACKEND_URL=http://localhost:4000
 ```
 
 3. **Start the development server:**
