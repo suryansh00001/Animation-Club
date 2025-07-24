@@ -1,7 +1,6 @@
 import Event from '../models/Event.js';
 import Submission from '../models/Submission.js';
 import Registration from '../models/Registration.js';
-import { uploadToCloudinary, deleteFromCloudinary } from '../configs/cloudinary.js';
 
 // ============================================================================
 // EVENT SUBMISSION ENDPOINTS (Authentication Required)
@@ -249,14 +248,6 @@ const deleteEventSubmission = async (req, res) => {
             });
         }
 
-        // Delete associated files from Cloudinary
-        if (submission.files && submission.files.primary && submission.files.primary.url) {
-            try {
-                await deleteFromCloudinary(submission.files.primary.url);
-            } catch (error) {
-                console.error('Error deleting submission files:', error);
-            }
-        }
 
         // Update event submission count
         await Event.findByIdAndUpdate(id, {
@@ -273,80 +264,6 @@ const deleteEventSubmission = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to delete submission',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
-        });
-    }
-};
-
-// Upload files for submission
-const uploadSubmissionFiles = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const userId = req.user._id;
-
-        if (!req.file && !req.files) {
-            return res.status(400).json({
-                success: false,
-                message: 'No files uploaded'
-            });
-        }
-
-        // Check if submission exists
-        const submission = await Submission.findOne({
-            eventId: id,
-            userId
-        });
-
-        if (!submission) {
-            return res.status(404).json({
-                success: false,
-                message: 'Submission not found'
-            });
-        }
-
-        // Upload to Cloudinary
-        const files = req.files || [req.file];
-        const uploadedFiles = [];
-
-        for (const file of files) {
-            const result = await uploadToCloudinary(file.buffer, {
-                folder: 'submissions',
-                resource_type: 'auto'
-            });
-
-            uploadedFiles.push({
-                filename: file.originalname,
-                url: result.secure_url,
-                fileSize: file.size,
-                mimeType: file.mimetype,
-                uploadedAt: new Date()
-            });
-        }
-
-        // Update submission with file info
-        const updatedSubmission = await Submission.findByIdAndUpdate(
-            submission._id,
-            {
-                $set: {
-                    'files.primary': uploadedFiles[0],
-                    'files.additional': uploadedFiles.slice(1)
-                }
-            },
-            { new: true }
-        );
-
-        res.status(200).json({
-            success: true,
-            message: 'Files uploaded successfully',
-            files: uploadedFiles,
-            submission: updatedSubmission
-        });
-
-    } catch (error) {
-        console.error('Upload submission files error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to upload files',
             error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
@@ -416,71 +333,6 @@ const getSubmissionFiles = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to get submission files',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
-        });
-    }
-};
-
-// Delete specific submission file
-const deleteSubmissionFile = async (req, res) => {
-    try {
-        const { id, fileId } = req.params;
-        const userId = req.user._id;
-
-        const submission = await Submission.findOne({
-            eventId: id,
-            userId
-        });
-
-        if (!submission) {
-            return res.status(404).json({
-                success: false,
-                message: 'Submission not found'
-            });
-        }
-
-        // Find and delete the file
-        let fileUrl = null;
-        if (submission.files.primary && submission.files.primary._id.toString() === fileId) {
-            fileUrl = submission.files.primary.url;
-            submission.files.primary = null;
-        } else if (submission.files.additional) {
-            const fileIndex = submission.files.additional.findIndex(
-                file => file._id.toString() === fileId
-            );
-            if (fileIndex > -1) {
-                fileUrl = submission.files.additional[fileIndex].url;
-                submission.files.additional.splice(fileIndex, 1);
-            }
-        }
-
-        if (!fileUrl) {
-            return res.status(404).json({
-                success: false,
-                message: 'File not found'
-            });
-        }
-
-        // Delete from Cloudinary
-        try {
-            await deleteFromCloudinary(fileUrl);
-        } catch (error) {
-            console.error('Error deleting from Cloudinary:', error);
-        }
-
-        // Save submission
-        await submission.save();
-
-        res.status(200).json({
-            success: true,
-            message: 'File deleted successfully'
-        });
-
-    } catch (error) {
-        console.error('Delete submission file error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to delete file',
             error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
         });
     }
@@ -728,10 +580,8 @@ export {
     getUserEventSubmission,
     updateEventSubmission,
     deleteEventSubmission,
-    uploadSubmissionFiles,
     getSubmissionStatus,
     getSubmissionFiles,
-    deleteSubmissionFile,
     // Admin endpoints
     getEventSubmissions,
     getAllSubmissions,

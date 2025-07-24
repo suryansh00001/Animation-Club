@@ -18,12 +18,21 @@ export const registerUser = async (req, res) => {
 
         if (existingUser) {
             if (req.recordFailedAttempt) req.recordFailedAttempt();
-            
             return res.status(400).json({
                 success: false,
                 message: existingUser.email === email.toLowerCase() 
                     ? 'User with this email already exists' 
                     : 'User with this student ID already exists'
+            });
+        }
+
+        // Password strength validation
+        // Minimum 8 characters, at least one uppercase, one lowercase, one number, one special character
+        const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+        if (!passwordRequirements.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
             });
         }
 

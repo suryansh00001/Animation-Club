@@ -7,7 +7,6 @@ The backend that powers our Animation Club website. Handles user accounts, event
 - **Node.js + Express** - The main server
 - **MongoDB** - Where we store all the data
 - **JWT** - Keeps user logins secure
-- **Multer** - Handles file uploads
 
 ## 📁 How It's Organized
 
@@ -36,25 +35,23 @@ npm install
 MONGODB_URI=your-mongodb-connection
 JWT_SECRET=your-secret-key
 PORT=5000
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=http://localhost:4000
+NODE_ENV=development #production
+SESSION_TIMEOUT=30
+MAX_LOGIN_ATTEMPTS=5
+PASSWORD_MIN_LENGTH=6
+AUTH_RATE_LIMIT_WINDOW_MS=900000         # 15 minutes
+AUTH_RATE_LIMIT_MAX=20                  # 20 auth attempts per 15 minutes
+AUTH_RATE_LIMIT_MESSAGE=Too many authentication attempts, please try again later.
+API_RATE_LIMIT_WINDOW_MS=60000          # 1 minute
+API_RATE_LIMIT_MAX=50                   # 100 API calls per minute
+API_RATE_LIMIT_MESSAGE=API rate limit exceeded, please try again later.
 ```
 
 3. **Run the server:**
 ```bash
 npm run dev     # Development mode
 npm start       # Production mode
-```
-
-### First Time Setup
-
-**Create an admin account:**
-```bash
-node scripts/createAdmin.js
-```
-
-**Add some sample data (optional):**
-```bash
-node scripts/createSampleData.js
 ```
 
 ## 🛣️ API Endpoints
@@ -86,7 +83,7 @@ node scripts/createSampleData.js
 - **JWT tokens** for secure login sessions
 - **Rate limiting** to prevent spam
 - **Input validation** on all data
-- **Role-based access** (user vs admin)
+- **Role-based access** (user vs admin vs manager)
 
 ## 🗃️ What We Store
 
@@ -96,7 +93,7 @@ node scripts/createSampleData.js
 - Artwork submissions and event registrations
 
 ### Event Data  
-- Event details (title, date, venue, capacity)
+- Event details (title, date, venue)
 - Registration lists and event status
 
 ### Artwork Data
@@ -107,15 +104,3 @@ node scripts/createSampleData.js
 ### Achievement Data
 - Club accomplishments with photos
 - Awards, partnerships, and recognition details
-
-## 🐛 Common Issues
-
-**Server won't start?**
-- Check if MongoDB is running
-- Verify your environment variables
-- Make sure port 5000 isn't already in use
-
-**Database connection error?**
-- Verify your MongoDB connection string
-- Check network access if using MongoDB Atlas
-

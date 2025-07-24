@@ -59,22 +59,18 @@ export const rateLimit = (options = {}) => {
 
 // Specific rate limiters for different endpoints
 export const authRateLimit = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    maxRequests: 200, // 200 auth attempts per 15 minutes (increased for development)
-    message: 'Too many authentication attempts, please try again later.'
+    windowMs: parseInt(process.env.AUTH_RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // default 15 min
+    maxRequests: parseInt(process.env.AUTH_RATE_LIMIT_MAX) || 20, // default 20 auth attempts per window
+    message: process.env.AUTH_RATE_LIMIT_MESSAGE || 'Too many authentication attempts, please try again later.'
 });
 
 export const apiRateLimit = rateLimit({
-    windowMs: 1 * 60 * 1000, // 1 minute
-    maxRequests: 300, // 300 API calls per minute (increased for development with multiple API calls)
-    message: 'API rate limit exceeded, please try again later.'
+    windowMs: parseInt(process.env.API_RATE_LIMIT_WINDOW_MS) || 60 * 1000, // default 1 min
+    maxRequests: parseInt(process.env.API_RATE_LIMIT_MAX) || 100, // default 100 API calls per window
+    message: process.env.API_RATE_LIMIT_MESSAGE || 'API rate limit exceeded, please try again later.'
 });
 
-export const uploadRateLimit = rateLimit({
-    windowMs: 60 * 60 * 1000, // 1 hour
-    maxRequests: 50, // 50 uploads per hour (increased for development)
-    message: 'Upload rate limit exceeded, please try again later.'
-});
+
 
 // Brute force protection for specific users
 const bruteForceStore = new Map();

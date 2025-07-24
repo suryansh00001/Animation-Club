@@ -61,11 +61,8 @@ router.use(authenticateToken);
 
 // Allow both admin and manager for submissions and event submissions
 router.use((req, res, next) => {
-  // Only allow admin or manager for submission/event submission routes
-  if (
-    req.path.startsWith('/submissions') ||
-    req.path.startsWith('/events')
-  ) {
+  // Allow admin or manager for any route containing 'submission' or 'event' (for event submissions)
+  if (/\/submissions(\/|$)/.test(req.path) || /\/events(\/|$)/.test(req.path)) {
     return requireAdminOrManager(req, res, next);
   }
   // Default: admin only

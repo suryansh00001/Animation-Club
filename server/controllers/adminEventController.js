@@ -1,7 +1,6 @@
 import Event from '../models/Event.js';
 import Registration from '../models/Registration.js';
 import Submission from '../models/Submission.js';
-import { uploadToCloudinary, deleteFromCloudinary } from '../configs/cloudinary.js';
 
 // ============================================================================
 // ADMIN EVENT MANAGEMENT ENDPOINTS (Admin Authentication Required)
@@ -376,57 +375,6 @@ const toggleEventFeatured = async (req, res) => {
     }
 };
 
-// Upload event image
-const uploadEventImage = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        if (!req.file) {
-            return res.status(400).json({
-                success: false,
-                message: 'No image file provided'
-            });
-        }
-
-        // Upload to Cloudinary
-        const result = await uploadToCloudinary(req.file.buffer, {
-            folder: 'events',
-            transformation: [
-                { width: 800, height: 600, crop: 'fill' }
-            ]
-        });
-
-        // Update event with image URL
-        const event = await Event.findByIdAndUpdate(
-            id,
-            { image: result.secure_url },
-            { new: true }
-        );
-
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                message: 'Event not found'
-            });
-        }
-
-        res.status(200).json({
-            success: true,
-            message: 'Event image uploaded successfully',
-            imageUrl: result.secure_url,
-            event
-        });
-
-    } catch (error) {
-        console.error('Upload event image error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Failed to upload event image',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
-        });
-    }
-};
-
 // Get event analytics
 const getEventAnalytics = async (req, res) => {
     try {
@@ -518,6 +466,5 @@ export {
     getEventSubmissions,
     updateEventStatus,
     toggleEventFeatured,
-    uploadEventImage,
     getEventAnalytics
 };

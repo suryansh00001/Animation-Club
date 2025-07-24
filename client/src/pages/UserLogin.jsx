@@ -51,7 +51,7 @@ const UserLogin = () => {
         const registrationData = {
           name: formData.name,
           email: formData.email,
-          password: formData.password, // This was missing!
+          password: formData.password, 
           phone: formData.phone,
           studentId: formData.studentId,
           year: formData.year,

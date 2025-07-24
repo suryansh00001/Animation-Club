@@ -3,7 +3,7 @@ import { useAppContext } from '../context/appContext';
 import { CogIcon, GlobeAltIcon, PhoneIcon, EnvelopeIcon, PhotoIcon } from '@heroicons/react/24/outline';
 
 const AdminSettings = () => {
-    const { fetchSettings, updateSettings, uploadLogo, uploadFavicon, deleteLogo, deleteFavicon } = useAppContext();
+    const { fetchSettings, updateSettings} = useAppContext();
     const [activeTab, setActiveTab] = useState('general');
     const [loading, setLoading] = useState(false);
     const [settings, setSettings] = useState(null);

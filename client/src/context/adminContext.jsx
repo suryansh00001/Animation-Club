@@ -23,20 +23,25 @@ export const AdminContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     
     const navigate = useNavigate();
+    const [isEventManager, setIsEventManager] = useState(false);
+    const [eventManagerUser, setEventManagerUser] = useState(null);
 
     useEffect(() => {
         const initializeAdminData = async () => {
             try {
-                // Check for existing admin session
+                // Check for existing admin or manager session
                 const adminData = localStorage.getItem('adminAuth');
+                const managerData = localStorage.getItem('eventManagerAuth');
                 const authToken = localStorage.getItem('authToken');
-                
+
                 if (adminData && authToken) {
                     try {
                         const response = await axios.get('/api/v1/auth/me');
                         if (response.data.success && response.data.user.role === 'admin') {
                             setAdminUser(response.data.user);
                             setIsAdminAuthenticated(true);
+                            setIsEventManager(false);
+                            setEventManagerUser(null);
                             await loadAdminData();
                         } else {
                             localStorage.removeItem('adminAuth');
@@ -47,9 +52,29 @@ export const AdminContextProvider = ({ children }) => {
                         localStorage.removeItem('adminAuth');
                         localStorage.removeItem('authToken');
                     }
+                } else if (managerData && authToken) {
+                    try {
+                        const response = await axios.get('/api/v1/auth/me');
+                        if (response.data.success && response.data.user.role === 'manager') {
+                            setEventManagerUser(response.data.user);
+                            setIsEventManager(true);
+                            setIsAdminAuthenticated(false);
+                            setAdminUser(null);
+                            // Load events and submissions for manager
+                            await fetchAdminEvents();
+                            await fetchSubmissions();
+                        } else {
+                            localStorage.removeItem('eventManagerAuth');
+                            localStorage.removeItem('authToken');
+                        }
+                    } catch (error) {
+                        console.error('Manager session verification failed:', error);
+                        localStorage.removeItem('eventManagerAuth');
+                        localStorage.removeItem('authToken');
+                    }
                 }
             } catch (error) {
-                console.error('Error initializing admin data:', error);
+                console.error('Error initializing admin/manager data:', error);
             }
         };
 
@@ -162,41 +187,61 @@ export const AdminContextProvider = ({ children }) => {
 
             if (response.data.success) {
                 const userData = response.data.user;
+            
+            // Check if user has admin role
+            
+                if (userData.role === 'admin') {
+                    setAdminUser(userData);
+                    setIsAdminAuthenticated(true);
+                    setIsEventManager(false);
+                    setEventManagerUser(null);
+                    localStorage.setItem('adminAuth', JSON.stringify(userData));
+                    if (response.data.token) {
+                        localStorage.setItem('authToken', response.data.token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    }
+                    toast.success('Admin login successful!');
+                    navigate('/admin');
+                    return true;
+                } else if (userData.role === 'manager') {
+                    setEventManagerUser(userData);
+                    setIsEventManager(true);
+                    setIsAdminAuthenticated(false);
+                    setAdminUser(null);
+                    localStorage.setItem('eventManagerAuth', JSON.stringify(userData));
+                    if (response.data.token) {
+                        localStorage.setItem('authToken', response.data.token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    } else {
+                        // Remove any previous token if not present for manager
+                        localStorage.removeItem('authToken');
+                        delete axios.defaults.headers.common['Authorization'];
+                    }
+                    toast.success('Event Manager login successful!');
+                    navigate('/admin');
+                    return true;
+                }
                 
-                // Check if user has admin role
-                if (userData.role !== 'admin') {
+                else{
                     toast.error('Admin access required');
                     return false;
                 }
-                
-                setAdminUser(userData);
-                setIsAdminAuthenticated(true);
-                localStorage.setItem('adminAuth', JSON.stringify(userData));
-                
-                // Store token if provided in response (for API calls without cookies)
-                if (response.data.token) {
-                    localStorage.setItem('authToken', response.data.token);
-                    // Set the Authorization header immediately for subsequent requests
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                }
-                
-                toast.success('Admin login successful!');
-                navigate('/admin');
-                return true;
+
             } else {
                 toast.error(response.data.message || 'Admin login failed');
                 return false;
             }
         } catch (error) {
+            console.log(error);
             console.error('Admin login error:', error);
             const errorMessage = error.response?.data?.message || 'Admin login failed';
             toast.error(errorMessage);
             return false;
+            
         } finally {
             setLoading(false);
         }
     };
-
     const adminLogout = async () => {
         try {
             // Make API call to logout
@@ -434,6 +479,8 @@ export const AdminContextProvider = ({ children }) => {
                     updatedAt: new Date().toISOString()
                 }
             };
+            setIsEventManager(false);
+            setEventManagerUser(null);
             setGalleryImages(prev => [...prev, newImage]);
             toast.success('Image added to gallery!');
             return newImage;
@@ -448,6 +495,8 @@ export const AdminContextProvider = ({ children }) => {
     const updateGalleryImage = async (imageId, imageData) => {
         setLoading(true);
         try {
+            setIsEventManager(false);
+            setEventManagerUser(null);
             setGalleryImages(prev => prev.map(image => 
                 image._id === imageId ? { 
                     ...image, 
@@ -798,6 +847,8 @@ export const AdminContextProvider = ({ children }) => {
         // Auth state
         isAdminAuthenticated,
         adminUser,
+        isEventManager,
+        eventManagerUser,
         loading,
         
         // Data state
@@ -873,7 +924,7 @@ export const AdminContextProvider = ({ children }) => {
             {children}
         </AdminContext.Provider>
     );
-};
+}
 
 export const useAdminContext = () => {
     const context = useContext(AdminContext);
