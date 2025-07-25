@@ -182,7 +182,11 @@ export const AppContextProvider = ({ children }) => {
                 try {
                     const response = await axios.get('/api/v1/opportunities');
                     if (response.data.success) {
-                        setOpportunities(response.data.opportunities);
+                        if (response.data?.success) {
+                            const sortedOpportunities = response.data.opportunities.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                            setOpportunities(sortedOpportunities);
+                            return sortedOpportunities;
+                        }
                     } else {
                         console.warn('Failed to load events from API');
                     }

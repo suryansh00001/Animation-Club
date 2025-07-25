@@ -7,8 +7,10 @@ const AdminDashboard = () => {
   const { 
     events, 
     members, 
+    opportunities,
     registrations, 
     submissions, 
+    fetchAdminOpportunities,
     fetchAdminEvents, 
     fetchMembers, 
     fetchRegistrations, 
@@ -46,6 +48,7 @@ const AdminDashboard = () => {
         await fetchMembers().catch(() => {});
         await fetchRegistrations().catch(() => {});
         await fetchSubmissions().catch(() => {});
+        await fetchAdminOpportunities().catch(() => {});
         
         // Restore console error
         console.error = originalConsoleError;
@@ -64,10 +67,10 @@ const AdminDashboard = () => {
   // Calculate statistics from API data
   const totalEvents = events?.length || 0;
   const upcomingEvents = events?.filter(e => e?.status === 'upcoming')?.length || 0;
-  const ongoingEvents = events?.filter(e => e?.status === 'ongoing')?.length || 0;
-  const totalMembers = members?.length || 0;
+  const totalOpportunities = opportunities?.length || 0;
   const totalRegistrations = registrations?.length || 0;
   const totalSubmissions = submissions?.length || 0;
+  const openOpportunities = opportunities.filter(e => e.status === 'open').length || 0;
   
   // Recent events from API data - safely handle potential null/undefined
   const recentEvents = events && events.length > 0
@@ -188,11 +191,11 @@ const AdminDashboard = () => {
       color: 'bg-blue-500'
     },
     {
-      name: 'Active Members',
-      value: totalMembers,
-      change: `${totalMembers} total members`,
+      name: 'Opportunities',
+      value: totalOpportunities,
+      change: `${openOpportunities} open opportunities`,
       changeType: 'increase',
-      icon: '👥',
+      icon: '💼',
       color: 'bg-green-500'
     },
     {

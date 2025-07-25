@@ -14,6 +14,7 @@ export const AdminContextProvider = ({ children }) => {
     const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
     const [adminUser, setAdminUser] = useState(null);
     const [events, setEvents] = useState([]);
+    const [opportunities, setOpportunities] = useState([]);
     const [members, setMembers] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -127,6 +128,71 @@ export const AdminContextProvider = ({ children }) => {
         }
     };
 
+    const fetchAdminOpportunities = async (filters = {}) => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/v1/admin/opportunities', {
+                timeout: 5000
+            });
+            
+            if (response.data?.success) {
+                const sortedOpportunities = response.data.opportunities.sort(
+                    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+                );
+                setOpportunities(sortedOpportunities);
+                return sortedOpportunities;
+            }
+            
+            console.error('Fetch admin opportunities failed:', response.data?.message);
+            setOpportunities([]);
+            return [];
+        } catch (error) {
+            console.error('Failed to fetch opportunities:', error.message);
+            setOpportunities([]);
+            return [];
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateOpportunityStatus = async (id, status) => {
+        setLoading(true);
+        try {
+        await axios.put(`/api/v1/admin/opportunity/${id}/status`, { status });
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+
+    const updateOpportunity = async (id, data) => {
+        setLoading(true);
+        try {
+        await axios.patch(`/api/v1/admin/opportunity/${id}/edit`, data);
+        await fetchAdminOpportunities();
+        } catch (err) {
+            console.log(err);
+        }
+        setLoading(false);
+    };
+
+    const deleteOpportunity = async (id) => {
+        setLoading(true);
+        try {
+        await axios.delete(`/api/v1/admin/opportunity/${id}`);
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+
+    const createOpportunity = async (data) => {
+        setLoading(true);
+        try {
+        await axios.post('/api/v1/admin/opportunity', data);
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+    
     const fetchMembers = async () => {
         try {
             const response = await axios.get('/api/v1/admin/members');
@@ -179,7 +245,6 @@ export const AdminContextProvider = ({ children }) => {
     const adminLogin = async (credentials) => {
         setLoading(true);
         try {
-            // Make actual API call to backend for admin login
             const response = await axios.post('/api/v1/auth/login', {
                 email: credentials.email,
                 password: credentials.password
@@ -859,6 +924,7 @@ export const AdminContextProvider = ({ children }) => {
         registrations,
         submissions,
         settings,
+        opportunities,
         
         // Auth functions
         adminLogin,
@@ -870,7 +936,15 @@ export const AdminContextProvider = ({ children }) => {
         fetchRegistrations,
         fetchSubmissions,
         loadAdminData,
+        fetchAdminOpportunities,
         
+        // Opportunity functions
+        updateOpportunityStatus,
+        deleteOpportunity,
+        updateOpportunity,
+        createOpportunity,
+
+
         // Event functions
         createEvent,
         updateEvent,

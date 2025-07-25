@@ -16,6 +16,7 @@ const AdminLayout = () => {
     { name: 'Events', path: '/admin/events', icon: '📅' },
     { name: 'Members', path: '/admin/members', icon: '👥' },
     { name: 'Achievements', path: '/admin/achievements', icon: '🏆' },
+    { name: 'Opportunities', path: '/admin/freelancing-opportunities', icon: '💼'},
     { name: 'Gallery', path: '/admin/gallery', icon: '🖼️' },
     { name: 'Artworks', path: '/admin/artworks', icon: '🎨' },
     { name: 'Submissions', path: '/admin/submissions', icon: '📝' },

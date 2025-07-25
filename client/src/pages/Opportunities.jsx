@@ -124,18 +124,31 @@ const Opportunities = () => {
     }
   };
 
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'competition':
-        return 'bg-purple-100 text-purple-800';
-      case 'workshop':
-        return 'bg-orange-100 text-orange-800';
-      case 'seminar':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const getDynamicUpdateStatus = (date) => {
+    const createdDate = new Date(date);
+    const now = new Date();
+    const diffInMs = now - createdDate;
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInDays > 30) {
+      return `Updated on ${createdDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      })}`;
+    }
+
+    if (diffInMinutes < 60) {
+      return "Updated moments ago";
+    } else if (diffInHours < 24) {
+      return `Last modified ${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    } else {
+      return `Updated ${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -225,9 +238,9 @@ const Opportunities = () => {
                     <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    { `Updated ${Math.floor((new Date() - new Date(event.updatedAt)) / (1000 * 60 * 60 * 24))} days ago`
-                    }
+                    { `Listed on ${new Date(event.createdAt).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}`}
                   </div>
+                  
                 </div>
 
                 {/* Action Button */}
@@ -238,6 +251,9 @@ const Opportunities = () => {
                   >
                     Contact Us
                   </Link>
+                  <div className="flex items-center text-sm text-gray-500">
+                    {getDynamicUpdateStatus(event.updatedAt)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -246,10 +262,10 @@ const Opportunities = () => {
 
 
 
-        {/* No Events Message */}
+        {/* No Opportunities Message */}
         {!loading && filteredOpportunities.length === 0 && (
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">📅</div>
+            <div className="text-gray-400 text-6xl mb-4">💼</div>
             <h3 className="text-xl font-semibold text-gray-600 mb-2">
               {error ? 'Unable to load opportunities' : 
                events.length === 0 ? 'No opportunities available' : 

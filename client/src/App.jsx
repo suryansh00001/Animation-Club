@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementPopup from './components/AnnouncementPopup'
 import SEOUpdater from './components/SEOUpdater'
+import AdminOpportunities from './admin/AdminOpportunities'
 
 // Pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -19,7 +20,6 @@ const EventSubmission = React.lazy(() => import('./pages/EventSubmission'));
 const Gallery = React.lazy(() => import('./pages/Gallery'));
 const Achievements = React.lazy(() => import('./pages/Achievements'));
 const About = React.lazy(() => import('./pages/About'));
-const Profile = React.lazy(() => import('./pages/Profile'));
 const UserLogin = React.lazy(() => import('./pages/UserLogin'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const Artworks = React.lazy(() => import('./pages/Artworks'));
@@ -88,6 +88,11 @@ const App = () => {
                 <AdminEvents />
               </AdminRouteGuard>
             } />
+            <Route path="freelancing-opportunities" element={
+              <AdminRouteGuard page="freelancing-opportunities">
+                <AdminOpportunities />
+              </AdminRouteGuard>
+            } />
             <Route path="members" element={
               <AdminRouteGuard page="members">
                 <AdminMembers />
@@ -148,7 +153,6 @@ const App = () => {
                     <Route path="/achievements" element={<Achievements />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<ContactUs />} />
-                    <Route path="/profile/:id" element={<Profile />} />
                     <Route path="/login" element={<UserLogin />} />
                     <Route path="/profile" element={<UserProfile />} />
                     <Route path="/freelancing-opportunities" element={<Opportunities />} />
