@@ -9,7 +9,7 @@ A modern, full-featured website for the Animation Club. Members can connect, sha
 - Register for workshops and events
 - Submit artwork and view the gallery
 - Browse club achievements and awards
-- Secure authentication with strong password requirements
+- Secure authentication with strong password    requirements
 
 ### For Admins & Managers
 - Role-based access for admins and event managers
