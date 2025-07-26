@@ -404,7 +404,8 @@ const createMember = async (req, res) => {
             positionHistory,
             profile,
             visibility,
-            status
+            status,
+            dept,
         } = req.body;
 
         console.log('Position history received:', positionHistory);
@@ -468,6 +469,7 @@ const createMember = async (req, res) => {
             name,
             email: normalizedEmail, // Use normalized email
             membershipType: membershipType || 'core',
+            dept,
             currentPosition: {
                 title: getRoleTitle(currentPosition?.role || 'core-member'), // Always derive title from role
                 role: currentPosition?.role || 'core-member',
@@ -509,7 +511,7 @@ const createMember = async (req, res) => {
             message: 'Member created successfully',
             member: {
                 ...member.toObject(),
-                // Add computed fields for frontend
+                // computed fields for frontend
                 currentAcademicYear: academicPeriod,
                 tenureInformation: {
                     currentRole: member.currentPosition.role,
