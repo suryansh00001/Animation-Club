@@ -20,7 +20,6 @@ const UserProfile = () => {
   // State for view/hide registrations/submissions
   const [showAllRegistrations, setShowAllRegistrations] = useState(false);
   const [showAllSubmissions, setShowAllSubmissions] = useState(false);
-  const userActivity = profileData?.activity || [];
   const userStats = profileData?.stats || {};
   const dataLoaded = profileData?.loaded || false;
   const loadingData = profileData?.loading || false;
@@ -414,7 +413,7 @@ const UserProfile = () => {
   
 
         {/* Action Buttons */}
-        <div className="flex space-x-2">
+        <div className="flex  space-x-2">
           <button
             onClick={() => setIsEditing(!isEditing)}
             className="bg-emerald-500 text-black px-4 py-2 rounded-md font-semibold hover:bg-emerald-400 transition-colors shadow-[0_0_10px_#10b981]"
@@ -708,20 +707,12 @@ const UserProfile = () => {
     </div>
   ) : (
     <div className="space-y-4">
-      {(showAllRegistrations
-                    ? userRegistrations
-                    : userRegistrations.slice(0, 2)
-                  )
+      {(showAllRegistrations ? userRegistrations : userRegistrations.slice(0, 2) )
         ?.filter((registration) => registration && registration._id)
         .map((registration) => {
           const event = getEventDetails(registration?.eventId);
           const status = getRegistrationStatus(registration);
 
-          const statusStyles = {
-            completed: 'bg-[#f1f5f9] text-[#334155]',
-            ongoing: 'bg-[#bbf7d0] text-[#065f46]',
-            upcoming: 'bg-[#bfdbfe] text-[#1e40af]',
-          };
 
           return (
             <div
@@ -792,12 +783,14 @@ const UserProfile = () => {
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
     <h2 className="text-xl font-bold text-[#06d6a0]">My Submissions</h2>
-    <Link 
-      to="/events" 
-      className="text-sm text-[#06d6a0] hover:text-[#05c28d] font-medium transition"
-    >
-      Find Events to Submit →
-    </Link>
+    {userSubmissions && userSubmissions.length > 1 && (
+      <button
+        className="text-sm text-emerald-500 hover:text-emerald-400 font-medium underline"
+        onClick={() => setShowAllSubmissions(v => !v)}
+      >
+        {showAllSubmissions ? 'Hide All Submissions' : 'View All Submissions'}
+      </button>
+    )}
   </div>
 
   {!userSubmissions || userSubmissions.length === 0 ? (
@@ -817,7 +810,7 @@ const UserProfile = () => {
     </div>
   ) : (
     <div className="space-y-4">
-      {userSubmissions?.filter(sub => sub && sub._id).map((submission) => {
+      {(showAllSubmissions ? userSubmissions  : userSubmissions.slice(0, 1) )?.filter(sub => sub && sub._id).map((submission) => {
         const event = getEventDetails(submission?.eventId);
         const status = getSubmissionStatus(submission);
         const awardInfo = getAwardInfo(submission);
@@ -906,22 +899,12 @@ const UserProfile = () => {
                   </div>
                 )}
               </div>
+              
+            <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs">
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+          
 
-              <span
-                className={`inline-block px-3 py-1 text-xs font-semibold rounded-full self-start ${
-                  status === 'Approved' || status === 'Winner'
-                    ? 'bg-green-200 text-green-800'
-                    : status === 'Under Review'
-                    ? 'bg-yellow-200 text-yellow-800'
-                    : status === 'Rejected'
-                    ? 'bg-red-200 text-red-800'
-                    : status === 'Submitted'
-                    ? 'bg-blue-200 text-blue-800'
-                    : 'bg-gray-200 text-gray-800'
-                }`}
-              >
-                {status}
-              </span>
             </div>
           </div>
         );
@@ -929,160 +912,6 @@ const UserProfile = () => {
     </div>
   )}
 
-            {/* Submissions */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">My Submissions</h2>
-                {userSubmissions && userSubmissions.length > 3 && (
-                  <button
-                    className="text-sm text-purple-600 hover:text-purple-800 font-medium underline"
-                    onClick={() => setShowAllSubmissions(v => !v)}
-                  >
-                    {showAllSubmissions ? 'Hide All Submissions' : 'View All Submissions'}
-                  </button>
-                )}
-                <Link 
-                  to="/events" 
-                  className="text-sm text-purple-600 hover:text-purple-800 font-medium ml-2"
-                >
-                  Find Events to Submit →
-                </Link>
-              </div>
-              {!userSubmissions || userSubmissions.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="text-gray-400 text-6xl mb-4">🎬</div>
-                  <h3 className="text-lg font-semibold text-gray-600 mb-2">No submissions yet</h3>
-                  <p className="text-gray-500 mb-6">
-                    Submit your work to ongoing events and showcase your creativity!
-                  </p>
-                  <Link 
-                    to="/events" 
-                    className="inline-block bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600 transition-colors font-medium"
-                  >
-                    Browse Events
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {(showAllSubmissions
-                    ? userSubmissions
-                    : userSubmissions.slice(0, 3)
-                  )
-                    .filter(submission => submission && submission._id)
-                    .map((submission) => {
-                      const event = getEventDetails(submission?.eventId);
-                      const status = getSubmissionStatus(submission);
-                      const awardInfo = getAwardInfo(submission);
-                      return (
-                        <div key={String(submission._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center space-x-2 mb-2">
-                                <h3 className="font-semibold text-gray-900">
-                                  {event?.title || 'Unknown Event'}
-                                </h3>
-                                {awardInfo && (
-                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${awardInfo.color}`}>
-                                    <span className="mr-1">{awardInfo.icon}</span>
-                                    {awardInfo.title}
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-sm text-gray-600 mb-2">
-                                {(() => {
-                                  const title = submission?.submissionDetails?.title || submission?.title;
-                                  return title || 'Untitled Submission';
-                                })()}
-                              </p>
-                              <p className="text-sm text-gray-500 mb-2">
-                                {(() => {
-                                  const description = submission.submissionDetails?.description || submission.description;
-                                  return typeof description === 'string' ? description : 'No description available';
-                                })()}
-                              </p>
-                              {/* Award Details */}
-                              {awardInfo && (
-                                <div className="mb-2 p-3 bg-gray-50 rounded-lg border">
-                                  <div className="flex items-center justify-between">
-                                    <div>
-                                      <p className="text-sm font-medium text-gray-900">
-                                        🎉 Congratulations! You won {awardInfo.title}
-                                      </p>
-                                      {awardInfo.prize && (
-                                        <p className="text-xs text-gray-600">Prize: {awardInfo.prize}</p>
-                                      )}
-                                    </div>
-                                    {awardInfo.certificate && (
-                                      <a
-                                        href={awardInfo.certificate}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-xs text-purple-600 hover:text-purple-800 font-medium underline"
-                                      >
-                                        View Certificate
-                                      </a>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-                              <p className="text-sm text-gray-500">
-                                Submitted on {submission.submissionTime ? (() => {
-                                  try {
-                                    return new Date(submission.submissionTime).toLocaleDateString();
-                                  } catch (e) {
-                                    return 'Submission date unavailable';
-                                  }
-                                })() : 'Submission date unavailable'}
-                              </p>
-                              {(submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl) && (
-                                <div className="mt-2">
-                                  <a
-                                    href={submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center text-purple-600 hover:text-purple-800 text-sm font-medium"
-                                  >
-                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                    </svg>
-                                    View Submission
-                                  </a>
-                                </div>
-                              )}
-                            </div>
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              status === 'Approved' || status === 'Winner' ? 'bg-green-100 text-green-800' :
-                              status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                              status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                              status === 'Submitted' ? 'bg-blue-100 text-blue-800' :
-                              'bg-gray-100 text-gray-800'
-                            }`}>
-                              {status}
-                            </span>
-                          </div>
-                          {/* Award Information */}
-                          {awardInfo && (
-                            <div className={`mt-2 p-2 rounded-md border ${awardInfo.color} flex items-center`}>
-                              <span className="text-lg mr-2">
-                                {awardInfo.icon}
-                              </span>
-                              <div className="text-sm">
-                                <p className="font-medium text-gray-900">{awardInfo.title}</p>
-                                {awardInfo.prize && (
-                                  <p className="text-gray-700">{awardInfo.prize}</p>
-                                )}
-                                {awardInfo.certificate && (
-                                  <p className="text-gray-700">Certificate: {awardInfo.certificate}</p>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
