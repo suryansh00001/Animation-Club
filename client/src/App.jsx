@@ -11,7 +11,6 @@ import AnnouncementPopup from './components/AnnouncementPopup'
 import SEOUpdater from './components/SEOUpdater'
 import AdminOpportunities from './admin/AdminOpportunities'
 import GlowingCursor from './components/GlowingCursor'
-import AdminOpportunities from './admin/AdminOpportunities'
 
 // Pages
 const Home = React.lazy(() => import('./pages/Home'));

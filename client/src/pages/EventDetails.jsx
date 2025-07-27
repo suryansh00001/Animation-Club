@@ -360,7 +360,7 @@ const EventDetails = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-xl md:text-xl md:text-xl font-bold text-white mb-6">{event.title}</h1>
+        <h1 className="text-xl md:text-xl  font-bold text-white mb-6">{event.title}</h1>
 
         {/* Description */}
         <p className="text-sm md:text-base mb-8 leading-relaxed">{event.description}</p>
@@ -370,7 +370,7 @@ const EventDetails = () => {
           {/* Left Column */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-xl md:text-xl md:text-xl  font-semibold text-white mb-2">Event Date</h3>
+              <h3 className="text-xl md:text-xl font-semibold text-white mb-2">Event Date</h3>
               <p className="text-sm md:text-base">{event.date ? new Date(event.date).toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
@@ -496,7 +496,7 @@ const EventDetails = () => {
     {/* Related Events */}
     {relatedEvents?.length > 0 && (
 <div className="mt-12">
-  <h2 className="text-2xl sm:text-4xl mb-10 font-bold text-center text-emerald-400 mb-4">Other Events You Might Like</h2>
+  <h2 className="text-2xl sm:text-4xl mb-10 font-bold text-center text-emerald-400">Other Events You Might Like</h2>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
     {relatedEvents.map((relatedEvent) => (
       <Tilt
