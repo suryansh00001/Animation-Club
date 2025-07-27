@@ -383,10 +383,10 @@ const getTypeColor = (type) => {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-bold text-white mb-6">{event.title}</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold text-white mb-6">{event.title}</h1>
 
         {/* Description */}
-        <p className="text-base mb-8 leading-relaxed">{event.description}</p>
+        <p className="text-sm sm:text-base mb-8 leading-relaxed">{event.description}</p>
 
         {/* Event Details Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -394,7 +394,7 @@ const getTypeColor = (type) => {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-white mb-2">Event Date</h3>
-              <p className="text-base">{event.date ? new Date(event.date).toLocaleDateString('en-US', {
+              <p className="text-sm sm:text-base">{event.date ? new Date(event.date).toLocaleDateString('en-US', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -405,7 +405,7 @@ const getTypeColor = (type) => {
             {event.registrationDeadline && event.registrationRequired && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Registration Deadline</h3>
-                <p className="text-red-500 text-base font-medium">
+                <p className="text-red-500 text-sm sm:text-base font-medium">
                   {new Date(event.registrationDeadline).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -419,7 +419,7 @@ const getTypeColor = (type) => {
             {event.submissionDeadline && event.submissionRequired && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Submission Deadline</h3>
-                <p className="text-orange-400 text-base font-medium">
+                <p className="text-orange-400 text-sm sm:text-base font-medium">
                   {new Date(event.submissionDeadline).toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
@@ -433,20 +433,20 @@ const getTypeColor = (type) => {
             {event.instructor && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Instructor</h3>
-                <p className="text-base">{event.instructor}</p>
+                <p className="text-sm sm:text-base">{event.instructor}</p>
               </div>
             )}
 
             {event.duration && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Duration</h3>
-                <p className="text-base">{event.duration}</p>
+                <p className="text-sm sm:text-base">{event.duration}</p>
               </div>
             )}
 
             <div>
               <h3 className="text-lg font-semibold text-white mb-2">Location</h3>
-              <p className="text-base">
+              <p className="text-sm sm:text-base">
                 {event.venue && event.location
                   ? `${event.venue}, ${event.location}`
                   : event.venue || event.location || 'Location TBA'}
@@ -456,7 +456,7 @@ const getTypeColor = (type) => {
             {event.price > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-white mb-2">Price</h3>
-                <p className="text-green-400 text-base font-semibold">${event.price}</p>
+                <p className="text-green-400 text-sm sm:text-base font-semibold">${event.price}</p>
               </div>
             )}
           </div>
@@ -473,7 +473,7 @@ const getTypeColor = (type) => {
                         
                       </span>
                       <span>
-                        <span className="font-semibold text-base text-white">{prize.position}:</span> {prize.prize}
+                        <span className="font-semibold text-sm sm:text-base text-white">{prize.position}:</span> {prize.prize}
                       </span>
                     </li>
                   ))}
@@ -488,7 +488,7 @@ const getTypeColor = (type) => {
                   {event.requirements.map((req, index) => (
                     <li key={index} className="flex items-start">
                       <span className="inline-block w-2 h-2 bg-[#06d6a0] text-base rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      <span className="text-base">{req}</span>
+                      <span className="text-sm sm:text-base">{req}</span>
                     </li>
                   ))}
                 </ul>
@@ -514,9 +514,17 @@ const getTypeColor = (type) => {
         </div>
 
         {/* Action Button */}
-        <div className="text-center border-t border-[#06d6a0]/20 pt-8">
-          {getActionButton()}
-        </div>
+<div className="w-full border-t border-[#06d6a0]/20 pt-6 sm:pt-8 flex justify-center px-4 sm:px-0">
+  <div className="text-center">
+    <div className="inline-block text-sm sm:text-base">
+      {React.cloneElement(getActionButton(), {
+        className:
+          "bg-[#06d6a0] text-[#0f172a] px-4 py-1.5 sm:px-6 sm:py-2 rounded-md hover:bg-[#2de2b2] transition-colors text-sm sm:text-xl",
+      })}
+    </div>
+  </div>
+</div>
+
       </div>
     </div>
 

@@ -120,7 +120,7 @@ if (loading) {
         {achievements.length > 0 && (
           <div className="relative">
                               {/* Vertical Line */}
-<div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-1 h-full bg-emerald-200"></div>
+<div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-1 h-full bg-emerald-800"></div>
 
             {/* Achievement Items */}
             <div className="space-y-12">
