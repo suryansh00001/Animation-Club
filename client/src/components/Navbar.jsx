@@ -22,7 +22,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-b-[0.5px] border-emerald-500 shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b-[0.5px] border-emerald-500 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center  h-16">
 
@@ -40,7 +40,7 @@ const Navbar = () => {
       <span className="text-black font-bold text-sm">AC</span>
     </div>
   )}
-  <span className="text-emerald-400 font-extrabold  text-[1.3rem] font-semibold leading-none glow-neon tracking-wide flex items-center">
+  <span className="text-emerald-400 font-extrabold  text-[1.3rem]  leading-none glow-neon tracking-wide flex items-center">
     {settings.siteInfo.name || 'Animation Club'}
   </span>
 </Link>
