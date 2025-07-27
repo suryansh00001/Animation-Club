@@ -16,6 +16,10 @@ const UserProfile = () => {
   // Use centralized profile data from context with better safety
   const userRegistrations = profileData?.registrations || [];
   const userSubmissions = profileData?.submissions || [];
+
+  // State for view/hide registrations/submissions
+  const [showAllRegistrations, setShowAllRegistrations] = useState(false);
+  const [showAllSubmissions, setShowAllSubmissions] = useState(false);
   const userActivity = profileData?.activity || [];
   const userStats = profileData?.stats || {};
   const dataLoaded = profileData?.loaded || false;
@@ -671,7 +675,16 @@ const UserProfile = () => {
             {/* Registered Events */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Event Registrations</h2>
-              
+              {userRegistrations && userRegistrations.length > 2 && (
+                <div className="mb-4 text-right">
+                  <button
+                    className="text-sm text-purple-600 hover:text-purple-800 font-medium underline"
+                    onClick={() => setShowAllRegistrations(v => !v)}
+                  >
+                    {showAllRegistrations ? 'Hide All Registrations' : 'View All Registrations'}
+                  </button>
+                </div>
+              )}
               {!userRegistrations || userRegistrations.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 mb-4">You haven't registered for any events yet.</p>
@@ -684,59 +697,63 @@ const UserProfile = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {userRegistrations?.filter(registration => registration && registration._id).map((registration) => {
-                    // Safely get event details with null check
-                    const event = getEventDetails(registration?.eventId);
-                    const status = getRegistrationStatus(registration);
-                    
-                    return (
-                      <div key={String(registration._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900">
-                              {event?.title || 'Unknown Event'}
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                              Registered on {registration?.timestamps?.registeredAt || registration?.createdAt ? (() => {
-                                try {
-                                  const date = registration.timestamps?.registeredAt || registration.createdAt;
-                                  return new Date(date).toLocaleDateString();
-                                } catch (e) {
-                                  return 'Registration date unavailable';
-                                }
-                              })() : 'Registration date unavailable'}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Event Date: {event?.date ? (() => {
-                                try {
-                                  return new Date(event.date).toLocaleDateString();
-                                } catch (e) {
-                                  return 'TBD';
-                                }
-                              })() : 'TBD'}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                              status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                              'bg-blue-100 text-blue-800'
-                            }`}>
-                              {status}
-                            </span>
-                            {event && (
-                              <Link
-                                to={`/events/${event._id}`}
-                                className="text-purple-600 hover:text-purple-800 text-sm font-medium"
-                              >
-                                View Event
-                              </Link>
-                            )}
+                  {(showAllRegistrations
+                    ? userRegistrations
+                    : userRegistrations.slice(0, 2)
+                  )
+                    .filter(registration => registration && registration._id)
+                    .map((registration) => {
+                      // Safely get event details with null check
+                      const event = getEventDetails(registration?.eventId);
+                      const status = getRegistrationStatus(registration);
+                      return (
+                        <div key={String(registration._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900">
+                                {event?.title || 'Unknown Event'}
+                              </h3>
+                              <p className="text-sm text-gray-600">
+                                Registered on {registration?.timestamps?.registeredAt || registration?.createdAt ? (() => {
+                                  try {
+                                    const date = registration.timestamps?.registeredAt || registration.createdAt;
+                                    return new Date(date).toLocaleDateString();
+                                  } catch (e) {
+                                    return 'Registration date unavailable';
+                                  }
+                                })() : 'Registration date unavailable'}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                Event Date: {event?.date ? (() => {
+                                  try {
+                                    return new Date(event.date).toLocaleDateString();
+                                  } catch (e) {
+                                    return 'TBD';
+                                  }
+                                })() : 'TBD'}
+                              </p>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                                status === 'completed' ? 'bg-gray-100 text-gray-800' :
+                                status === 'ongoing' ? 'bg-green-100 text-green-800' :
+                                'bg-blue-100 text-blue-800'
+                              }`}>
+                                {status}
+                              </span>
+                              {event && (
+                                <Link
+                                  to={`/events/${event._id}`}
+                                  className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+                                >
+                                  View Event
+                                </Link>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
               )}
             </div>
@@ -745,14 +762,21 @@ const UserProfile = () => {
             <div className="bg-white rounded-lg shadow-md p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">My Submissions</h2>
+                {userSubmissions && userSubmissions.length > 3 && (
+                  <button
+                    className="text-sm text-purple-600 hover:text-purple-800 font-medium underline"
+                    onClick={() => setShowAllSubmissions(v => !v)}
+                  >
+                    {showAllSubmissions ? 'Hide All Submissions' : 'View All Submissions'}
+                  </button>
+                )}
                 <Link 
                   to="/events" 
-                  className="text-sm text-purple-600 hover:text-purple-800 font-medium"
+                  className="text-sm text-purple-600 hover:text-purple-800 font-medium ml-2"
                 >
                   Find Events to Submit →
                 </Link>
               </div>
-              
               {!userSubmissions || userSubmissions.length === 0 ? (
                 <div className="text-center py-12">
                   <div className="text-gray-400 text-6xl mb-4">🎬</div>
@@ -769,121 +793,122 @@ const UserProfile = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {userSubmissions?.filter(submission => submission && submission._id).map((submission) => {
-                    const event = getEventDetails(submission?.eventId);
-                    const status = getSubmissionStatus(submission);
-                    const awardInfo = getAwardInfo(submission);
-                    
-                    return (
-                      <div key={String(submission._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <h3 className="font-semibold text-gray-900">
-                                {event?.title || 'Unknown Event'}
-                              </h3>
+                  {(showAllSubmissions
+                    ? userSubmissions
+                    : userSubmissions.slice(0, 3)
+                  )
+                    .filter(submission => submission && submission._id)
+                    .map((submission) => {
+                      const event = getEventDetails(submission?.eventId);
+                      const status = getSubmissionStatus(submission);
+                      const awardInfo = getAwardInfo(submission);
+                      return (
+                        <div key={String(submission._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <h3 className="font-semibold text-gray-900">
+                                  {event?.title || 'Unknown Event'}
+                                </h3>
+                                {awardInfo && (
+                                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${awardInfo.color}`}>
+                                    <span className="mr-1">{awardInfo.icon}</span>
+                                    {awardInfo.title}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">
+                                {(() => {
+                                  const title = submission?.submissionDetails?.title || submission?.title;
+                                  return title || 'Untitled Submission';
+                                })()}
+                              </p>
+                              <p className="text-sm text-gray-500 mb-2">
+                                {(() => {
+                                  const description = submission.submissionDetails?.description || submission.description;
+                                  return typeof description === 'string' ? description : 'No description available';
+                                })()}
+                              </p>
+                              {/* Award Details */}
                               {awardInfo && (
-                                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${awardInfo.color}`}>
-                                  <span className="mr-1">{awardInfo.icon}</span>
-                                  {awardInfo.title}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-sm text-gray-600 mb-2">
-                              {(() => {
-                                const title = submission?.submissionDetails?.title || submission?.title;
-                                return title || 'Untitled Submission';
-                              })()}
-                            </p>
-                            <p className="text-sm text-gray-500 mb-2">
-                              {(() => {
-                                const description = submission.submissionDetails?.description || submission.description;
-                                return typeof description === 'string' ? description : 'No description available';
-                              })()}
-                            </p>
-                            
-                            {/* Award Details */}
-                            {awardInfo && (
-                              <div className="mb-2 p-3 bg-gray-50 rounded-lg border">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm font-medium text-gray-900">
-                                      🎉 Congratulations! You won {awardInfo.title}
-                                    </p>
-                                    {awardInfo.prize && (
-                                      <p className="text-xs text-gray-600">Prize: {awardInfo.prize}</p>
+                                <div className="mb-2 p-3 bg-gray-50 rounded-lg border">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="text-sm font-medium text-gray-900">
+                                        🎉 Congratulations! You won {awardInfo.title}
+                                      </p>
+                                      {awardInfo.prize && (
+                                        <p className="text-xs text-gray-600">Prize: {awardInfo.prize}</p>
+                                      )}
+                                    </div>
+                                    {awardInfo.certificate && (
+                                      <a
+                                        href={awardInfo.certificate}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-xs text-purple-600 hover:text-purple-800 font-medium underline"
+                                      >
+                                        View Certificate
+                                      </a>
                                     )}
                                   </div>
-                                  {awardInfo.certificate && (
-                                    <a
-                                      href={awardInfo.certificate}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-xs text-purple-600 hover:text-purple-800 font-medium underline"
-                                    >
-                                      View Certificate
-                                    </a>
-                                  )}
                                 </div>
-                              </div>
-                            )}
-                            
-                            <p className="text-sm text-gray-500">
-                              Submitted on {submission.submissionTime ? (() => {
-                                try {
-                                  return new Date(submission.submissionTime).toLocaleDateString();
-                                } catch (e) {
-                                  return 'Submission date unavailable';
-                                }
-                              })() : 'Submission date unavailable'}
-                            </p>
-                            {(submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl) && (
-                              <div className="mt-2">
-                                <a
-                                  href={submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center text-purple-600 hover:text-purple-800 text-sm font-medium"
-                                >
-                                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                  </svg>
-                                  View Submission
-                                </a>
-                              </div>
-                            )}
-                          </div>
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            status === 'Approved' || status === 'Winner' ? 'bg-green-100 text-green-800' :
-                            status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
-                            status === 'Rejected' ? 'bg-red-100 text-red-800' :
-                            status === 'Submitted' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {status}
-                          </span>
-                        </div>
-
-                        {/* Award Information */}
-                        {awardInfo && (
-                          <div className={`mt-2 p-2 rounded-md border ${awardInfo.color} flex items-center`}>
-                            <span className="text-lg mr-2">
-                              {awardInfo.icon}
-                            </span>
-                            <div className="text-sm">
-                              <p className="font-medium text-gray-900">{awardInfo.title}</p>
-                              {awardInfo.prize && (
-                                <p className="text-gray-700">{awardInfo.prize}</p>
                               )}
-                              {awardInfo.certificate && (
-                                <p className="text-gray-700">Certificate: {awardInfo.certificate}</p>
+                              <p className="text-sm text-gray-500">
+                                Submitted on {submission.submissionTime ? (() => {
+                                  try {
+                                    return new Date(submission.submissionTime).toLocaleDateString();
+                                  } catch (e) {
+                                    return 'Submission date unavailable';
+                                  }
+                                })() : 'Submission date unavailable'}
+                              </p>
+                              {(submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl) && (
+                                <div className="mt-2">
+                                  <a
+                                    href={submission.files?.mainFileUrl || submission.fileUrl || submission.mainFileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-purple-600 hover:text-purple-800 text-sm font-medium"
+                                  >
+                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                    View Submission
+                                  </a>
+                                </div>
                               )}
                             </div>
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              status === 'Approved' || status === 'Winner' ? 'bg-green-100 text-green-800' :
+                              status === 'Under Review' ? 'bg-yellow-100 text-yellow-800' :
+                              status === 'Rejected' ? 'bg-red-100 text-red-800' :
+                              status === 'Submitted' ? 'bg-blue-100 text-blue-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {status}
+                            </span>
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                          {/* Award Information */}
+                          {awardInfo && (
+                            <div className={`mt-2 p-2 rounded-md border ${awardInfo.color} flex items-center`}>
+                              <span className="text-lg mr-2">
+                                {awardInfo.icon}
+                              </span>
+                              <div className="text-sm">
+                                <p className="font-medium text-gray-900">{awardInfo.title}</p>
+                                {awardInfo.prize && (
+                                  <p className="text-gray-700">{awardInfo.prize}</p>
+                                )}
+                                {awardInfo.certificate && (
+                                  <p className="text-gray-700">Certificate: {awardInfo.certificate}</p>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>
