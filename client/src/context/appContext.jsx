@@ -1,21 +1,3 @@
-/**
- * App Context - Centralized State Management
- * 
- * This context provides centralized user authentication and profile management.
- * 
- * User Validation Approach:
- * - All user validation is centralized through the /auth/me endpoint
- * - No separate validation endpoints (/validate/*) are used
- * - User authentication is verified through session validation on app load
- * - Profile data is loaded and cached centrally to avoid repeated API calls
- * 
- * Key Features:
- * - Centralized authentication state
- * - Cached profile data with smart reloading
- * - Error handling with user-friendly messages
- * - Rate limiting protection with retry logic
- */
-
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
@@ -62,6 +44,7 @@ export const AppContextProvider = ({ children }) => {
     const [events, setEvents] = useState([]);
     const [userRegistrations, setUserRegistrations] = useState([]);
     const [userSubmissions, setUserSubmissions] = useState([]);
+    const [opportunities,setOpportunities] = useState([]);
     
     // Centralized site settings
     const [settings, setSettings] = useState({
@@ -91,18 +74,8 @@ export const AppContextProvider = ({ children }) => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Load events from API instead of dummy data
-                try {
-                    const response = await axios.get('/api/v1/events');
-                    if (response.data.success) {
-                        setEvents(response.data.events);
-                        console.log('Events loaded from API:', response.data.events.length);
-                    } else {
-                        console.warn('Failed to load events from API');
-                    }
-                } catch (eventsError) {
-                    console.warn('Events API error:', eventsError);
-                }
+                
+                
                 
                 // Load site settings
                 try {
@@ -151,7 +124,7 @@ export const AppContextProvider = ({ children }) => {
                     console.warn('Settings API error:', settingsError);
                     setSettings(prev => ({ ...prev, loading: false }));
                 }
-                
+
                 // Check for existing user session
                 const userData = localStorage.getItem('userAuth');
                 const authToken = localStorage.getItem('authToken');
@@ -192,6 +165,36 @@ export const AppContextProvider = ({ children }) => {
                     
                     verifySession();
                 }
+
+
+                try {
+                    const response = await axios.get('/api/v1/events');
+                    if (response.data.success) {
+                        setEvents(response.data.events);
+                        console.log('Events loaded from API:', response.data.events.length);
+                    } else {
+                        console.warn('Failed to load events from API');
+                    }
+                } catch (eventsError) {
+                    console.warn('Events API error:', eventsError);
+                }
+
+                try {
+                    const response = await axios.get('/api/v1/opportunities');
+                    if (response.data.success) {
+                        if (response.data?.success) {
+                            const sortedOpportunities = response.data.opportunities.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+                            setOpportunities(sortedOpportunities);
+                            return sortedOpportunities;
+                        }
+                    } else {
+                        console.warn('Failed to load events from API');
+                    }
+                } catch (opportunitiesError) {
+                    console.warn('Opportunities API error:', opportunitiesError);
+                }
+                
+                
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -1081,6 +1084,7 @@ export const AppContextProvider = ({ children }) => {
         events,
         userRegistrations,
         userSubmissions,
+        opportunities,
         
         // Site settings
         settings,
