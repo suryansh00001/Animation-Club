@@ -6,33 +6,23 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
-// Add axios request interceptor to include auth token
-axios.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
-// Add axios response interceptor to handle auth errors
+// Axios interceptors for auth token and error handling
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Clear both user and admin auth data on 401 errors
-            localStorage.removeItem('userAuth');
-            localStorage.removeItem('adminAuth');
-            localStorage.removeItem('authToken');
-            console.log('401 error - clearing authentication');
-        }
-        return Promise.reject(error);
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('userAuth');
+      localStorage.removeItem('adminAuth');
+      localStorage.removeItem('authToken');
+      console.log('401 error - clearing authentication');
     }
+    return Promise.reject(error);
+  }
 );
 
 export const AppContext = createContext();
@@ -939,139 +929,72 @@ export const AppContextProvider = ({ children }) => {
         }
     }, []);
 
-    // Utility functions for user state (MongoDB ObjectId compatible)
-    const isRegisteredForEvent = (eventId) => {
-        // Early safety checks with detailed logging
-        if (!eventId) {
-            console.log('isRegisteredForEvent: No eventId provided');
-            return false;
+
+    // Utility functions for user state
+    const isRegisteredForEvent = eventId => {
+      if (!eventId || !user || !Array.isArray(userRegistrations)) return false;
+      const eventIdStr = String(eventId);
+      const userId = String(user._id);
+      return userRegistrations.some(reg => {
+        if (!reg) return false;
+        let regEventId = '';
+        if (reg.eventId) {
+          regEventId = typeof reg.eventId === 'object' && reg.eventId._id ? String(reg.eventId._id) : String(reg.eventId);
         }
-        
-        if (!user) {
-            console.log('isRegisteredForEvent: No user logged in');
-            return false;
-        }
-        
-        if (!userRegistrations) {
-            console.log('isRegisteredForEvent: userRegistrations is undefined');
-            return false;
-        }
-        
-        if (!Array.isArray(userRegistrations)) {
-            console.log('isRegisteredForEvent: userRegistrations is not an array');
-            return false;
-        }
-        
-        try {
-            // Convert eventId to string for comparison
-            const eventIdStr = String(eventId);
-            const userId = String(user._id);
-            
-            // Simple implementation to avoid nested properties access
-            for (const reg of userRegistrations) {
-                // Skip invalid registrations
-                if (!reg) continue;
-                
-                // Handle different formats of eventId
-                let regEventId = '';
-                
-                if (reg.eventId) {
-                    if (typeof reg.eventId === 'object' && reg.eventId._id) {
-                        regEventId = String(reg.eventId._id);
-                    } else {
-                        regEventId = String(reg.eventId);
-                    }
-                }
-                
-                // Check if this is a match
-                if (regEventId === eventIdStr && String(reg.userId) === userId) {
-                    return true;
-                }
-            }
-            
-            return false;
-        } catch (error) {
-            console.error('Error in isRegisteredForEvent:', error);
-            return false;
-        }
+        return regEventId === eventIdStr && String(reg.userId) === userId;
+      });
     };
 
-    const hasSubmittedForEvent = (eventId) => {
-        if (!eventId || !user || !user._id || !userSubmissions || !Array.isArray(userSubmissions)) {
-            return false;
+    const hasSubmittedForEvent = eventId => {
+      if (!eventId || !user || !Array.isArray(userSubmissions)) return false;
+      const eventIdString = eventId?.toString();
+      if (!eventIdString) return false;
+      return userSubmissions.some(sub => {
+        if (!sub) return false;
+        let subEventIdString;
+        if (typeof sub.eventId === 'object' && sub.eventId?._id) {
+          subEventIdString = sub.eventId._id.toString();
+        } else if (sub.eventId) {
+          subEventIdString = sub.eventId.toString();
+        } else {
+          return false;
         }
-
-        try {
-            const eventIdString = eventId?.toString();
-            if (!eventIdString) return false;
-
-            return userSubmissions.some(sub => {
-                if (!sub) return false;
-                
-                let subEventIdString;
-                if (typeof sub.eventId === 'object' && sub.eventId && sub.eventId._id) {
-                    subEventIdString = sub.eventId._id.toString();
-                } else if (sub.eventId) {
-                    subEventIdString = sub.eventId.toString();
-                } else {
-                    return false;
-                }
-                
-                return subEventIdString === eventIdString && sub.userId === user._id;
-            });
-        } catch (error) {
-            console.error('Error in hasSubmittedForEvent:', error);
-            return false;
-        }
+        return subEventIdString === eventIdString && sub.userId === user._id;
+      });
     };
 
-    const getEventSubmission = (eventId) => {
-        if (!eventId || !user || !user._id || !userSubmissions || !Array.isArray(userSubmissions)) {
-            return null;
+    const getEventSubmission = eventId => {
+      if (!eventId || !user || !Array.isArray(userSubmissions)) return null;
+      const eventIdString = eventId?.toString();
+      if (!eventIdString) return null;
+      return userSubmissions.find(sub => {
+        if (!sub) return false;
+        let subEventIdString;
+        if (typeof sub.eventId === 'object' && sub.eventId?._id) {
+          subEventIdString = sub.eventId._id.toString();
+        } else if (sub.eventId) {
+          subEventIdString = sub.eventId.toString();
+        } else {
+          return false;
         }
-
-        try {
-            const eventIdString = eventId?.toString();
-            if (!eventIdString) return null;
-            
-            return userSubmissions.find(sub => {
-                if (!sub) return false;
-                
-                let subEventIdString;
-                if (typeof sub.eventId === 'object' && sub.eventId && sub.eventId._id) {
-                    subEventIdString = sub.eventId._id.toString();
-                } else if (sub.eventId) {
-                    subEventIdString = sub.eventId.toString();
-                } else {
-                    return false;
-                }
-                
-                return subEventIdString === eventIdString && sub.userId === user._id;
-            });
-        } catch (error) {
-            console.error('Error in getEventSubmission:', error);
-            return null;
-        }
+        return subEventIdString === eventIdString && sub.userId === user._id;
+      }) || null;
     };
 
     const getUserRegistrations = () => {
-        if (!user || !user._id || !userRegistrations || !Array.isArray(userRegistrations)) {
-            return [];
-        }
-        
-        try {
-            return userRegistrations.filter(reg => reg && reg.userId === user._id);
-        } catch (error) {
-            console.error('Error in getUserRegistrations:', error);
-            return [];
-        }
+      if (!user || !Array.isArray(userRegistrations)) return [];
+      try {
+        return userRegistrations.filter(reg => reg && reg.userId === user._id);
+      } catch {
+        return [];
+      }
     };
 
     const getUserSubmissions = () => {
-        return userSubmissions.filter(sub => sub.userId === user?._id);
+      if (!user || !Array.isArray(userSubmissions)) return [];
+      return userSubmissions.filter(sub => sub.userId === user._id);
     };
 
-    // Keep consistent naming with original functions
     const submitForEvent = submitToEvent;
 
     const value = {

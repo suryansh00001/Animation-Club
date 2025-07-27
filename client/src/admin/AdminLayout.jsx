@@ -6,9 +6,9 @@ const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
-  const { adminUser, adminLogout } = useAdminContext();
+  const { adminUser, adminLogout ,eventManagerUser} = useAdminContext();
   const userMenuRef = useRef(null);
-
+  const [userData, setUserData] = useState(null);
   const isActive = (path) => location.pathname === path;
 
   const navigation = [
@@ -16,6 +16,7 @@ const AdminLayout = () => {
     { name: 'Events', path: '/admin/events', icon: '📅' },
     { name: 'Members', path: '/admin/members', icon: '👥' },
     { name: 'Achievements', path: '/admin/achievements', icon: '🏆' },
+    { name: 'Opportunities', path: '/admin/freelancing-opportunities', icon: '💼'},
     { name: 'Gallery', path: '/admin/gallery', icon: '🖼️' },
     { name: 'Artworks', path: '/admin/artworks', icon: '🎨' },
     { name: 'Submissions', path: '/admin/submissions', icon: '📝' },
@@ -23,7 +24,16 @@ const AdminLayout = () => {
     { name: 'Contacts', path: '/admin/contacts', icon: '💬' },
     { name: 'Settings', path: '/admin/settings', icon: '⚙️' }
   ];
+  
 
+  useEffect(()=>{
+    if(adminUser){
+      setUserData(adminUser);
+    }
+    else if(eventManagerUser){
+      setUserData(eventManagerUser);
+    }
+  },[adminUser,eventManagerUser])
   const handleLogout = () => {
     adminLogout();
     setShowUserMenu(false);
@@ -42,7 +52,7 @@ const AdminLayout = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Mobile sidebar overlay */}
@@ -109,20 +119,27 @@ const AdminLayout = () => {
                     className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 focus:outline-none"
                   >
                     <div className="h-8 w-8 bg-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-medium">
-                        {adminUser?.name?.charAt(0) || 'A'}
-                      </span>
+                      {userData ? 
+                        <img
+                          src={userData.avatar}
+                          alt={userData.name.charAt(0)}
+                          className="w-8 h-8 rounded-full object-cover"
+                        /> 
+                        : 
+                        <span className="text-white text-sm font-medium">
+                          {(userData && userData.name ? userData.name.charAt(0) : 'A')}
+                        </span>
+                      }
                     </div>
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  
                   {showUserMenu && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
                       <div className="px-4 py-2 text-sm text-gray-700 border-b">
-                        <p className="font-medium">{adminUser?.name || 'Admin User'}</p>
-                        <p className="text-xs text-gray-500">{adminUser?.email}</p>
+                        <p className="font-medium">{(userData && userData.name) ? userData.name : 'Admin User'}{` | ${userData.role == 'admin'?'admin':'Manager'}`}</p>
+                        <p className="text-xs text-gray-500">{(userData && userData.email) ? userData.email : 'admin@animation-club.com'}</p>
                       </div>
                       <button
                         onClick={handleLogout}

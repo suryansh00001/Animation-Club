@@ -48,4 +48,6 @@ router.get('/achievements', getUserAchievements);
 router.get('/events/upcoming', getUserUpcomingEvents);
 router.get('/events/past', getUserPastEvents);
 
+
+
 export default router;

@@ -4,6 +4,7 @@ import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
 import Tilt from 'react-parallax-tilt';
 
+
 const Opportunities = () => {
   const { 
     fetchEvents, 
@@ -152,6 +153,7 @@ const Opportunities = () => {
 
 
   return (
+
     <div className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -160,22 +162,26 @@ const Opportunities = () => {
             Freelancing Opportunities
           </h1>
           <p className="text-sm sm:text-lg text-[#d1d5db] max-w-2xl mx-auto">
+
             Discover exciting freelancing gigs in animation, design, and storytelling curated just for our club members. Gain real-world experience, build your portfolio, and earn while you create!
           </p>
         </div>
 
         {/* Filters */}
+
         <div className="bg-[#0a1a1a] rounded-lg shadow-[0_0_20px_#10b981] p-6 mb-8 border border-emerald-600/30">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Status Filter */}
             <div className="flex-1">
               <label className="block text-xs sm:text-sm font-medium text-[#94a3b8] mb-2">
+
                 Filter by Status
               </label>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 className="w-full bg-[#0a1a1a] text-sm border border-[#06d6a0]/40 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#06d6a0]"
+
               >
                 <option value="all">All Opportunities</option>
                 <option value="open">Open Opportunities</option>
@@ -184,6 +190,7 @@ const Opportunities = () => {
             </div>
           </div>
         </div>
+
 
  {/* Opportunities Grid Styled like Events Grid */}
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -288,6 +295,7 @@ const Opportunities = () => {
     )}
   </div>
 )}
+
       </div>
 
       {/* Scroll to Top Button */}
@@ -297,3 +305,4 @@ const Opportunities = () => {
 };
 
 export default Opportunities;
+

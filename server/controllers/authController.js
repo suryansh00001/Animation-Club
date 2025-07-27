@@ -18,12 +18,21 @@ export const registerUser = async (req, res) => {
 
         if (existingUser) {
             if (req.recordFailedAttempt) req.recordFailedAttempt();
-            
             return res.status(400).json({
                 success: false,
                 message: existingUser.email === email.toLowerCase() 
                     ? 'User with this email already exists' 
                     : 'User with this student ID already exists'
+            });
+        }
+
+        // Password strength validation
+        // Minimum 8 characters, at least one uppercase, one lowercase, one number, one special character
+        const passwordRequirements = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+        if (!passwordRequirements.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
             });
         }
 
@@ -96,12 +105,18 @@ export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email and password are required'
+            });
+        }
+
         // Find user by email
         const user = await User.findOne({ email: email.toLowerCase().trim() });
 
         if (!user) {
             if (req.recordFailedAttempt) req.recordFailedAttempt();
-            
             return res.status(401).json({
                 success: false,
                 message: 'Invalid email or password'
@@ -121,7 +136,6 @@ export const loginUser = async (req, res) => {
 
         if (!isPasswordValid) {
             if (req.recordFailedAttempt) req.recordFailedAttempt();
-            
             return res.status(401).json({
                 success: false,
                 message: 'Invalid email or password'
@@ -153,11 +167,11 @@ export const loginUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login error:', error, error && error.stack);
         res.status(500).json({
             success: false,
             message: 'Login failed',
-            error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+            error: process.env.NODE_ENV === 'development' ? (error && error.stack ? error.stack : error.message) : 'Internal server error'
         });
     }
 };

@@ -1,5 +1,4 @@
 import express from 'express';
-import { authenticateToken, requireUser } from '../middlewares/authMiddleware.js';
 import { apiRateLimit } from '../middlewares/rateLimitMiddleware.js';
 
 // Import gallery controllers

@@ -1,5 +1,5 @@
 import express from 'express';
-import { authenticateToken, requireAdmin } from '../middlewares/authMiddleware.js';
+import { authenticateToken, requireAdmin, requireAdminOrManager } from '../middlewares/authMiddleware.js';
 import {
     getAdminStats,
     getAdminRegistrations,
@@ -15,7 +15,11 @@ import {
     updateSubmissionStatus,
     updateSubmissionAward,
     getAdminDashboard,
-    getSystemStatus
+    getSystemStatus,
+    updateOpportunityStatus,
+    editOpportunity,
+    deleteOpportunity,
+    createOpportunity,
 } from '../controllers/adminController.js';
 
 import {
@@ -49,6 +53,9 @@ import {
     adminUpdateArtwork,
     deleteArtwork
 } from '../controllers/artworkController.js';
+import { 
+    getAllOpportunities 
+} from '../controllers/opportunityController.js';
 
 const router = express.Router();
 
@@ -58,7 +65,16 @@ router.get('/system/status', getSystemStatus);
 
 // All other admin routes require authentication and admin role
 router.use(authenticateToken);
-router.use(requireAdmin);
+
+// Allow both admin and manager for submissions and event submissions
+router.use((req, res, next) => {
+  // Allow admin or manager for any route containing 'submission' or 'event' (for event submissions)
+  if (/\/submissions(\/|$)/.test(req.path) || /\/events(\/|$)/.test(req.path)) {
+    return requireAdminOrManager(req, res, next);
+  }
+  // Default: admin only
+  return requireAdmin(req, res, next);
+});
 
 // Admin dashboard and stats
 router.get('/dashboard', getAdminDashboard);
@@ -105,5 +121,13 @@ router.get('/artworks', getAllArtworks);
 router.post('/artworks', adminCreateArtwork);
 router.put('/artworks/:id', adminUpdateArtwork);
 router.delete('/artworks/:id', deleteArtwork);
+
+// Opportunites routes
+router.get('/opportunities',getAllOpportunities);
+router.put('/opportunity/:id/status',updateOpportunityStatus);
+router.patch('/opportunity/:id/edit',editOpportunity);
+router.delete('/opportunity/:id',deleteOpportunity);
+router.post('/opportunity',createOpportunity);
+
 
 export default router;

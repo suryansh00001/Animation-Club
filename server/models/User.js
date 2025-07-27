@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['student', 'admin'],
+        enum: ['student', 'admin','manager'],
         default: 'student'
     },
     isActive: {

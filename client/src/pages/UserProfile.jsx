@@ -16,6 +16,10 @@ const UserProfile = () => {
   // Use centralized profile data from context with better safety
   const userRegistrations = profileData?.registrations || [];
   const userSubmissions = profileData?.submissions || [];
+
+  // State for view/hide registrations/submissions
+  const [showAllRegistrations, setShowAllRegistrations] = useState(false);
+  const [showAllSubmissions, setShowAllSubmissions] = useState(false);
   const userActivity = profileData?.activity || [];
   const userStats = profileData?.stats || {};
   const dataLoaded = profileData?.loaded || false;
@@ -674,6 +678,7 @@ const UserProfile = () => {
 
           {/* Event Registrations and Submissions */}
           <div className="lg:col-span-2 space-y-8">
+
 {/* Registered Events */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">
   <h2 className="text-xl font-bold text-[#06d6a0] mb-6">Event Registrations</h2>
@@ -759,6 +764,7 @@ const UserProfile = () => {
                       View Event
                     </Link>
                   )}
+
                 </div>
               </div>
             </div>
@@ -767,6 +773,7 @@ const UserProfile = () => {
     </div>
   )}
 </div>
+
 
 
 
@@ -910,6 +917,7 @@ const UserProfile = () => {
       })}
     </div>
   )}
+
 
             </div>
           </div>

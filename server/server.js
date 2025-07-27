@@ -15,6 +15,7 @@ import achievementRoutes from './routes/achievementRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import artworkRoutes from './routes/artworkRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import opportunityRoutes from './routes/opportunityRoutes.js';
 
 // Import middlewares
 import { apiRateLimit } from './middlewares/rateLimitMiddleware.js';
@@ -57,7 +58,7 @@ app.use(cors({
         }
     },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
@@ -75,6 +76,7 @@ app.use('/api/v1/achievements', achievementRoutes);
 app.use('/api/v1/gallery', galleryRoutes);
 app.use('/api/v1/artworks', artworkRoutes);
 app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/opportunities', opportunityRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
