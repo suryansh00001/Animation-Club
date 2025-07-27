@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
+import Tilt from 'react-parallax-tilt';
 
 const Achievements = () => {
   const { fetchAchievements } = useAppContext();
@@ -34,82 +35,92 @@ const Achievements = () => {
     { id: 'competition', name: 'Competition' }
   ];
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-500"></div>
-          </div>
+if (loading) {
+  return (
+    <div className="min-h-screen bg-[#0a0f0f] py-8 text-emerald-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-emerald-400 border-t-transparent"></div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
 
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center py-12">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Error Loading Achievements</h3>
-            <p className="text-gray-600">{error}</p>
-          </div>
+
+ if (error) {
+  return (
+    <div className="min-h-screen bg-[#0a0f0f] py-8 text-emerald-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center py-12">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h3 className="text-xl font-semibold text-emerald-300 mb-2">Error Loading Achievements</h3>
+          <p className="text-emerald-200">{error}</p>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Our Achievements
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Celebrating our club's journey of excellence, innovation, and recognition in the world of animation.
-          </p>
+           <h1 className="text-2xl sm:text-4xl font-bold text-emerald-400 mb-4">
+             Our Achievements
+           </h1>
+           <p className="text-sm sm:text-lg text-[#d1d5db] max-w-2xl mx-auto">
+             Celebrating our club's journey of excellence, innovation, and recognition in the world of animation.
+           </p>
+
         </div>
 
-        {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-                selectedCategory === category.id
-                  ? 'bg-purple-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 hover:bg-purple-50 hover:text-purple-600 shadow-md'
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
+{/* Category Filter Box */}
+<div className="mb-12 px-4 sm:px-6">
+  <div className="bg-[#0a1a1a] rounded-lg shadow-[0_0_20px_#10b98155] border border-emerald-600/30 p-6">
+    <label className="block text-sm font-medium text-[#94a3b8] mb-2 text-center sm:text-left">
+      Filter by Category
+    </label>
+    <select
+  value={selectedCategory}
+  onChange={(e) => setSelectedCategory(e.target.value)}
+  className="w-full appearance-none bg-[#0a1a1a] text-emerald-100 border border-emerald-600/40 rounded-md px-4 py-2 shadow-[0_0_12px_#10b98155] focus:outline-none focus:ring-2 focus:ring-[#10b981] transition"
+>
+  
+  {categories.map((category) => (
+    <option key={category.id} value={category.id} className="bg-[#0a1a1a] text-emerald-100">
+      {category.name}
+    </option>
+  ))}
+</select>
+
+  </div>
+</div>
+
+
 
         {/* Empty State */}
         {achievements.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">🏆</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No achievements found</h3>
-            <p className="text-gray-600">
-              {selectedCategory === 'all' 
-                ? 'No achievements available at the moment.' 
-                : `No achievements found in the ${categories.find(c => c.id === selectedCategory)?.name} category.`}
-            </p>
-          </div>
+              <div className="text-center py-12 text-emerald-200">
+                <div className="text-6xl mb-4">🏆</div>
+                <h3 className="text-xl font-semibold text-emerald-300 mb-2">No achievements found</h3>
+                <p>
+                  {selectedCategory === 'all' 
+                    ? 'No achievements available at the moment.' 
+                    : `No achievements found in the ${categories.find(c => c.id === selectedCategory)?.name} category.`}
+                </p>
+              </div>
         )}
 
         {/* Timeline */}
         {achievements.length > 0 && (
           <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 h-full w-1 bg-purple-200"></div>
+                              {/* Vertical Line */}
+<div className="absolute left-4 md:left-1/2 md:-translate-x-1/2 w-1 h-full bg-emerald-800"></div>
 
             {/* Achievement Items */}
             <div className="space-y-12">
@@ -117,63 +128,81 @@ const Achievements = () => {
                 <div key={achievement._id} className={`relative flex items-center ${
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}>
-                  {/* Timeline Dot */}
-                  <div className="absolute left-4 md:left-1/2 transform md:-translate-x-1/2 w-8 h-8 bg-purple-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                  </div>
+
+
+{/* Dot centered on the line */}
+<div className="absolute left-[calc(1rem-0.5rem)] md:left-1/2 md:-translate-x-1/2 w-5 h-6 bg-emerald-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center z-10">
+  <div className="w-2 h-2 bg-white rounded-full"></div>
+</div>
+
+
+
 
                   {/* Content Card */}
                   <div className={`ml-16 md:ml-0 ${
-                    index % 2 === 0 ? 'md:mr-8 md:ml-0' : 'md:ml-8 md:mr-0'
-                  } w-full md:w-1/2`}>
-                    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                      <img
-                        src={achievement.image}
-                        alt={achievement.title}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="p-6">
-                        {/* Date */}
-                        <div className="text-sm text-purple-600 font-semibold mb-2">
-                          {new Date(achievement.date).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </div>
+  index % 2 === 0 ? 'md:mr-8 md:ml-0' : 'md:ml-8 md:mr-0'
+} w-full md:w-1/2`}>
+  <Tilt
+        tiltMaxAngleX={10}
+        tiltMaxAngleY={10}
+        glareEnable={true}
+        glareMaxOpacity={0.2}
+        glareColor="#10b981"
+        glarePosition="all"
+        scale={1.02}
+        transitionSpeed={2500}
+        className="rounded-lg"
+      >
+  <div className="bg-[#0a1a1a] rounded-lg shadow-[0_0_20px_#10b98133] overflow-hidden hover:shadow-[0_0_30px_#10b981aa] transition-shadow duration-300">
+    <img
+      src={achievement.image}
+      alt={achievement.title}
+      className="w-full h-48 object-cover"
+    />
+    <div className="p-6 text-[0.6rem]">
+      {/* Date */}
+      <div className="sm:text-sm lg:text-base text-emerald-400 mb-2">
+        {new Date(achievement.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </div>
 
-                        {/* Title */}
-                        <h3 className="text-xl font-bold text-gray-800 mb-3">
-                          {achievement.title}
-                        </h3>
+      {/* Title */}
+      <h3 className="text-xl sm:text-xl font-bold text-white mb-3">
+        {achievement.title}
+      </h3>
 
-                        {/* Description */}
-                        <p className="text-gray-600 mb-4 leading-relaxed">
-                          {achievement.description}
-                        </p>
+      {/* Description */}
+      <p className="sm:text-sm text-emerald-100 mb-4 leading-relaxed">
+        {achievement.description}
+      </p>
 
-                        {/* Award Badge */}
-                        {achievement.award && (
-                          <div className="flex items-center mb-4">
-                            <div className="flex items-center bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
-                              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                              {achievement.award}
-                            </div>
-                          </div>
-                        )}
+      {/* Award Badge */}
+      {achievement.award && (
+        <div className="flex items-center mb-4">
+          <div className="flex items-center bg-yellow-300 text-black px-3 py-1 rounded-full text-sm font-semibold">
+            <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+            {achievement.award}
+          </div>
+        </div>
+      )}
 
-                        {/* Project Details */}
-                        {achievement.project && (
-                          <div className="mb-4">
-                            <span className="text-sm font-semibold text-gray-700">Project: </span>
-                            <span className="text-sm text-gray-600">{achievement.project.title}</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+      {/* Project Details */}
+      {achievement.project && (
+        <div className="mb-4">
+          <span className="text-sm font-semibold text-emerald-300">Project: </span>
+          <span className="text-sm text-emerald-200">{achievement.project.title}</span>
+        </div>
+      )}
+    </div>
+  </div>
+  </Tilt>
+</div>
+
 
                   {/* Empty space for alternating layout */}
                   <div className="hidden md:block w-1/2"></div>
