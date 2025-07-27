@@ -9,10 +9,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementPopup from './components/AnnouncementPopup'
 import SEOUpdater from './components/SEOUpdater'
-
-// import AdminOpportunities from './admin/AdminOpportunities'
-import GlowingCursor from './components/GlowingCursor'
-
+import AdminOpportunities from './admin/AdminOpportunities'
 
 // Pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -67,9 +64,8 @@ const App = () => {
   const isAdminRoute = location.pathname.startsWith('/admin')
 
   return (
-    <div className="min-h-screen font-orbitron flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Toaster position="top-right" />
-      <GlowingCursor />
       <SEOUpdater />
       {!isAdminRoute && <AnnouncementPopup />}
       <React.Suspense fallback={<div className="flex justify-center items-center h-screen">Loading...</div>}>
@@ -94,9 +90,7 @@ const App = () => {
             } />
             <Route path="freelancing-opportunities" element={
               <AdminRouteGuard page="freelancing-opportunities">
-
-                {/* <AdminOpportunities /> */}
-
+                <AdminOpportunities />
               </AdminRouteGuard>
             } />
             <Route path="members" element={

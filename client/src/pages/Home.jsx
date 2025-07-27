@@ -1,39 +1,13 @@
-import React, { useState,useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
-import TiltText from '../components/TiltText';
-import NoEventsCard from '../components/NoEventsCard'; // Adjust the path if needed
-import Tilt from 'react-parallax-tilt';
-import LightRays from '../components/Lightrays';
-import CountUp from 'react-countup';
-
-
-function useResponsiveSlice() {
-  const getCount = () => {
-    const width = window.innerWidth;
-    if (width < 640) return 2; // mobile
-    if (width < 1024) return 4; // tablet
-    return 3; // laptop/desktop
-  };
-  const [count, setCount] = useState(getCount());
-  useEffect(() => {
-    const handleResize = () => setCount(getCount());
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  return count;
-}
-
-
-
 
 const Home = () => {
   const { fetchUpcomingEvents, events, settings, fetchAchievements } = useAppContext();
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [recentAchievements, setRecentAchievements] = useState([]);
-  const sliceCount = useResponsiveSlice();
 
   useEffect(() => {
     let isMounted = true;
@@ -48,23 +22,7 @@ const Home = () => {
         const achievementsData = await fetchAchievements();
         
         if (isMounted) {
-          setUpcomingEvents(
-  upcoming && upcoming.length > 0
-    ? upcoming.slice(0, sliceCount)
-    : [
-        {
-          _id: 'demo-event',
-          image: 'https://placehold.co/400x200/0f766e/ffffff?text=Demo+Event',
-          title: 'Demo Animation Workshop',
-          description: 'Join us for an exciting animation workshop filled with creativity and fun!',
-          date: new Date(),
-          type: 'Workshop',
-          venue: 'Main Auditorium',
-          location: 'IIT BHU',
-        },
-      ]
-);
-; // Show only first 3
+          setUpcomingEvents(upcoming ? upcoming.slice(0, 3) : []); // Show only first 3
           setRecentAchievements(achievementsData ? achievementsData.slice(0, 3) : []); // Show only first 3
         }
       } catch (error) {
@@ -72,7 +30,7 @@ const Home = () => {
         
         if (isMounted) {
           // Fallback to events from context or empty array
-          const fallbackEvents = (events || []).filter(event => event.status === 'upcoming').slice(0, sliceCount);
+          const fallbackEvents = (events || []).filter(event => event.status === 'upcoming').slice(0, 3);
           setUpcomingEvents(fallbackEvents);
           setRecentAchievements([]); // Empty fallback for achievements
         }
@@ -89,354 +47,274 @@ const Home = () => {
     return () => {
       isMounted = false;
     };
-  }, [sliceCount]); 
+  }, []); // Remove events dependency to prevent re-renders
 
   return (
     <div className="min-h-screen">
-    
       {/* Hero Section */}
-<section className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-36 overflow-hidden">
-
-
-
-  {/* Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-    <h1 className="text-4xl md:text-6xl font-bold mb-10 leading-tight">
-      <div>Welcome to the</div>
-      <TiltText>
-        <span className="drop-shadow-[0_0_5px_rgba(110,231,183,0.8)_0_0_15px_rgba(16,185,129,0.6)]">
-          IIT BHU ANIMATION CLUB
-        </span>
-      </TiltText>
-    </h1>
-
-    <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
-      {settings.siteInfo.description ||
-    'Too Cool to stay still'} 
-       </p>
-
-    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-  <Link
-    to="/events"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
-  >
-    EXPLORE EVENTS →
-  </Link>
-  <Link
-    to="/register"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
-  >
-    JOIN US NOW
-  </Link>
-</div>
-
-  </div>
-
-        
-
-
-
-
-  
-
-{/* Upcoming Events Section */}
-<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-  <div className="text-center mb-12">
-    <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-emerald-400 drop-shadow-lg tracking-wide">
-      Upcoming Events
-    </h2>
-    <p className="text-sm md:text-lg text-[#d1d5db] max-w-2xl mx-auto mt-4">
-      Don’t miss out on exciting opportunities to learn, create, and connect with fellow animators.
-    </p>
-  </div>
-
-
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {loading ? (
-        [...Array(sliceCount)].map((_, index) => (
-          <div
-            key={index}
-            className="rounded-xl bg-[#0e1b1b] border border-green-800 animate-pulse p-6 shadow-neon"
-          >
-            <div className="h-48 bg-gray-800 rounded mb-4"></div>
-            <div className="space-y-3">
-              <div className="h-4 bg-gray-700 rounded w-1/2"></div>
-              <div className="h-4 bg-gray-700 rounded w-3/4"></div>
-              <div className="h-4 bg-gray-700 rounded w-full"></div>
+      <section className="relative bg-gradient-to-r from-purple-600 via-purple-700 to-pink-600 text-white py-20">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+              Welcome to the
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400">
+                {settings.siteInfo.name || 'University Animation Club'}
+              </span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto leading-relaxed">
+              {settings.siteInfo.description || 'A creative community dedicated to the art and craft of animation, bringing together students passionate about storytelling through motion.'}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/events"
+                className="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Explore Events
+              </Link>
+              <Link
+                to="/register"
+                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:from-pink-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              >
+                Join Us Now
+              </Link>
             </div>
           </div>
-        ))
-      ) : upcomingEvents.length > 0 ? (
-        upcomingEvents.map((event) => (
-<Tilt 
-  key={event._id}
-  glareEnable={true}
-  glareMaxOpacity={0}
-  glareColor="#00ffcc"
-  glarePosition="all"
-  scale={1.05}
-  transitionSpeed={1000}
-  tiltMaxAngleX={12}
-  tiltMaxAngleY={12}
-  className="rounded-xl"
->
-  <div className="w-full h-full bg-white/10 border border-emerald-400/30 rounded-xl 
-                  p-6 md:p-4 backdrop-blur-lg 
-                  shadow-[0_0_20px_#00ffcc33] hover:shadow-[0_0_30px_#00ffcce6] 
-                  transition duration-500 ease-in-out transform flex flex-col">
-    
-    {/* Image */}
-    <img
-      src={event.image || '/api/placeholder/400/200'}
-      alt={event.title}
-      className="w-full h-48 md:h-36 object-cover rounded-lg mb-4 shadow-inner shadow-emerald-700/30"
-    />
+        </div>
+        
+        {/* Floating Animation Elements */}
+        <div className="absolute top-20 left-10 w-16 h-16 bg-yellow-400 rounded-full opacity-20 animate-bounce"></div>
+        <div className="absolute top-32 right-16 w-12 h-12 bg-pink-400 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute bottom-20 left-1/4 w-8 h-8 bg-blue-400 rounded-full opacity-25 animate-ping"></div>
+        <div className="absolute bottom-32 right-1/3 w-20 h-20 bg-green-400 rounded-full opacity-15 animate-bounce delay-75"></div>
+      </section>
 
-    {/* Event type and date */}
-    <div className="flex items-center justify-between mb-2 text-sm md:text-xs text-emerald-400">
-      <span className="uppercase font-semibold">{event.type}</span>
-      <span>{new Date(event.date).toLocaleDateString()}</span>
-    </div>
-
-    {/* Title */}
-    <h3 className="text-xl md:text-lg font-bold text-white mb-2">
-      {event.title}
-    </h3>
-
-    {/* Description */}
-    <p className="text-gray-300 text-sm md:text-xs mb-4 line-clamp-3">
-      {event.description}
-    </p>
-
-    {/* Location & Button */}
-    <div className="mt-auto flex items-center justify-between gap-3 text-sm w-full">
-      <span className="text-red-400 flex gap-1 text-sm md:text-xs leading-snug">
-        <span>📍</span>
-        <span className="overflow-hidden text-ellipsis [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]">
-          {event.venue && event.location
-            ? `${event.venue}, ${event.location}`
-            : event.venue || event.location || 'Location TBA'}
-        </span>
-      </span>
-
-      <Link
-        to={`/events/${event._id}`}
-        className="bg-emerald-400 hover:bg-emerald-300 text-black font-semibold 
-                   px-4 py-2 md:px-3 md:py-1.5 text-sm md:text-xs rounded-md 
-                   shadow hover:shadow-lg transition inline-flex items-center gap-1"
-      >
-        Learn <br className="hidden md:inline-block" /> More
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
-    </div>
-  </div>
-</Tilt>
-
-
-        ))
-      ) : (
-<div className="col-span-full flex justify-center">
-  <NoEventsCard />
-</div>
-
-      )}
-    </div>
-
-    <div className="text-center mt-12 z-10">
-      <Link
-        to="/events"
-        className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
-      >
-        View All Events
-      </Link>
-    </div>
-  </div>
-
-
+      {/* Featured Events Section */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Upcoming Events
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Don't miss out on these exciting opportunities to learn, create, and connect with fellow animators.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {loading ? (
+              // Loading skeleton
+              [...Array(3)].map((_, index) => (
+                <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse">
+                  <div className="w-full h-48 bg-gray-300"></div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="h-4 bg-gray-300 rounded w-16"></div>
+                      <div className="h-4 bg-gray-300 rounded w-20"></div>
+                    </div>
+                    <div className="h-6 bg-gray-300 rounded w-3/4 mb-3"></div>
+                    <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gray-300 rounded w-2/3 mb-4"></div>
+                    <div className="flex items-center justify-between">
+                      <div className="h-4 bg-gray-300 rounded w-20"></div>
+                      <div className="h-8 bg-gray-300 rounded w-24"></div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : upcomingEvents.length > 0 ? (
+              upcomingEvents.map((event) => (
+                <div key={event._id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                  <img
+                    src={event.image || '/api/placeholder/400/200'}
+                    alt={event.title}
+                    className="w-full h-48 object-cover"
+                  />
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-semibold">
+                        {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {new Date(event.date).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-800 mb-3">
+                      {event.title}
+                    </h3>
+                    <p className="text-gray-600 mb-4 line-clamp-3">
+                      {event.description}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-500">
+                        📍 {event.venue && event.location 
+                          ? `${event.venue}, ${event.location}`
+                          : event.venue || event.location || 'Location TBA'
+                        }
+                      </span>
+                      <Link
+                        to={`/events/${event._id}`}
+                        className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors text-sm font-medium"
+                      >
+                        Learn More
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              // No events message
+              <div className="col-span-full text-center py-12">
+                <div className="text-gray-400 text-6xl mb-4">📅</div>
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No Upcoming Events</h3>
+                <p className="text-gray-500">Check back soon for exciting new events!</p>
+              </div>
+            )}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link
+              to="/events"
+              className="inline-block bg-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-purple-600 transition-all duration-300 transform hover:scale-105"
+            >
+              View All Events
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* About Section */}
-  
-
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-24">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-      {/* Left Side – Text Card */}
-      <div className="p-10 rounded-2xl border border-emerald-400 bg-[#071b1a]/60 backdrop-blur-sm shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-transform transform hover:scale-105 hover:rotate-[0.3deg] duration-500">
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-8">
-        About Our Club
-      </h2>
-        <p className="text-sm sm:text-base mb-6 text-gray-400 leading-relaxed">
-          To foster creativity, innovation, and excellence in animation while building
-          a supportive community of aspiring animators.
-        </p>
-        <p className="text-sm sm:text-base mb-6 text-gray-400 leading-relaxed">
-          To provide learning opportunities, industry connections, and creative
-          platforms for students interested in animation and visual storytelling.
-        </p>
-        <div className="flex flex-wrap justify-center md:gap-x-8 gap-y-4 mt-6 mb-8">
-    <div className="text-center w-24">
-  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
-    <CountUp end={5} duration={5} />+
-  </div>
-  <div className="text-xs sm:text-sm text-gray-400">Years Active</div>
-</div>
-
-<div className="text-center w-24">
-  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
-    <CountUp end={200} duration={5} />+
-  </div>
-  <div className="text-xs sm:text-sm text-gray-400">Members</div>
-</div>
-
-<div className="text-center w-24">
-  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
-    <CountUp end={50} duration={5} />+
-  </div>
-  <div className="text-xs sm:text-sm text-gray-400">Events</div>
-</div>
-
-  </div>
-  <div className="flex justify-center">
-  <Link
-    to="/about"
-    className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md font-semibold shadow-lg hover:bg-emerald-300 hover:scale-105 transition-all duration-300"
-  >
-    Learn More
-  </Link>
-</div>
-
-        
-</div>
-        
-
-      {/* Right Side – Floating Images Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-6 transform-gpu transition-all duration-500">
-      {[
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80",
-        "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=80",
-        "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80",
-        "https://images.unsplash.com/photo-1559028006-448665bd7c7f?w=400&q=80",
-      ].map((src, i) => (
-        <div
-          key={i}
-          className={`rounded-xl overflow-hidden border border-[#34d399] shadow-[0_0_15px_#10b98155] hover:shadow-[0_0_30px_#10b981aa] transition duration-500 transform hover:scale-105 backdrop-blur-sm ${
-            i % 2 === 0 ? 'translate-y-2' : 'translate-y-6'
-          }`}
-        >
-          <img
-            src={src}
-            alt={`Club ${i}`}
-            className="object-cover w-full h-full hover:scale-110 transition-transform duration-700"
-          />
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+                About Our Club
+              </h2>
+              <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                {settings.siteInfo.vision || 'To foster creativity, innovation, and excellence in animation while building a supportive community of aspiring animators.'}
+              </p>
+              <p className="text-gray-600 mb-8 leading-relaxed">
+                {settings.siteInfo.mission || 'To provide learning opportunities, industry connections, and creative platforms for students interested in animation and visual storytelling.'}
+              </p>
+              <div className="flex items-center space-x-8 mb-8">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600">5+</div>
+                  <div className="text-sm text-gray-500">Years Active</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600">200+</div>
+                  <div className="text-sm text-gray-500">Members</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600">50+</div>
+                  <div className="text-sm text-gray-500">Events</div>
+                </div>
+              </div>
+              <Link
+                to="/about"
+                className="inline-block bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600 transition-colors font-medium"
+              >
+                Learn More About Us
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <img
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80"
+                alt="Club members working"
+                className="rounded-lg shadow-md"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=80"
+                alt="Animation workshop"
+                className="rounded-lg shadow-md mt-8"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80"
+                alt="Creative process"
+                className="rounded-lg shadow-md -mt-8"
+              />
+              <img
+                src="https://images.unsplash.com/photo-1559028006-448665bd7c7f?w=400&q=80"
+                alt="Team collaboration"
+                className="rounded-lg shadow-md"
+              />
+            </div>
+          </div>
         </div>
-      ))}
-    </div>
-    </div>
-  </div>
-
+      </section>
 
       {/* Recent Achievements */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              Recent Achievements
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Celebrating our members' outstanding accomplishments and milestones.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {recentAchievements.map((achievement) => (
+              <div key={achievement._id} className="bg-white rounded-lg shadow-lg p-6 text-center">
+                <img
+                  src={achievement?.image || 'https://placehold.co//400x200/e5e7eb/6b7280?text=Achievement'}
+                  alt={achievement.title}
+                  className="w-full h-32 object-cover rounded-lg mb-4"
+                  onError={(e) => {
+                    e.target.src = 'https://placehold.co//400x200/e5e7eb/6b7280?text=Achievement';
+                  }}
+                />
+                <h3 className="text-xl font-bold text-gray-800 mb-2">
+                  {achievement.title}
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  {achievement.description}
+                </p>
+                <p className="text-sm text-purple-600 font-medium">
+                  {achievement?.date ? new Date(achievement.date).toLocaleDateString() : 'Date not available'}
+                </p>
+              </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link
+              to="/achievements"
+              className="inline-block bg-purple-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-purple-600 transition-all duration-300 transform hover:scale-105"
+            >
+              View All Achievements
+            </Link>
+          </div>
+        </div>
+      </section>
 
-<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
-  <div className="text-center mb-12">
-    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-4">
-      Recent Achievements
-    </h2>
-    <p className="text-sm md:text-lg text-[#d1d5db] max-w-2xl mx-auto">
-      Celebrating our members' outstanding accomplishments and milestones.
-    </p>
-  </div>
-
-  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8">
-
-    {recentAchievements.map((achievement) => (
-      <Tilt
-        key={achievement._id}
-        glareEnable={true}
-        glareMaxOpacity={0}
-        glareColor="#10b981"
-        glarePosition="all"
-        scale={1.02}
-        transitionSpeed={1000}
-        tiltMaxAngleX={8}
-        tiltMaxAngleY={8}
-        className="rounded-xl allign-center justify-center flex items-center p-4"
-      >
-<div className="w-[250px] h-[300px] bg-white/5 backdrop-blur-md border border-[#10b981]/30 rounded-xl shadow-lg p-4 text-center hover:shadow-[0_0_25px_#10b98180] transition duration-300 flex flex-col justify-between">
-  <img
-    src={achievement?.image || 'https://placehold.co/400x200/e5e7eb/6b7280?text=Achievement'}
-    alt={achievement.title}
-    className="w-full h-32 object-cover rounded-lg mb-3"
-    onError={(e) => {
-      e.target.src = 'https://placehold.co/400x200/e5e7eb/6b7280?text=Achievement';
-    }}
-  />
-  <div className="flex-1 overflow-hidden">
-    <h3 className="text-lg font-bold text-[#f9fafb] mb-1 truncate">
-      {achievement.title}
-    </h3>
-    <p className="text-xs text-[#9ca3af] mb-2 line-clamp-3">
-      {achievement.description}
-    </p>
-  </div>
-  <p className="text-sm text-[#34d399] font-medium">
-    {achievement?.date
-      ? new Date(achievement.date).toLocaleDateString()
-      : 'Date not available'}
-  </p>
-</div>
-
-      </Tilt>
-    ))}
-  </div>
-
-
-
- {/* View All Achievements Button */}
-<div className="text-center mt-12 px-4">
-  <Link
-    to="/achievements"
-    className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full shadow-lg hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform text-sm sm:text-base"
-  >
-    View All Achievements
-  </Link>
-</div>
-</div>
-
-{/* Call to Action Section */}
-<div className="relative z-10 mt-20 py-10 px-4 bg-gradient-to-br from-emerald-800 to-teal-700 text-gray-200 shadow-[0_0_40px_#10b98155]">
-  <div className="max-w-7xl mx-auto text-center">
-    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
-      Ready to Start Your Animation Journey?
-    </h2>
-    <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto">
-      Join our vibrant community of animators and bring your creative visions to life.
-    </p>
-    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-      <Link
-        to="/register"
-        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
-      >
-        Register Now
-      </Link>
-      <Link
-        to="/contact"
-        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
-      >
-        Contact Us
-      </Link>
-    </div>
-  </div>
-</div>
-
+      {/* Call to Action */}
+      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Start Your Animation Journey?
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Join our vibrant community of animators and bring your creative visions to life.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/register"
+              className="bg-white text-purple-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg"
+            >
+              Register Now
+            </Link>
+            <Link
+              to="/contact"
+              className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-purple-600 transition-all duration-300 transform hover:scale-105"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Scroll to Top Button */}

@@ -83,64 +83,76 @@ const AnnouncementPopup = () => {
   if (!hasInitialized || !isVisible || !currentAnnouncement) return null;
 
   return (
-<div 
-  className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-  onClick={handleBackdropClick}
->
-  <div
-    onClick={(e) => e.stopPropagation()}
-    className="relative w-full max-w-md bg-[#0a1a17] text-white rounded-xl p-6 border border-emerald-500/30 shadow-[0_0_30px_#10b98188] animate-fadeInSciFi"
-  >
-    {/* Decorative glowing corners */}
-    <div className="absolute -top-1 -left-1 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_8px_#10b981] animate-pulse"></div>
-    <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_8px_#10b981] animate-pulse"></div>
-    <div className="absolute -bottom-1 -left-1 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_8px_#10b981] animate-pulse"></div>
-    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full shadow-[0_0_8px_#10b981] animate-pulse"></div>
-
-    {/* Header */}
-    <div className="border-b border-emerald-700 pb-3 mb-4 flex items-center justify-between">
-      <div className="flex items-center space-x-3">
-        <span className="text-2xl text-emerald-400">{getPriorityIcon(currentAnnouncement.priority)}</span>
-        <h3 className="text-lg font-bold text-emerald-300 tracking-wider uppercase">Announcement</h3>
-      </div>
-      <button
-        onClick={handleClose}
-        className="text-emerald-400 hover:text-white text-xl font-bold transition"
+    <div 
+      className="fixed inset-0 bg-[rgba(0,0,0,0.5)] flex items-center justify-center z-50 p-4"
+      onClick={handleBackdropClick}
+    >
+      <div 
+        className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 ease-out"
+        onClick={(e) => e.stopPropagation()}
       >
-        ×
-      </button>
-    </div>
+        {/* Header */}
+        <div className={`bg-gradient-to-r ${getPriorityColor(currentAnnouncement.priority)} text-white p-4 rounded-t-lg`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">{getPriorityIcon(currentAnnouncement.priority)}</span>
+              <h3 className="text-lg font-bold">Announcement</h3>
+            </div>
+            <button
+              onClick={handleClose}
+              className="text-white hover:text-gray-200 text-xl font-bold"
+            >
+              ×
+            </button>
+          </div>
+        </div>
 
-    {/* Content */}
-    <div>
-      <h4 className="text-xl font-bold text-white mb-2">{currentAnnouncement.title}</h4>
-      <p className="text-gray-300 mb-3 leading-relaxed">{currentAnnouncement.message}</p>
-      <p className="text-sm text-gray-500 mb-4">Posted on {new Date(currentAnnouncement.date).toLocaleDateString()}</p>
-
-      {/* Actions */}
-      <div className="flex gap-3 mt-4">
-        <button
-          onClick={handleClose}
-          className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-2 px-4 rounded transition font-semibold"
-        >
-          Got it!
-        </button>
-        {['event', 'workshop'].includes(currentAnnouncement.type) && (
-          <button
-            onClick={() => {
-              handleClose();
-              window.location.href = '/events';
-            }}
-            className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-2 px-4 rounded transition font-semibold"
-          >
-            View {currentAnnouncement.type === 'event' ? 'Events' : 'Workshops'}
-          </button>
-        )}
+        {/* Content */}
+        <div className="p-6">
+          <h4 className="text-xl font-bold text-gray-800 mb-3">
+            {currentAnnouncement.title}
+          </h4>
+          <p className="text-gray-600 mb-4 leading-relaxed">
+            {currentAnnouncement.message}
+          </p>
+          <p className="text-sm text-gray-500 mb-4">
+            Posted on {new Date(currentAnnouncement.date).toLocaleDateString()}
+          </p>
+          
+          {/* Action Buttons */}
+          <div className="flex space-x-3">
+            <button
+              onClick={handleClose}
+              className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors"
+            >
+              Got it!
+            </button>
+            {currentAnnouncement.type === 'event' && (
+              <button
+                onClick={() => {
+                  handleClose();
+                  window.location.href = '/events';
+                }}
+                className="flex-1 bg-purple-500 text-white py-2 px-4 rounded-md hover:bg-purple-600 transition-colors"
+              >
+                View Events
+              </button>
+            )}
+            {currentAnnouncement.type === 'workshop' && (
+              <button
+                onClick={() => {
+                  handleClose();
+                  window.location.href = '/events';
+                }}
+                className="flex-1 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
+              >
+                View Workshops
+              </button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
   );
 };
 

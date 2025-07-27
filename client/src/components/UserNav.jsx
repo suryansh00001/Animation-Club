@@ -14,16 +14,20 @@ const UserNav = () => {
 
   if (!isAuthenticated) {
     return (
-         <div className="flex items-center space-x-4">
-         <Link
+      <div className="flex items-center space-x-4">
+        <Link
           to="/login"
-          className="text-emerald-300 hover:text-white transition-colors duration-300 font-medium tracking-wide glow-neon"
-         >
-         Login
-         </Link>
-
-         </div>
-
+          className="text-gray-600 hover:text-purple-600 transition-colors"
+        >
+          Login
+        </Link>
+        <Link
+          to="/login?mode=signup"
+          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors"
+        >
+          Sign Up
+        </Link>
+      </div>
     );
   }
 
@@ -31,7 +35,7 @@ const UserNav = () => {
     <div className="relative">
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="flex items-center space-x-3 text-white hover:text-[#06d6a0] transition-colors"
+        className="flex items-center space-x-3 text-gray-700 hover:text-purple-600 transition-colors"
       >
         <img
           src={user.avatar}
@@ -45,15 +49,15 @@ const UserNav = () => {
       </button>
 
       {isDropdownOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-50 border border-[#06d6a0]">
+        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
           <div className="py-1">
-            <div className="px-4 py-2 border-b border-[#06d6a0]">
-              <p className="text-sm font-medium text-[#06d6a0] border-[#06d6a0]">{user.name}</p>
+            <div className="px-4 py-2 border-b border-gray-100">
+              <p className="text-sm font-medium text-gray-900">{user.name}</p>
             </div>
             
             <Link
               to="/profile"
-              className="block px-4 py-2 text-sm text-[#06d6a0] hover:bg-[#06d6a0] hover:text-black"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsDropdownOpen(false)}
             >
               My Profile
@@ -61,20 +65,20 @@ const UserNav = () => {
             
             <Link
               to="/events"
-              className="block px-4 py-2 text-sm text-[#06d6a0] hover:bg-[#06d6a0] hover:text-black"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               onClick={() => setIsDropdownOpen(false)}
             >
               Browse Events
             </Link>
             
-         
+            <div className="border-t border-gray-100">
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-sm text-[#06d6a0] hover:bg-[#06d6a0] hover:text-black"
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
                 Logout
               </button>
-            
+            </div>
           </div>
         </div>
       )}
