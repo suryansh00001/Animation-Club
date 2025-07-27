@@ -469,11 +469,11 @@ const UserProfile = () => {
 </div>
 
 {/* Action Buttons */}
-<div className="flex space-x-3 pt-4">
+<div className="flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 pt-4">
   <button
     onClick={handleSaveAvatar}
     disabled={loading}
-    className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-2 px-4 rounded transition font-semibold"
+    className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-1.5 px-3 sm:py-2 sm:px-4 rounded transition font-semibold text-sm sm:text-base"
   >
     {loading ? 'Saving...' : 'Save Photo'}
   </button>
@@ -482,11 +482,12 @@ const UserProfile = () => {
       setIsEditingAvatar(false);
       setAvatarUrl(safeUser.avatar || '');
     }}
-    className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-2 px-4 rounded transition font-semibold"
+    className="flex-1 border border-emerald-500 text-emerald-400 hover:bg-emerald-600 hover:text-black py-1.5 px-3 sm:py-2 sm:px-4 rounded transition font-semibold text-sm sm:text-base"
   >
     Cancel
   </button>
 </div>
+
 </div>
 </div>
 </div>
@@ -681,11 +682,15 @@ const UserProfile = () => {
     <div className="text-center py-8">
       <p className="text-[#94a3b8] mb-4">You haven't registered for any events yet.</p>
       <Link
-        to="/events"
-        className="bg-[#06d6a0] text-[#0f172a] px-6 py-2 rounded-md hover:bg-[#2de2b2] transition-colors"
-      >
-        Browse Events
-      </Link>
+  to="/events"
+  className="bg-[#06d6a0] text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
+>
+  Browse Events
+</Link>
+
+
+
+
     </div>
   ) : (
     <div className="space-y-4">
@@ -779,17 +784,18 @@ const UserProfile = () => {
 
   {!userSubmissions || userSubmissions.length === 0 ? (
     <div className="text-center py-12">
-      <div className="text-[#94a3b8] text-6xl mb-4">🎬</div>
+      
       <h3 className="text-lg font-semibold text-[#94a3b8] mb-2">No submissions yet</h3>
       <p className="text-sm text-[#94a3b8] mb-6">
         Submit your work to ongoing events and showcase your creativity!
       </p>
-      <Link 
-        to="/events" 
-        className="inline-block bg-[#06d6a0] text-[#0f172a] px-6 py-3 rounded-md hover:bg-[#05c28d] transition-colors font-medium"
-      >
-        Browse Events
-      </Link>
+      <Link
+  to="/events"
+  className="bg-[#06d6a0] text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
+>
+  Browse Events
+</Link>
+
     </div>
   ) : (
     <div className="space-y-4">

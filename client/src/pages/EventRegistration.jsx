@@ -96,28 +96,31 @@ if (!isAuthenticated) {
 if (isAlreadyRegistered) {
   return (
     <div className="min-h-screen bg-[#0a1a1a] py-24 px-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-[#0a1a17] border border-emerald-700 rounded-xl shadow-[0_0_40px_#06d6a0aa] p-8 text-center">
-          <div className="text-emerald-400 text-6xl mb-4"> :) </div>
-          <h1 className="text-3xl font-bold text-emerald-300 mb-4 font-orbitron">Already Registered</h1>
-          <p className="text-slate-400 mb-6">You are already registered for this event!</p>
-          <div className="flex justify-center space-x-4">
-            <Link
-              to="/profile"
-              className="bg-emerald-500 text-[#0f172a] px-6 py-3 rounded-md hover:bg-emerald-400 transition-colors font-semibold"
-            >
-              View Profile
-            </Link>
-            <Link
-              to={`/events/${event._id}`}
-              className="bg-slate-700 text-white px-6 py-3 rounded-md hover:bg-slate-600 transition-colors font-semibold"
-            >
-              Back to Event
-            </Link>
-          </div>
-        </div>
+  <div className="max-w-2xl mx-auto">
+    <div className="bg-[#0a1a17] border border-emerald-700 rounded-xl shadow-[0_0_40px_#06d6a0aa] p-6 sm:p-8 text-center">
+      <div className="text-4xl sm:text-6xl text-emerald-400 mb-3 sm:mb-4"> :) </div>
+      <h1 className="text-2xl sm:text-3xl font-bold text-emerald-300 mb-3 font-orbitron">Already Registered</h1>
+      <p className="text-sm sm:text-base text-slate-400 mb-5 sm:mb-6">
+        You are already registered for this event!
+      </p>
+      <div className="flex justify-center space-x-3 sm:space-x-4">
+        <Link
+          to="/profile"
+          className="text-sm sm:text-base bg-emerald-500 text-[#0f172a] px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-emerald-400 transition-colors font-semibold"
+        >
+          View Profile
+        </Link>
+        <Link
+          to={`/events/${event._id}`}
+          className="text-sm sm:text-base bg-slate-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-slate-600 transition-colors font-semibold"
+        >
+          Back to Event
+        </Link>
       </div>
     </div>
+  </div>
+</div>
+
   );
 }
 
@@ -169,45 +172,46 @@ if (isAlreadyRegistered) {
 
  if (isRegistrationClosed) {
   return (
-    <div className="min-h-screen py-8" style={{ backgroundColor: '#0a1a1a' }}>
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-lg shadow-xl p-8 text-center" style={{ backgroundColor: '#111', border: '1px solid #06d6a0' }}>
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h1 className="text-3xl font-bold text-white mb-4">Registration Closed</h1>
-          <p className="text-gray-400 mb-6">
-            {isDeadlinePassed && "The registration deadline has passed."}
-            {!isDeadlinePassed && event.status !== 'upcoming' && "Registration is not available for this event."}
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Link
-              to={`/events/${event._id}`}
-              className="bg-gray-700 text-white px-6 py-3 rounded-md hover:bg-gray-600 transition-colors"
-            >
-              Back to Event
-            </Link>
-            <Link
-              to="/events"
-              className="bg-emerald-600 text-white px-6 py-3 rounded-md hover:bg-emerald-500 transition-colors"
-            >
-              View Other Events
-            </Link>
-          </div>
-        </div>
+    <div className="min-h-screen py-8 bg-[#0a1a1a]">
+  <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="rounded-lg shadow-xl p-6 sm:p-8 text-center border border-emerald-500" style={{ backgroundColor: '#111' }}>
+      <div className="text-4xl sm:text-6xl text-red-500 mb-3 sm:mb-4">⚠️</div>
+      <h1 className="text-2xl sm:text-3xl font-bold text-white mb-3 sm:mb-4">Registration Closed</h1>
+      <p className="text-sm sm:text-base text-gray-400 mb-5 sm:mb-6">
+        {isDeadlinePassed && "The registration deadline has passed."}
+        {!isDeadlinePassed && event.status !== 'upcoming' && "Registration is not available for this event."}
+      </p>
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4">
+        <Link
+          to={`/events/${event._id}`}
+          className="text-sm sm:text-base bg-gray-700 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-gray-600 transition-colors w-full sm:w-auto text-center"
+        >
+          Back to Event
+        </Link>
+        <Link
+          to="/events"
+          className="text-sm sm:text-base bg-emerald-600 text-white px-4 py-2 sm:px-6 sm:py-3 rounded-md hover:bg-emerald-500 transition-colors w-full sm:w-auto text-center"
+        >
+          View Other Events
+        </Link>
       </div>
     </div>
+  </div>
+</div>
+
   );
 }
 
 
   return (
-    <div className="min-h-screen bg-[#0a1a1a] py-24">
-  <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0a1a1a] py-24 px-4 sm:px-6 lg:px-8">
+  <div className="max-w-3xl mx-auto">
     
     {/* Header */}
     <div className="mb-8">
       <Link
         to={`/events/${event._id}`}
-        className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-medium mb-4 transition-colors"
+        className="inline-flex items-center text-emerald-400 hover:text-emerald-300 font-medium mb-4 transition-colors text-sm sm:text-base"
       >
         <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -215,11 +219,11 @@ if (isAlreadyRegistered) {
         Back to Event Details
       </Link>
 
-      <div className="bg-[#0f2a2a] rounded-lg shadow-md shadow-emerald-500/20 p-6 mb-6">
-        <h1 className="text-3xl font-bold text-emerald-300 mb-2 font-orbitron">Register for Event</h1>
-        <h2 className="text-xl text-emerald-400 font-semibold mb-4">{event.title}</h2>
+      <div className="bg-[#0f2a2a] rounded-lg shadow-md shadow-emerald-500/20 p-5 sm:p-6 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-emerald-300 mb-2 font-orbitron">Register for Event</h1>
+        <h2 className="text-lg sm:text-xl text-emerald-400 font-semibold mb-4">{event.title}</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div className="bg-[#103232] p-3 rounded border border-emerald-700">
             <p className="text-emerald-500 font-medium">Event Date</p>
             <p className="text-emerald-300">{new Date(event.date).toLocaleDateString()}</p>
@@ -235,13 +239,13 @@ if (isAlreadyRegistered) {
     </div>
 
     {/* Registration Form */}
-    <div className="bg-[#0f2a2a] rounded-lg shadow-lg shadow-emerald-500/20 p-8">
+    <div className="bg-[#0f2a2a] rounded-lg shadow-lg shadow-emerald-500/20 p-5 sm:p-8">
       <form onSubmit={handleSubmit} className="space-y-6">
-        
-        {/* Logged in user info */}
-        <div className="bg-[#112f2f] border border-emerald-700 rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-semibold text-emerald-400 mb-4 font-orbitron">Registering as:</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+
+        {/* Logged-in User Info */}
+        <div className="bg-[#112f2f] border border-emerald-700 rounded-lg p-5 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-emerald-400 mb-4 font-orbitron">Registering as:</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             {[
               ["Name", user.name],
               ["Email", user.email],
@@ -252,16 +256,17 @@ if (isAlreadyRegistered) {
             ].map(([label, value]) => (
               <div key={label}>
                 <p className="text-emerald-500 font-medium">{label}</p>
-                <p className="text-emerald-300">{value}</p>
+                <p className="text-emerald-300 break-words">{value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Event-Specific Information */}
+        {/* Event-Specific Fields */}
         <div>
-          <h3 className="text-lg font-semibold text-emerald-400 mb-4 font-orbitron">Event Information</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-emerald-400 mb-4 font-orbitron">Event Information</h3>
           <div className="space-y-4">
+            {/* Experience */}
             <div>
               <label htmlFor="experience" className="block text-sm font-medium text-emerald-500 mb-2">
                 Animation Experience Level
@@ -271,16 +276,17 @@ if (isAlreadyRegistered) {
                 name="experience"
                 value={formData.experience}
                 onChange={handleChange}
-                className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
               >
                 <option value="">Select experience level</option>
-                <option value="Beginner">Beginner (0-1 years)</option>
-                <option value="Intermediate">Intermediate (1-3 years)</option>
+                <option value="Beginner">Beginner (0–1 years)</option>
+                <option value="Intermediate">Intermediate (1–3 years)</option>
                 <option value="Advanced">Advanced (3+ years)</option>
                 <option value="Professional">Professional</option>
               </select>
             </div>
 
+            {/* Team Members */}
             {event.type === 'competition' && (
               <div>
                 <label htmlFor="teamMembers" className="block text-sm font-medium text-emerald-500 mb-2">
@@ -292,12 +298,13 @@ if (isAlreadyRegistered) {
                   value={formData.teamMembers}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                   placeholder="List team member names and their roles (leave blank if participating individually)"
                 />
               </div>
             )}
 
+            {/* Expectations */}
             <div>
               <label htmlFor="expectations" className="block text-sm font-medium text-emerald-500 mb-2">
                 What do you hope to gain from this event?
@@ -308,7 +315,7 @@ if (isAlreadyRegistered) {
                 value={formData.expectations}
                 onChange={handleChange}
                 rows={4}
-                className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
                 placeholder="Share your goals and expectations..."
               />
             </div>
@@ -316,8 +323,8 @@ if (isAlreadyRegistered) {
         </div>
 
         {/* Terms */}
-        <div className="border-t border-emerald-700 pt-6">
-          <div className="flex items-start">
+        <div className="border-t border-emerald-700 pt-5">
+          <div className="flex items-start text-sm">
             <input
               type="checkbox"
               id="agreeTerms"
@@ -327,25 +334,24 @@ if (isAlreadyRegistered) {
               required
               className="mt-1 mr-3 h-4 w-4 text-emerald-500 focus:ring-emerald-400 border-emerald-700 bg-[#0a1a1a]"
             />
-            <label htmlFor="agreeTerms" className="text-sm text-emerald-300">
-              I agree to the terms and conditions of the event. I understand that my participation is subject to the club's policies and guidelines.
-              I consent to the use of my information for event-related communications. *
+            <label htmlFor="agreeTerms" className="text-emerald-300 text-[0.55rem] leading-snug">
+              I agree to the terms and conditions of the event. I understand that my participation is subject to the club's policies and guidelines. I consent to the use of my information for event-related communications. *
             </label>
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex justify-end space-x-4">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-2 sm:space-y-0">
           <Link
             to={`/events/${event._id}`}
-            className="px-6 py-3 border border-emerald-500 text-emerald-400 hover:bg-emerald-900 transition-colors rounded-md"
+            className="w-full sm:w-auto text-center px-5 py-2.5 border border-emerald-500 text-emerald-400 hover:bg-emerald-900 transition-colors rounded-md text-sm font-medium"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={loading || !formData.agreeTerms}
-            className="px-6 py-3 bg-emerald-500 text-black font-semibold rounded-md hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-colors disabled:bg-emerald-300 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto text-center px-5 py-2.5 bg-emerald-500 text-black font-semibold rounded-md hover:bg-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-colors disabled:bg-emerald-300 disabled:cursor-not-allowed text-sm"
           >
             {loading ? 'Registering...' : 'Register for Event'}
           </button>
@@ -354,6 +360,7 @@ if (isAlreadyRegistered) {
     </div>
   </div>
 </div>
+
 
   );
 };

@@ -5,6 +5,7 @@ import ScrollToTop from '../components/ScrollToTop';
 import MemberProfileModal from '../components/MemberProfileModal';
 import Tilt from 'react-parallax-tilt';
 import MemberCard from '../components/MemberCard';
+import CountUp from 'react-countup';
 
 
 
@@ -161,17 +162,25 @@ const About = () => {
 
   <div className="flex flex-wrap justify-center md:gap-x-8 gap-y-4 mt-6 mb-8">
     <div className="text-center w-24">
-      <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">5+</div>
-      <div className="text-xs sm:text-sm text-gray-400">Years Active</div>
-    </div>
-    <div className="text-center w-24">
-      <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">200+</div>
-      <div className="text-xs sm:text-sm text-gray-400">Members</div>
-    </div>
-    <div className="text-center w-24">
-      <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">50+</div>
-      <div className="text-xs sm:text-sm text-gray-400">Events</div>
-    </div>
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={5} duration={5} />+
+  </div>
+  <div className="text-xs sm:text-sm text-gray-400">Years Active</div>
+</div>
+
+<div className="text-center w-24">
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={200} duration={5} />+
+  </div>
+  <div className="text-xs sm:text-sm text-gray-400">Members</div>
+</div>
+
+<div className="text-center w-24">
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={50} duration={5} />+
+  </div>
+  <div className="text-xs sm:text-sm text-gray-400">Events</div>
+</div>
   </div>
 
   <div className="flex items-center space-x-2 text-sm text-gray-400 flex-wrap">

@@ -62,10 +62,10 @@ const ContactUs = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl font-bold text-emerald-400 mb-4">
+                    <h1 className="text-2xl md:text-4xl font-bold text-emerald-400 mb-4">
                         Contact Us
                     </h1>
-                    <p className="text-xl text-[#d1d5db] max-w-2xl mx-auto">
+                    <p className="text-sm md:text-base lg:text-xl text-[#d1d5db] max-w-2xl mx-auto">
                         Have questions about our club? Want to join us? We'd love to hear from you!
                     </p>
                 </div>
@@ -489,7 +489,7 @@ if (currentMembers.length === 0) {
 return (
     <div className="bg-[#0d1515] rounded-lg shadow-[0_0_30px_#10b98155] p-8">
         <h2 className="text-2xl font-bold text-emerald-400 mb-6 text-center">Current Leadership</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 justify-center md:text-[0.5rem] lg:text-[0.75rem] gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 justify-center text-xs md:text-[0.5rem] lg:text-[0.75rem] gap-6">
             {currentMembers.map((member) => (
                 <div key={member._id} className="bg-emerald-900/10 md:w-50 lg:w-70 border border-emerald-600 rounded-lg p-6 text-center hover:bg-emerald-900/20 transition-colors">
                     <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center overflow-hidden shadow-md">
@@ -508,10 +508,10 @@ return (
                         {getRoleTitle(member.currentPosition?.role)}
                     </p>
                     {member.email && (
-                        <p className=" text-gray-400 mb-2">{member.email}</p>
+                        <p className=" text-gray-400 text-[0.6rem] md:text-[0.5rem] lg:text-[0.75rem] font-medium mb-2">{member.email}</p>
                     )}
                     {member.profile?.mobile && (
-                        <p className=" text-gray-400">{member.profile.mobile}</p>
+                        <p className=" text-gray-400 text-[0.6rem] md:text-[0.5rem] lg:text-[0.75rem] font-medium">{member.profile.mobile}</p>
                     )}
                 </div>
             ))}

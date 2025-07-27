@@ -192,35 +192,42 @@ const Gallery = () => {
 )}
 
 
-        {/* Statistics */}
-        <div className="mt-16 bg-white/5 backdrop-blur-md border border-[#10b981]/20 rounded-2xl shadow-[0_0_20px_#10b98140] p-8">
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center text-[#f9fafb]">
-    <div>
-      <div className="text-3xl font-extrabold text-[#10b981] mb-2 tracking-wider">
+<div className="mt-16 bg-white/5 backdrop-blur-md border border-[#10b981]/20 rounded-2xl shadow-[0_0_20px_#10b98140] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div className="flex flex-wrap justify-center gap-x-6 gap-y-6 text-center text-[#f9fafb]">
+
+    {/* Stat 1 */}
+    <div className="w-1/2 sm:w-auto space-y-1">
+      <div className="text-2xl sm:text-3xl font-extrabold text-[#10b981] tracking-wider">
         {galleryImages.reduce((total, gallery) => total + (gallery.images ? gallery.images.length : 0), 0)}
       </div>
-      <div className="text-sm text-[#9ca3af] uppercase tracking-wide">
+      <div className="text-xs sm:text-sm text-[#9ca3af] uppercase tracking-wide">
         Total Images
       </div>
     </div>
-    <div>
-      <div className="text-3xl font-extrabold text-[#10b981] mb-2 tracking-wider">
+
+    {/* Stat 2 */}
+    <div className="w-1/2 sm:w-auto space-y-1">
+      <div className="text-2xl sm:text-3xl font-extrabold text-[#10b981] tracking-wider">
         {galleryImages.length}
       </div>
-      <div className="text-sm text-[#9ca3af] uppercase tracking-wide">
+      <div className="text-xs sm:text-sm text-[#9ca3af] uppercase tracking-wide">
         Gallery Albums
       </div>
     </div>
-    <div>
-      <div className="text-3xl font-extrabold text-[#10b981] mb-2 tracking-wider">
+
+    {/* Stat 3 (Centered on mobile) */}
+    <div className="w-full sm:w-auto mt-4 sm:mt-0 space-y-1">
+      <div className="text-2xl sm:text-3xl font-extrabold text-[#10b981] tracking-wider mx-auto">
         {galleryImages.filter(g => g.status === 'approved').length}
       </div>
-      <div className="text-sm text-[#9ca3af] uppercase tracking-wide">
+      <div className="text-xs sm:text-sm text-[#9ca3af] uppercase tracking-wide mx-auto">
         Approved Albums
       </div>
     </div>
+
   </div>
 </div>
+
       </div>
 
  {/* Modal */}

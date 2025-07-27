@@ -79,23 +79,26 @@ if (loading) {
 
         </div>
 
-{/* Category Filter Dropdown */}
-<div className="mb-12 px-4 sm:px-0">
-  <label className="block text-sm font-medium text-[#94a3b8] mb-2 text-center sm:text-left">
-    Filter by Category
-  </label>
-  <select
-    value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}
-    className="w-full sm:w-64 bg-[#0a1a1a] border border-emerald-600/40 text-emerald-100 rounded-md px-4 py-2 shadow-[0_0_12px_#10b98155] focus:outline-none focus:ring-2 focus:ring-[#10b981] transition"
-  >
+{/* Category Filter Box */}
+<div className="mb-12 px-4 sm:px-6">
+  <div className="bg-[#0a1a1a] rounded-lg shadow-[0_0_20px_#10b98155] border border-emerald-600/30 p-6">
+    <label className="block text-sm font-medium text-[#94a3b8] mb-2 text-center sm:text-left">
+      Filter by Category
+    </label>
+    <select
+  value={selectedCategory}
+  onChange={(e) => setSelectedCategory(e.target.value)}
+  className="w-full appearance-none bg-[#0a1a1a] text-emerald-100 border border-emerald-600/40 rounded-md px-4 py-2 shadow-[0_0_12px_#10b98155] focus:outline-none focus:ring-2 focus:ring-[#10b981] transition"
+>
   
-    {categories.map((category) => (
-      <option key={category.id} value={category.id}>
-        {category.name} 
-      </option>
-    ))}
-  </select>
+  {categories.map((category) => (
+    <option key={category.id} value={category.id} className="bg-[#0a1a1a] text-emerald-100">
+      {category.name}
+    </option>
+  ))}
+</select>
+
+  </div>
 </div>
 
 

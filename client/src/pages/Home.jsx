@@ -6,6 +6,8 @@ import TiltText from '../components/TiltText';
 import NoEventsCard from '../components/NoEventsCard'; // Adjust the path if needed
 import Tilt from 'react-parallax-tilt';
 import LightRays from '../components/Lightrays';
+import CountUp from 'react-countup';
+
 
 function useResponsiveSlice() {
   const getCount = () => {
@@ -113,20 +115,21 @@ const Home = () => {
     'Too Cool to stay still'} 
        </p>
 
-    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
-      <Link
-        to="/events"
-        className="bg-emerald-400 text-black px-8 py-3 rounded-full font-semibold hover:scale-105 transition transform shadow-lg"
-      >
-        EXPLORE EVENTS →
-      </Link>
-      <Link
-        to="/register"
-        className="border-2 border-emerald-400 text-emerald-300 px-8 py-3 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition transform shadow-lg"
-      >
-        JOIN US NOW
-      </Link>
-    </div>
+    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
+  <Link
+    to="/events"
+    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+  >
+    EXPLORE EVENTS →
+  </Link>
+  <Link
+    to="/register"
+    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
+  >
+    JOIN US NOW
+  </Link>
+</div>
+
   </div>
 
         
@@ -134,20 +137,15 @@ const Home = () => {
 
 
 
-  {/* Floating Background Effects */}
-  <div className="absolute inset-0 z-0 pointer-events-none">
-    <div className="absolute top-20 left-10 w-40 h-40 bg-emerald-400 rounded-full opacity-10 blur-[100px] animate-float"></div>
-    <div className="absolute bottom-10 right-20 w-32 h-32 bg-purple-500 rounded-full opacity-10 blur-2xl animate-pulse"></div>
-    <div className="absolute top-1/3 right-8 w-24 h-24 border border-green-300 rounded-full animate-ping opacity-15"></div>
-  </div>
+  
 
 {/* Upcoming Events Section */}
 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
   <div className="text-center mb-12">
-    <h2 className="text-4xl md:text-5xl font-extrabold text-emerald-400 drop-shadow-lg tracking-wide">
+    <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-emerald-400 drop-shadow-lg tracking-wide">
       Upcoming Events
     </h2>
-    <p className="text-lg text-[#d1d5db] max-w-2xl mx-auto mt-4">
+    <p className="text-sm md:text-lg text-[#d1d5db] max-w-2xl mx-auto mt-4">
       Don’t miss out on exciting opportunities to learn, create, and connect with fellow animators.
     </p>
   </div>
@@ -266,47 +264,55 @@ const Home = () => {
 
 
       {/* About Section */}
-  {/* Floating Background Effects */}
-  <div className="absolute top-0 left-0 w-64 h-64 bg-emerald-400 opacity-10 blur-[120px] rounded-full pointer-events-none animate-float" />
-  <div className="absolute bottom-0 right-0 w-48 h-48 bg-teal-500 opacity-10 blur-[100px] rounded-full pointer-events-none animate-pulse" />
+  
 
 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-24">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       {/* Left Side – Text Card */}
       <div className="p-10 rounded-2xl border border-emerald-400 bg-[#071b1a]/60 backdrop-blur-sm shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-transform transform hover:scale-105 hover:rotate-[0.3deg] duration-500">
-      <h2 className="text-3xl md:text-4xl font-bold text-emerald-400 mb-8">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-8">
         About Our Club
       </h2>
-        <p className="text-lg text-gray-400 mb-6 leading-relaxed">
+        <p className="text-sm sm:text-base mb-6 text-gray-400 leading-relaxed">
           To foster creativity, innovation, and excellence in animation while building
           a supportive community of aspiring animators.
         </p>
-        <p className="text-gray-400 mb-8 leading-relaxed">
+        <p className="text-sm sm:text-base mb-6 text-gray-400 leading-relaxed">
           To provide learning opportunities, industry connections, and creative
           platforms for students interested in animation and visual storytelling.
         </p>
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-4 mt-6 mb-8">
+        <div className="flex flex-wrap justify-center md:gap-x-8 gap-y-4 mt-6 mb-8">
     <div className="text-center w-24">
-      <div className="text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">5+</div>
-      <div className="text-sm text-gray-400">Years Active</div>
-    </div>
-    <div className="text-center w-24">
-      <div className="text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">200+</div>
-      <div className="text-sm text-gray-400">Members</div>
-    </div>
-    <div className="text-center w-24">
-      <div className="text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">50+</div>
-      <div className="text-sm text-gray-400">Events</div>
-    </div>
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={5} duration={5} />+
   </div>
-  <div>
-    <Link
-      to="/about"
-      className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md font-semibold shadow-lg hover:bg-emerald-300 hover:scale-105 transition-all duration-300"
-    >
-      Learn More About Us
-    </Link>
+  <div className="text-xs sm:text-sm text-gray-400">Years Active</div>
+</div>
+
+<div className="text-center w-24">
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={200} duration={5} />+
   </div>
+  <div className="text-xs sm:text-sm text-gray-400">Members</div>
+</div>
+
+<div className="text-center w-24">
+  <div className="text-xl sm:text-3xl font-bold text-emerald-300 drop-shadow-[0_0_5px_#10b981]">
+    <CountUp end={50} duration={5} />+
+  </div>
+  <div className="text-xs sm:text-sm text-gray-400">Events</div>
+</div>
+
+  </div>
+  <div className="flex justify-center">
+  <Link
+    to="/about"
+    className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md font-semibold shadow-lg hover:bg-emerald-300 hover:scale-105 transition-all duration-300"
+  >
+    Learn More
+  </Link>
+</div>
+
         
 </div>
         
@@ -341,10 +347,10 @@ const Home = () => {
 
 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-24">
   <div className="text-center mb-12">
-    <h2 className="text-3xl md:text-4xl font-bold text-emerald-400 mb-4">
+    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-emerald-400 mb-4">
       Recent Achievements
     </h2>
-    <p className="text-lg text-[#d1d5db] max-w-2xl mx-auto">
+    <p className="text-sm md:text-lg text-[#d1d5db] max-w-2xl mx-auto">
       Celebrating our members' outstanding accomplishments and milestones.
     </p>
   </div>
@@ -394,40 +400,36 @@ const Home = () => {
 
 
 
-  <div className="text-center mt-12">
-    <Link
-      to="/achievements"
-      className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
-    >
-      View All Achievements
-    </Link>
-  </div>
+ {/* View All Achievements Button */}
+<div className="text-center mt-12 px-4">
+  <Link
+    to="/achievements"
+    className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-6 py-2 sm:px-8 sm:py-3 rounded-full shadow-lg hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform text-sm sm:text-base"
+  >
+    View All Achievements
+  </Link>
+</div>
 </div>
 
-
-
-      {/* Call to Action */}
-
-<div className="relative z-5 mt-24 py-5 bg-gradient-to-br from-emerald-800 to-teal-700 text-gray-200 shadow-[0_0_40px_#10b98155]    lg:mx-0"> 
-  {/* className="bg-gradient-to-br from-emerald-800 to-teal-700 rounded-lg p-8 text-white h-full shadow-[0_0_30px_#10b98177]"> */}
-
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 className="text-3xl md:text-4xl font-bold mb-6">
+{/* Call to Action Section */}
+<div className="relative z-10 mt-20 py-10 px-4 bg-gradient-to-br from-emerald-800 to-teal-700 text-gray-200 shadow-[0_0_40px_#10b98155]">
+  <div className="max-w-7xl mx-auto text-center">
+    <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
       Ready to Start Your Animation Journey?
     </h2>
-    <p className="text-xl mb-8 max-w-2xl mx-auto ">
+    <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto">
       Join our vibrant community of animators and bring your creative visions to life.
     </p>
-    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
       <Link
         to="/register"
-        className="bg-[#10b981] text-black px-8 py-3 rounded-full font-semibold hover:bg-[#34d399] transition duration-300 transform hover:scale-105 shadow-lg"
+        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
       >
         Register Now
       </Link>
       <Link
         to="/contact"
-        className="bg-[#10b981] text-black px-8 py-3 rounded-full font-semibold hover:bg-[#34d399] transition duration-300 transform hover:scale-105"
+        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
       >
         Contact Us
       </Link>

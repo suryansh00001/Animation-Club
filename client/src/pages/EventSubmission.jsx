@@ -237,10 +237,10 @@ if (event.registrationRequired && event.submissionRequired && !userIsRegistered)
 
     {/* Header */}
     <div className="text-center mb-8">
-      <h1 className="text-4xl font-bold text-[#06d6a0] drop-shadow-[0_0_10px_#06d6a0] mb-4">
+      <h1 className="text-3xl sm:text-4xl font-bold text-[#06d6a0] drop-shadow-[0_0_10px_#06d6a0] mb-4">
         Submit to: {event.title}
       </h1>
-      <p className="text-lg text-[#94a3b8]">Share your work through links only. No file uploads required.</p>
+      <p className="text-sm sm:text-lg text-[#94a3b8]">Share your work through links only. No file uploads required.</p>
     </div>
 
     {/* Event Info */}
