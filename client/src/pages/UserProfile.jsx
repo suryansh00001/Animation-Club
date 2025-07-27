@@ -681,6 +681,16 @@ const UserProfile = () => {
 {/* Registered Events */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">
   <h2 className="text-xl font-bold text-[#06d6a0] mb-6">Event Registrations</h2>
+        {userRegistrations && userRegistrations.length > 2 && (
+                <div className="mb-4 text-right">
+                  <button
+                    className="text-sm text-emerald-500 hover:text-emerald-400 font-medium underline"
+                    onClick={() => setShowAllRegistrations(v => !v)}
+                  >
+                    {showAllRegistrations ? 'Hide All Registrations' : 'View All Registrations'}
+                  </button>
+                </div>
+              )}
 
   {!userRegistrations || userRegistrations.length === 0 ? (
     <div className="text-center py-8">
@@ -698,7 +708,10 @@ const UserProfile = () => {
     </div>
   ) : (
     <div className="space-y-4">
-      {userRegistrations
+      {(showAllRegistrations
+                    ? userRegistrations
+                    : userRegistrations.slice(0, 2)
+                  )
         ?.filter((registration) => registration && registration._id)
         .map((registration) => {
           const event = getEventDetails(registration?.eventId);
@@ -773,91 +786,7 @@ const UserProfile = () => {
 </div>
 
 
-            {/* Registered Events */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Event Registrations</h2>
-              {userRegistrations && userRegistrations.length > 2 && (
-                <div className="mb-4 text-right">
-                  <button
-                    className="text-sm text-purple-600 hover:text-purple-800 font-medium underline"
-                    onClick={() => setShowAllRegistrations(v => !v)}
-                  >
-                    {showAllRegistrations ? 'Hide All Registrations' : 'View All Registrations'}
-                  </button>
-                </div>
-              )}
-              {!userRegistrations || userRegistrations.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">You haven't registered for any events yet.</p>
-                  <Link
-                    to="/events"
-                    className="bg-purple-500 text-white px-6 py-2 rounded-md hover:bg-purple-600 transition-colors"
-                  >
-                    Browse Events
-                  </Link>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {(showAllRegistrations
-                    ? userRegistrations
-                    : userRegistrations.slice(0, 2)
-                  )
-                    .filter(registration => registration && registration._id)
-                    .map((registration) => {
-                      // Safely get event details with null check
-                      const event = getEventDetails(registration?.eventId);
-                      const status = getRegistrationStatus(registration);
-                      return (
-                        <div key={String(registration._id || Math.random())} className="border border-gray-200 rounded-lg p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-gray-900">
-                                {event?.title || 'Unknown Event'}
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                Registered on {registration?.timestamps?.registeredAt || registration?.createdAt ? (() => {
-                                  try {
-                                    const date = registration.timestamps?.registeredAt || registration.createdAt;
-                                    return new Date(date).toLocaleDateString();
-                                  } catch (e) {
-                                    return 'Registration date unavailable';
-                                  }
-                                })() : 'Registration date unavailable'}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                Event Date: {event?.date ? (() => {
-                                  try {
-                                    return new Date(event.date).toLocaleDateString();
-                                  } catch (e) {
-                                    return 'TBD';
-                                  }
-                                })() : 'TBD'}
-                              </p>
-                            </div>
-                            <div className="flex items-center space-x-3">
-                              <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                                status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                                'bg-blue-100 text-blue-800'
-                              }`}>
-                                {status}
-                              </span>
-                              {event && (
-                                <Link
-                                  to={`/events/${event._id}`}
-                                  className="text-purple-600 hover:text-purple-800 text-sm font-medium"
-                                >
-                                  View Event
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              )}
-            </div>
+            
 
 {/* Submissions */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">

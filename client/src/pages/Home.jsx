@@ -5,7 +5,6 @@ import ScrollToTop from '../components/ScrollToTop';
 import TiltText from '../components/TiltText';
 import NoEventsCard from '../components/NoEventsCard'; // Adjust the path if needed
 import Tilt from 'react-parallax-tilt';
-import LightRays from '../components/Lightrays';
 import CountUp from 'react-countup';
 
 
@@ -48,22 +47,7 @@ const Home = () => {
         const achievementsData = await fetchAchievements();
         
         if (isMounted) {
-          setUpcomingEvents(
-  upcoming && upcoming.length > 0
-    ? upcoming.slice(0, sliceCount)
-    : [
-        {
-          _id: 'demo-event',
-          image: 'https://placehold.co/400x200/0f766e/ffffff?text=Demo+Event',
-          title: 'Demo Animation Workshop',
-          description: 'Join us for an exciting animation workshop filled with creativity and fun!',
-          date: new Date(),
-          type: 'Workshop',
-          venue: 'Main Auditorium',
-          location: 'IIT BHU',
-        },
-      ]
-);
+          setUpcomingEvents( upcoming && upcoming.length > 0 ? upcoming.slice(0, sliceCount) : []);
 ; // Show only first 3
           setRecentAchievements(achievementsData ? achievementsData.slice(0, 3) : []); // Show only first 3
         }
