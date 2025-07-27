@@ -9,7 +9,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementPopup from './components/AnnouncementPopup'
 import SEOUpdater from './components/SEOUpdater'
-// import AdminOpportunities from './admin/AdminOpportunities'
+import AdminOpportunities from './admin/AdminOpportunities'
 import GlowingCursor from './components/GlowingCursor'
 import AdminOpportunities from './admin/AdminOpportunities'
 
