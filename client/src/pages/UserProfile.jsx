@@ -359,15 +359,17 @@ const UserProfile = () => {
   <div className="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
     
     {/* Avatar */}
-    <div className="relative">
-      <img
-        src={safeUser.avatar || 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff'}
-        alt={safeUser.name || 'User'}
-        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover shadow-[0_0_20px_#10b981] mx-auto sm:mx-0"
-        onError={(e) => {
-          e.target.src = 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff';
-        }}
-      />
+<div className="relative flex-shrink-0">
+  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-[0_0_20px_#10b981] mx-auto sm:mx-0">
+    <img
+      src={safeUser.avatar || 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff'}
+      alt={safeUser.name || 'User'}
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        e.target.src = 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff';
+      }}
+    />
+  </div>
 
       {/* Avatar Actions */}
       <div className="absolute -bottom-2 -right-2 flex space-x-1">
@@ -412,28 +414,28 @@ const UserProfile = () => {
     </div>
   
 
-        {/* Action Buttons */}
-        <div className="flex  space-x-2">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="bg-emerald-500 text-black px-4 py-2 rounded-md font-semibold hover:bg-emerald-400 transition-colors shadow-[0_0_10px_#10b981]"
-          >
-            {isEditing ? 'Cancel' : 'Edit Profile'}
-          </button>
-          {!loadingData && (
-            <button
-              onClick={refreshProfileData}
-              className="bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors shadow-sm"
-              title="Refresh profile data"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+  <div className="w-full flex justify-center sm:justify-end items-center gap-2 mt-4 sm:mt-0">
+  <button
+    onClick={() => setIsEditing(!isEditing)}
+    className="bg-emerald-500 text-black px-4 py-2 rounded-md font-semibold text-sm hover:bg-emerald-400 transition-all shadow-[0_0_10px_#10b981]"
+  >
+    {isEditing ? 'Cancel' : 'Edit Profile'}
+  </button>
+
+  {!loadingData && (
+    <button
+      onClick={refreshProfileData}
+      className="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-md shadow-sm transition"
+      title="Refresh profile data"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+  )}
+</div>
+</div>
+</div>
 
     {/* Avatar Modal */}
     {isEditingAvatar && (
@@ -816,7 +818,7 @@ const UserProfile = () => {
         const awardInfo = getAwardInfo(submission);
 
         return (
-          <div key={submission._id} className="border border-[#06d6a0] rounded-lg p-4 bg-[#0f172a]">
+          <div key={submission._id} className="border border-[#06d6a0] rounded-lg p-4 bg-[#0a1a1a]">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
