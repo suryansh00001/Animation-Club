@@ -1,9 +1,25 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const GlowingCursor = () => {
   const cursorRef = useRef(null);
+  const [isDesktop, setIsDesktop] = useState(true);
 
   useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768); // Tailwind's md: breakpoint
+    };
+
+    checkScreenSize(); // Initial check
+    window.addEventListener('resize', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isDesktop) return;
+
     const moveCursor = (e) => {
       const { clientX: x, clientY: y } = e;
       if (cursorRef.current) {
@@ -14,7 +30,9 @@ const GlowingCursor = () => {
 
     window.addEventListener('mousemove', moveCursor);
     return () => window.removeEventListener('mousemove', moveCursor);
-  }, []);
+  }, [isDesktop]);
+
+  if (!isDesktop) return null;
 
   return (
     <div

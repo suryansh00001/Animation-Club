@@ -65,7 +65,7 @@ const App = () => {
   const isAdminRoute = location.pathname.startsWith('/admin')
 
   return (
-    <div className="min-h-screen font-orbitron flex flex-col">
+    <div className="min-h-screen font-orbitron bg-black flex flex-col">
       <Toaster position="top-right" />
       <GlowingCursor />
       <SEOUpdater />
