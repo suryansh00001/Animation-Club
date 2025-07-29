@@ -1,4 +1,5 @@
 import React, { useState,useRef, useEffect } from 'react';
+import RippleGrid from './RippleGrid';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
@@ -79,41 +80,59 @@ const Home = () => {
     <div className="min-h-screen">
     
       {/* Hero Section */}
+
 <section className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-36 overflow-hidden">
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-15 sm:py-24 md:py-18 lg:py-24 text-center">
+    {/* RippleGrid background only for hero section */}
+    <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
+      <RippleGrid
+        enableRainbow={false}
+        gridColor="#10b981"
+        rippleIntensity={0.08}
+        gridSize={10.0}
+        gridThickness={15.0}
+        fadeDistance={1.5}
+        vignetteStrength={2.0}
+        glowIntensity={0.12}
+        opacity={0.7}
+        gridRotation={0}
+        mouseInteraction={true}
+        mouseInteractionRadius={1.2}
+      />
+    </div>
 
+    {/* Content on top of RippleGrid, allow pointer events to pass through except for interactive elements */}
+    <div className="relative z-10 pointer-events-none">
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10 leading-tight">
+        <div>Welcome to the</div>
+        <TiltText>
+          <span className="drop-shadow-[0_0_5px_rgba(110,231,183,0.8)_0_0_15px_rgba(16,185,129,0.6)]">
+            IIT BHU ANIMATION CLUB
+          </span>
+        </TiltText>
+      </h1>
 
+      <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
+        {settings.siteInfo.description || 'Too Cool to stay still'}
+      </p>
 
-  {/* Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-    <h1 className="text-4xl md:text-6xl font-bold mb-10 leading-tight">
-      <div>Welcome to the</div>
-      <TiltText>
-        <span className="drop-shadow-[0_0_5px_rgba(110,231,183,0.8)_0_0_15px_rgba(16,185,129,0.6)]">
-          IIT BHU ANIMATION CLUB
-        </span>
-      </TiltText>
-    </h1>
+      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
+        <Link
+          to="/events"
+          className="pointer-events-auto px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+        >
+          EXPLORE EVENTS →
+        </Link>
+        <Link
+          to="/register"
+          className="pointer-events-auto px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
+        >
+          JOIN US NOW
+        </Link>
+      </div>
 
-    <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
-      {settings.siteInfo.description ||
-    'Too Cool to stay still'} 
-       </p>
-
-    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-  <Link
-    to="/events"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
-  >
-    EXPLORE EVENTS →
-  </Link>
-  <Link
-    to="/register"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
-  >
-    JOIN US NOW
-  </Link>
-</div>
-
+    {/* RippleGrid ends here, content ends here */}
+    </div>
   </div>
 
         
@@ -124,7 +143,7 @@ const Home = () => {
   
 
 {/* Upcoming Events Section */}
-<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-15  md:mt-24">
   <div className="text-center mb-12">
     <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-emerald-400 drop-shadow-lg tracking-wide">
       Upcoming Events
@@ -204,21 +223,28 @@ const Home = () => {
       </span>
 
       <Link
-        to={`/events/${event._id}`}
-        className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg text-center"
-      >
-        Learn More
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
+  to={`/events/${event._id}`}
+  className="bg-emerald-400 hover:bg-emerald-300 text-black 
+             px-3 py-2 rounded-lg shadow-md 
+             w-[100px] h-[50px] flex items-center justify-between"
+>
+  <div className="flex flex-col justify-center text-left font-semibold leading-tight text-sm">
+    <span>Learn</span>
+    <span>More</span>
+  </div>
+
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-4 h-4"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+  </svg>
+</Link>
+
 
     </div>
   </div>
@@ -237,8 +263,7 @@ const Home = () => {
     <div className="text-center mt-12 z-10">
       <Link
         to="/events"
-        className = "px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-gradient-to-r from-emerald-400 to-emerald-600 text-black rounded-full font-semibold hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform shadow-lg text-center"
-        // className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
+        className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
       >
         View All Events
       </Link>
@@ -250,7 +275,7 @@ const Home = () => {
       {/* About Section */}
   
 
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-12">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-24">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       {/* Left Side – Text Card */}
       <div className="p-10 rounded-2xl border border-emerald-400 bg-[#071b1a]/60 backdrop-blur-sm shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-transform transform hover:scale-105 hover:rotate-[0.3deg] duration-500">
@@ -291,7 +316,7 @@ const Home = () => {
   <div className="flex justify-center">
   <Link
     to="/about"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+    className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md font-semibold shadow-lg hover:bg-emerald-300 hover:scale-105 transition-all duration-300"
   >
     Learn More
   </Link>
@@ -407,13 +432,13 @@ const Home = () => {
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
       <Link
         to="/register"
-        className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
       >
         Register Now
       </Link>
       <Link
         to="/contact"
-        className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
       >
         Contact Us
       </Link>

@@ -230,7 +230,7 @@ const EventDetails = () => {
 
     if (isRegistered) {
       return (
-        <span className="text-[#06d6a0] font-medium text-xl md:text-xl">✓ You are registered for this event</span>
+        <span className="text-[#06d6a0] font-medium text-base md:text-xl">✓ You are registered for this event</span>
       );
     }
 
@@ -350,10 +350,10 @@ const EventDetails = () => {
         {/* Badges */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex space-x-3">
-            <span className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 sm:text-xs text-[.45rem]`}>
+            <span className={`px-2 py-1  bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}>
               {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
             </span>
-            <span className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 sm:text-xs text-[.45rem]`}>
+            <span className={`px-2 py-1  bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}>
               {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
             </span>
           </div>

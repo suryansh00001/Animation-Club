@@ -167,7 +167,7 @@ const Artworks = () => {
 
           {/* Category Badge */}
           <div className="absolute top-3 left-3">
-            <span className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+            <span className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
 >
               {artwork.source === 'instagram' ? 'INSTAGRAM' : artwork.category?.toUpperCase() || 'ART'}
             </span>
@@ -243,7 +243,7 @@ const Artworks = () => {
           <div>
             <h3 className="text-xs font-semibold text-gray-400 mb-1">Category</h3>
             <div className="flex items-center gap-2">
-              <span className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+              <span className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
 >
                 {selectedArtwork.category?.toUpperCase() || 'ART'}
               </span>
@@ -291,7 +291,7 @@ const Artworks = () => {
                 {selectedArtwork.tools.map((tool, index) => (
                   <span
                     key={index}
-                    className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+                    className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
 
                   >
                     {tool}

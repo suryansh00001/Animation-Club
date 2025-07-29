@@ -318,10 +318,10 @@ const Events = () => {
           
           {/* Tags */}
           <div className="flex items-center justify-between mb-3">
-            <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs">
+            <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs">
               {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
             </span>
-            <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs">
+            <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs">
               {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
             </span>
           </div>

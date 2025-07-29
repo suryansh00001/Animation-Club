@@ -73,17 +73,17 @@ const MemberProfileModal = ({ member, onClose }) => {
                           {/* Tags */}
                           <div className="flex flex-wrap gap-2 mb-3">
                             {member.currentPosition?.title || member.currentPosition?.role ? (
-                              <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
+                              <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
                                 {member.currentPosition?.title || member.currentPosition?.role?.replace('-', ' ')}
                               </span>
                             ) : null}
                             {member.currentPosition?.department && (
-                              <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
+                              <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
                                 {member.currentPosition.department}
                               </span>
                             )}
                             {member.membershipType && (
-                              <span className="px-2 py-1 bg-[#1e293b] text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
+                              <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs sm:text-sm">
                                 {member.membershipType}
                               </span>
                             )}
@@ -165,7 +165,7 @@ const MemberProfileModal = ({ member, onClose }) => {
                                         <p className="text-emerald-400 text-xs capitalize">{pos.department}</p>
                                       </div>
                                       <span
-                                        className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+                                        className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
 
                                       >
                                         {pos.role?.replace('-', ' ')}
@@ -212,7 +212,7 @@ const MemberProfileModal = ({ member, onClose }) => {
                               <div className="flex justify-between">
                                 <span className="text-emerald-400">Status</span>
                                 <span
-                                  className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+                                  className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
 
                                 >
                                   {member.status}
