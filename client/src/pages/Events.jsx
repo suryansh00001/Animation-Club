@@ -19,6 +19,7 @@ const Events = () => {
   const [typeFilter, setTypeFilter] = useState('all');
 
   useEffect(() => {
+    scrollTo(0,0);
     let isMounted = true;
     
     const loadEvents = async () => {

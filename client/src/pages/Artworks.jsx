@@ -41,16 +41,6 @@ const Artworks = () => {
     ? artworks 
     : artworks.filter(artwork => artwork.category === selectedCategory);
 
-  const getCategoryColor = (category) => {
-    switch (category) {
-      case '2d': return 'bg-blue-100 text-blue-800';
-      case '3d': return 'bg-purple-100 text-purple-800';
-      case 'illustration': return 'bg-pink-100 text-pink-800';
-      case 'motion': return 'bg-green-100 text-green-800';
-      case 'student': return 'bg-yellow-100 text-yellow-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const formatDate = (dateString) => {
     try {
@@ -111,7 +101,6 @@ const Artworks = () => {
         onChange={(e) => setSelectedCategory(e.target.value)}
         className="w-full text-sm bg-[#0a1a1a] border border-[#06d6a0]/40 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#06d6a0]"
       >
-        <option value="all">All Categories</option>
         {categories.map((category) => (
           <option key={category.id} value={category.id}>
             {category.name} ({category.count})

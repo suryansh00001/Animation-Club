@@ -205,11 +205,9 @@ const Home = () => {
 
       <Link
         to={`/events/${event._id}`}
-        className="bg-emerald-400 hover:bg-emerald-300 text-black font-semibold 
-                   px-4 py-2 md:px-3 md:py-1.5 text-sm md:text-xs rounded-md 
-                   shadow hover:shadow-lg transition inline-flex items-center gap-1"
+        className="flex items-center gap-2 whitespace-nowrap px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-lg font-semibold hover:scale-105 transition-transform shadow-lg text-center"
       >
-        Learn <br className="hidden md:inline-block" /> More
+        Learn More
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="w-4 h-4"
@@ -221,6 +219,7 @@ const Home = () => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>
       </Link>
+
     </div>
   </div>
 </Tilt>
@@ -238,7 +237,8 @@ const Home = () => {
     <div className="text-center mt-12 z-10">
       <Link
         to="/events"
-        className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
+        className = "px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-gradient-to-r from-emerald-400 to-emerald-600 text-black rounded-full font-semibold hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform shadow-lg text-center"
+        // className="inline-block bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-semibold px-8 py-3 rounded-full shadow-xl hover:from-emerald-600 hover:to-emerald-400 hover:scale-105 transition-transform"
       >
         View All Events
       </Link>
@@ -250,7 +250,7 @@ const Home = () => {
       {/* About Section */}
   
 
-<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-24">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 mt-12">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
       {/* Left Side – Text Card */}
       <div className="p-10 rounded-2xl border border-emerald-400 bg-[#071b1a]/60 backdrop-blur-sm shadow-[0_0_30px_rgba(16,185,129,0.3)] transition-transform transform hover:scale-105 hover:rotate-[0.3deg] duration-500">
@@ -291,7 +291,7 @@ const Home = () => {
   <div className="flex justify-center">
   <Link
     to="/about"
-    className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md font-semibold shadow-lg hover:bg-emerald-300 hover:scale-105 transition-all duration-300"
+    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
   >
     Learn More
   </Link>
@@ -407,13 +407,13 @@ const Home = () => {
     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
       <Link
         to="/register"
-        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
+        className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
       >
         Register Now
       </Link>
       <Link
         to="/contact"
-        className="w-full sm:w-auto text-center bg-[#10b981] text-black px-5 py-2 sm:px-8 sm:py-3 rounded-full font-semibold hover:bg-[#34d399] transition-transform duration-300 hover:scale-105 shadow-md"
+        className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
       >
         Contact Us
       </Link>

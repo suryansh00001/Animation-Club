@@ -34,7 +34,6 @@ export const AppContextProvider = ({ children }) => {
     const [events, setEvents] = useState([]);
     const [userRegistrations, setUserRegistrations] = useState([]);
     const [userSubmissions, setUserSubmissions] = useState([]);
-    const [opportunities,setOpportunities] = useState([]);
     
     // Centralized site settings
     const [settings, setSettings] = useState({
@@ -64,9 +63,6 @@ export const AppContextProvider = ({ children }) => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                
-                
-                
                 // Load site settings
                 try {
                     setSettings(prev => ({ ...prev, loading: true }));
@@ -169,20 +165,7 @@ export const AppContextProvider = ({ children }) => {
                     console.warn('Events API error:', eventsError);
                 }
 
-                try {
-                    const response = await axios.get('/api/v1/opportunities');
-                    if (response.data.success) {
-                        if (response.data?.success) {
-                            const sortedOpportunities = response.data.opportunities.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-                            setOpportunities(sortedOpportunities);
-                            return sortedOpportunities;
-                        }
-                    } else {
-                        console.warn('Failed to load events from API');
-                    }
-                } catch (opportunitiesError) {
-                    console.warn('Opportunities API error:', opportunitiesError);
-                }
+                
                 
                 
             } catch (error) {
@@ -495,6 +478,23 @@ export const AppContextProvider = ({ children }) => {
             return errorProfileData;
         }
     }, [user, profileData.loaded, profileData.loading, fetchUserRegistrations, fetchUserSubmissions, getUserActivity, getUserStats]);
+
+    const fetchOpportunities = async () => {
+        try {
+            const response = await axios.get('/api/v1/opportunities');
+            if (response.data?.success) {
+            return response.data.opportunities.sort(
+                (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+            );
+            } else {
+            console.warn('Failed to load opportunities from API');
+            return [];
+            }
+        } catch (error) {
+            console.error('Opportunities API error:', error);
+            return [];
+        }
+    };
 
     // Reset profile data when user changes
     useEffect(() => {
@@ -1007,7 +1007,6 @@ export const AppContextProvider = ({ children }) => {
         events,
         userRegistrations,
         userSubmissions,
-        opportunities,
         
         // Site settings
         settings,
@@ -1036,6 +1035,7 @@ export const AppContextProvider = ({ children }) => {
         fetchGallery,
         fetchArtworks,
         submitArtwork,
+        fetchOpportunities,
         
         // Settings functions
         fetchSettings,

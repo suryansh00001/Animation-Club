@@ -12,6 +12,7 @@ const Gallery = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    scrollTo(0,0);
     fetchGalleryImages();
   }, []);
 

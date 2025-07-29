@@ -48,22 +48,23 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden lg:flex space-x-1 items-center ml-auto whitespace-nowrap">
-  {navLinks.map((link) => (
-    <Link
-      key={link.name}
-      to={link.path}
-      className={`text-xs font-semibold tracking-wide px-3 py-2 rounded-md transition-all duration-300 whitespace-nowrap ${
-        isActive(link.path)
-          ? 'text-emerald-300 border-b-2 border-emerald-400'
-          : 'text-white hover:text-emerald-300'
-      }`}
-    >
-      {link.name}
-    </Link>
-  ))}
-  <div className="ml-10"></div>
-  <UserNav />
-</div>
+            {navLinks.map((link) => (
+              <Link
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                key={link.name}
+                to={link.path}
+                className={`text-xs font-semibold tracking-wide px-3 py-2 rounded-md transition-all duration-300 whitespace-nowrap ${
+                  isActive(link.path)
+                    ? 'text-emerald-300 border-b-2 border-emerald-400'
+                    : 'text-white hover:text-emerald-300'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="ml-6"></div>
+            <UserNav />
+          </div>
 
 
           {/* Mobile Menu Button */}

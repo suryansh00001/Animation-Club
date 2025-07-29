@@ -6,124 +6,45 @@ import Tilt from 'react-parallax-tilt';
 
 const Opportunities = () => {
   const { 
-    fetchEvents, 
-    events: contextEvents, 
-    isAuthenticated, 
-    isRegisteredForEvent, 
-    fetchUserRegistrations,
-    opportunities,
+    fetchOpportunities,
   } = useAppContext();
-  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState('all');
+  const [filteredOpportunities, setFilteredOpportunities] = useState([]);
+  const [opportunities, setOpportunities] = useState([]);
 
   useEffect(() => {
+    scrollTo(0,0);
     let isMounted = true;
-    
-    const loadEvents = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Fetch events from API
-        const fetchedEvents = await fetchEvents();
-        
-        console.log('Events fetched:', fetchedEvents?.length || 0);
-        console.log('Sample event data:', fetchedEvents?.[0]);
-        console.log('Event IDs:', fetchedEvents?.map(e => ({ id: e._id, title: e.title })));
-        
-        if (isMounted) {
-          setEvents(fetchedEvents || []);
-        }
-      } catch (error) {
-        console.error('Error loading events:', error);
-        
-        if (isMounted) {
-          setError(error.message);
-          // Fallback to context events if available
-          if (contextEvents && contextEvents.length > 0) {
-            setEvents(contextEvents);
-          } else {
-            setEvents([]);
-          }
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+
+    const loadData = async () => {
+      setLoading(true);
+      const data = await fetchOpportunities();
+      if (isMounted) {
+        setOpportunities(data);
+        const filtered = data.filter(
+          (opp) => filter === 'all' || opp.status === filter
+        );
+        setFilteredOpportunities(filtered);
+        setLoading(false);
       }
     };
 
-    loadEvents();
-    
-    // Cleanup function
+    loadData();
+
     return () => {
       isMounted = false;
     };
-  }, []); // Remove dependencies to prevent infinite re-renders
-
-  // Fetch user registrations when component loads or when user authentication changes
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserRegistrations();
-    }
-  }, [isAuthenticated, fetchUserRegistrations]);
-
-  // Also refresh registrations when the page becomes visible (user returns from registration)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && isAuthenticated) {
-        fetchUserRegistrations();
-      }
-    };
-    
-    const handleFocus = () => {
-      if (isAuthenticated) {
-        fetchUserRegistrations();
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', handleFocus);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [isAuthenticated, fetchUserRegistrations]);
-
-  // Force refresh when component mounts (covers navigation back from registration page)
-  useEffect(() => {
-    if (isAuthenticated) {
-      // Small delay to ensure the registration is processed
-      const timeoutId = setTimeout(() => {
-        fetchUserRegistrations();
-      }, 100);
-      
-      return () => clearTimeout(timeoutId);
-    }
   }, []);
 
-  
+  useEffect(() => {
+    const filtered = opportunities.filter(
+      (opp) => filter === 'all' || opp.status === filter
+    );
+    setFilteredOpportunities(filtered);
+  }, [filter, opportunities]);
 
-  const filteredOpportunities = opportunities.filter(opportunity => {
-    
-    const statusMatch = filter === 'all' || opportunity.status === filter;
-    return statusMatch;
-  });
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'open':
-        return 'bg-green-100 text-green-800';
-      case 'closed':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const getDynamicUpdateStatus = (date) => {
     const createdDate = new Date(date);
@@ -190,7 +111,6 @@ const Opportunities = () => {
   {loading ? (
     [...Array(6)].map((_, index) => (
       <div key={index} className="bg-emerald-900 rounded-xl shadow-[0_0_20px_#00ffcc66] overflow-hidden animate-pulse">
-        <div className="w-full h-48 bg-emerald-800" />
         <div className="p-6 space-y-3">
           <div className="h-4 bg-emerald-700 rounded w-1/4"></div>
           <div className="h-6 bg-emerald-700 rounded w-3/4"></div>

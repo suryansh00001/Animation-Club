@@ -37,7 +37,7 @@ const About = () => {
       setLoading(true);
       
       // Just fetch all members and sort them on frontend
-      const response = await axios.get('/api/v1/admin/members');
+      const response = await axios.get('/api/v1/admin/members/public');
       if (response.data.success) {
         const allMembers = response.data.members;
         console.log('📊 All members fetched:', allMembers.length);
@@ -59,22 +59,6 @@ const About = () => {
       }
     } catch (error) {
       console.error('Error fetching members:', error);
-      // Fallback: try the public endpoint
-      try {
-        const response = await axios.get('/api/v1/admin/members/public');
-        if (response.data.success) {
-          const allMembers = response.data.members;
-          console.log('📊 Fallback: All members fetched:', allMembers.length);
-          const active = allMembers.filter(member => member.status === 'active');
-          const alumni = allMembers.filter(member => member.status === 'alumni');
-          console.log('👥 Fallback: Active members found:', active.length);
-          console.log('📚 Fallback: Alumni members found:', alumni.length);
-          setCurrentMembers(active);
-          setPreviousMembers(alumni);
-        }
-      } catch (fallbackError) {
-        console.error('Fallback fetch failed:', fallbackError);
-      }
     } finally {
       setLoading(false);
     }
@@ -307,8 +291,6 @@ const About = () => {
     <div className="space-y-8">
       {sortedPeriods.map((period) => {
         const periodMembers = legacyMembersByPeriod[period];
-        const secretaries = periodMembers.filter(m => m.historicalRole === 'secretary');
-        const jointSecretaries = periodMembers.filter(m => m.historicalRole === 'joint-secretary');
 
         return (
           <div key={period} className=" border-[#064742] last:border-b-0 pb-8 last:pb-0">
