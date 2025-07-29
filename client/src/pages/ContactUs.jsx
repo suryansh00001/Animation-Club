@@ -425,6 +425,7 @@ const LeadershipSection = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+      scrollTo(0,0);
         fetchLeadership();
     }, []);
 
@@ -503,15 +504,15 @@ return (
                             <User className="w-10 h-10 text-black" />
                         )}
                     </div>
-                    <h3 className=" font-bold text-emerald-400 mb-2 md:text-[0.75rem] lg:text-[1rem]">{member.name}</h3>
-                    <p className="text-white md:text-[0.75rem] lg:text-[1rem] font-medium mb-2">
+                    <h3 className="text-base font-bold text-emerald-400 mb-1">{member.name}</h3>
+                    <p className="text-white font-medium text-sm capitalize mb-2">
                         {getRoleTitle(member.currentPosition?.role)}
                     </p>
                     {member.email && (
-                        <p className=" text-gray-400 text-[0.6rem] md:text-[0.5rem] lg:text-[0.75rem] font-medium mb-2">{member.email}</p>
+                        <p className="text-xs font-medium transition-colors text-gray-400">{member.email}</p>
                     )}
                     {member.profile?.mobile && (
-                        <p className=" text-gray-400 text-[0.6rem] md:text-[0.5rem] lg:text-[0.75rem] font-medium">{member.profile.mobile}</p>
+                        <p className="text-xs font-medium transition-colors text-gray-400">{member.profile.mobile}</p>
                     )}
                 </div>
             ))}

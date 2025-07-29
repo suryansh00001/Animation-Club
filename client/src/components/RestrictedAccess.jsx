@@ -7,6 +7,4 @@ const RestrictedAccess = () => (
   </div>
 );
 
-
 export default RestrictedAccess;
-

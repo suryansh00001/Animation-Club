@@ -12,6 +12,7 @@ const Gallery = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    scrollTo(0,0);
     fetchGalleryImages();
   }, []);
 
@@ -192,32 +193,33 @@ const Gallery = () => {
 )}
 
 
-<div className="mt-12 bg-white/5 backdrop-blur-md border border-[#10b981]/20 rounded-xl shadow-[0_0_12px_#10b98140] px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
-  <div className="flex flex-nowrap justify-center gap-x-4 sm:gap-x-6 text-center text-[#f9fafb]">
+<div className="mt-16 bg-white/5 backdrop-blur-md border border-[#10b981]/20 rounded-2xl shadow-[0_0_20px_#10b98140] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <div className="flex flex-wrap md:justify-around  gap-y-6 text-center text-[#f9fafb]">
 
     {/* Stat 1 */}
-    <div className="w-auto space-y-1 px-2">
-      <div className="text-lg sm:text-2xl font-extrabold text-[#10b981] tracking-wide">
+    <div className="w-1/2 sm:w-auto space-y-1">
+      <div className="text-2xl sm:text-3xl font-extrabold text-[#10b981] tracking-wider">
         {galleryImages.reduce((total, gallery) => total + (gallery.images ? gallery.images.length : 0), 0)}
       </div>
-      <div className="text-[10px] sm:text-xs text-[#9ca3af] uppercase tracking-widest">
+      <div className="text-xs sm:text-sm text-[#9ca3af] uppercase tracking-wide">
         Total Images
       </div>
     </div>
 
     {/* Stat 2 */}
-    <div className="w-auto space-y-1 px-2">
-      <div className="text-lg sm:text-2xl font-extrabold text-[#10b981] tracking-wide">
+    <div className="w-1/2 sm:w-auto space-y-1">
+      <div className="text-2xl sm:text-3xl font-extrabold text-[#10b981] tracking-wider">
         {galleryImages.length}
       </div>
-      <div className="text-[10px] sm:text-xs text-[#9ca3af] uppercase tracking-widest">
+      <div className="text-xs sm:text-sm text-[#9ca3af] uppercase tracking-wide">
         Gallery Albums
       </div>
     </div>
 
+    
+
   </div>
 </div>
-
 
       </div>
 

@@ -1,11 +1,11 @@
 import React, { useState,useRef, useEffect } from 'react';
+import RippleGrid from './RippleGrid';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
 import TiltText from '../components/TiltText';
 import NoEventsCard from '../components/NoEventsCard'; // Adjust the path if needed
 import Tilt from 'react-parallax-tilt';
-import LightRays from '../components/Lightrays';
 import CountUp from 'react-countup';
 
 
@@ -48,22 +48,7 @@ const Home = () => {
         const achievementsData = await fetchAchievements();
         
         if (isMounted) {
-          setUpcomingEvents(
-  upcoming && upcoming.length > 0
-    ? upcoming.slice(0, sliceCount)
-    : [
-        {
-          _id: 'demo-event',
-          image: 'https://placehold.co/400x200/0f766e/ffffff?text=Demo+Event',
-          title: 'Demo Animation Workshop',
-          description: 'Join us for an exciting animation workshop filled with creativity and fun!',
-          date: new Date(),
-          type: 'Workshop',
-          venue: 'Main Auditorium',
-          location: 'IIT BHU',
-        },
-      ]
-);
+          setUpcomingEvents( upcoming && upcoming.length > 0 ? upcoming.slice(0, sliceCount) : []);
 ; // Show only first 3
           setRecentAchievements(achievementsData ? achievementsData.slice(0, 3) : []); // Show only first 3
         }
@@ -95,41 +80,59 @@ const Home = () => {
     <div className="min-h-screen">
     
       {/* Hero Section */}
+
 <section className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-36 overflow-hidden">
+  <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-15 sm:py-24 md:py-18 lg:py-24 text-center">
+    {/* RippleGrid background only for hero section */}
+    <div className="absolute inset-0 w-full h-full z-0 pointer-events-auto">
+      <RippleGrid
+        enableRainbow={false}
+        gridColor="#10b981"
+        rippleIntensity={0.08}
+        gridSize={10.0}
+        gridThickness={15.0}
+        fadeDistance={1.5}
+        vignetteStrength={2.0}
+        glowIntensity={0.12}
+        opacity={0.7}
+        gridRotation={0}
+        mouseInteraction={true}
+        mouseInteractionRadius={1.2}
+      />
+    </div>
 
+    {/* Content on top of RippleGrid, allow pointer events to pass through except for interactive elements */}
+    <div className="relative z-10 pointer-events-none">
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-10 leading-tight">
+        <div>Welcome to the</div>
+        <TiltText>
+          <span className="drop-shadow-[0_0_5px_rgba(110,231,183,0.8)_0_0_15px_rgba(16,185,129,0.6)]">
+            IIT BHU ANIMATION CLUB
+          </span>
+        </TiltText>
+      </h1>
 
+      <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
+        {settings.siteInfo.description || 'Too Cool to stay still'}
+      </p>
 
-  {/* Content */}
-  <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-    <h1 className="text-4xl md:text-6xl font-bold mb-10 leading-tight">
-      <div>Welcome to the</div>
-      <TiltText>
-        <span className="drop-shadow-[0_0_5px_rgba(110,231,183,0.8)_0_0_15px_rgba(16,185,129,0.6)]">
-          IIT BHU ANIMATION CLUB
-        </span>
-      </TiltText>
-    </h1>
+      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
+        <Link
+          to="/events"
+          className="pointer-events-auto px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
+        >
+          EXPLORE EVENTS →
+        </Link>
+        <Link
+          to="/register"
+          className="pointer-events-auto px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
+        >
+          JOIN US NOW
+        </Link>
+      </div>
 
-    <p className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto leading-relaxed">
-      {settings.siteInfo.description ||
-    'Too Cool to stay still'} 
-       </p>
-
-    <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center px-4">
-  <Link
-    to="/events"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base bg-emerald-400 text-black rounded-full font-semibold hover:scale-105 transition-transform shadow-lg text-center"
-  >
-    EXPLORE EVENTS →
-  </Link>
-  <Link
-    to="/register"
-    className="px-4 py-2 text-sm sm:px-8 sm:py-3 sm:text-base border-2 border-emerald-400 text-emerald-300 rounded-full font-semibold hover:bg-emerald-400 hover:text-black transition-transform shadow-lg text-center"
-  >
-    JOIN US NOW
-  </Link>
-</div>
-
+    {/* RippleGrid ends here, content ends here */}
+    </div>
   </div>
 
         
@@ -140,7 +143,7 @@ const Home = () => {
   
 
 {/* Upcoming Events Section */}
-<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
+<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-15  md:mt-24">
   <div className="text-center mb-12">
     <h2 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-emerald-400 drop-shadow-lg tracking-wide">
       Upcoming Events
@@ -220,23 +223,29 @@ const Home = () => {
       </span>
 
       <Link
-        to={`/events/${event._id}`}
-        className="bg-emerald-400 hover:bg-emerald-300 text-black font-semibold 
-                   px-4 py-2 md:px-3 md:py-1.5 text-sm md:text-xs rounded-md 
-                   shadow hover:shadow-lg transition inline-flex items-center gap-1"
-      >
-        Learn <br className="hidden md:inline-block" /> More
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-4 h-4"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </Link>
+  to={`/events/${event._id}`}
+  className="bg-emerald-400 hover:bg-emerald-300 text-black 
+             px-3 py-2 rounded-lg shadow-md 
+             w-[100px] h-[50px] flex items-center justify-between"
+>
+  <div className="flex flex-col justify-center text-left font-semibold leading-tight text-sm">
+    <span>Learn</span>
+    <span>More</span>
+  </div>
+
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="w-4 h-4"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+  </svg>
+</Link>
+
+
     </div>
   </div>
 </Tilt>

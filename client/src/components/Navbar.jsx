@@ -22,7 +22,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b border-b-[0.5px] border-emerald-500 shadow-lg">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-md border-b-[0.5px] border-emerald-500 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center  h-16">
 
@@ -40,7 +40,7 @@ const Navbar = () => {
       <span className="text-black font-bold text-sm">AC</span>
     </div>
   )}
-  <span className="text-emerald-400 font-extrabold  text-[1.3rem] font-semibold leading-none glow-neon tracking-wide flex items-center">
+  <span className="text-emerald-400 font-extrabold  text-[1.3rem]  leading-none glow-neon tracking-wide flex items-center">
     {settings.siteInfo.name || 'Animation Club'}
   </span>
 </Link>
@@ -48,22 +48,23 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden lg:flex space-x-1 items-center ml-auto whitespace-nowrap">
-  {navLinks.map((link) => (
-    <Link
-      key={link.name}
-      to={link.path}
-      className={`text-xs font-semibold tracking-wide px-3 py-2 rounded-md transition-all duration-300 whitespace-nowrap ${
-        isActive(link.path)
-          ? 'text-emerald-300 border-b-2 border-emerald-400'
-          : 'text-white hover:text-emerald-300'
-      }`}
-    >
-      {link.name}
-    </Link>
-  ))}
-  <div className="ml-10"></div>
-  <UserNav />
-</div>
+            {navLinks.map((link) => (
+              <Link
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                key={link.name}
+                to={link.path}
+                className={`text-xs font-semibold tracking-wide px-3 py-2 rounded-md transition-all duration-300 whitespace-nowrap ${
+                  isActive(link.path)
+                    ? 'text-emerald-300 border-b-2 border-emerald-400'
+                    : 'text-white hover:text-emerald-300'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <div className="ml-6"></div>
+            <UserNav />
+          </div>
 
 
           {/* Mobile Menu Button */}

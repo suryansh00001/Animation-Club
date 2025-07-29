@@ -20,7 +20,6 @@ const UserProfile = () => {
   // State for view/hide registrations/submissions
   const [showAllRegistrations, setShowAllRegistrations] = useState(false);
   const [showAllSubmissions, setShowAllSubmissions] = useState(false);
-  const userActivity = profileData?.activity || [];
   const userStats = profileData?.stats || {};
   const dataLoaded = profileData?.loaded || false;
   const loadingData = profileData?.loading || false;
@@ -360,15 +359,17 @@ const UserProfile = () => {
   <div className="flex flex-col sm:flex-row items-center sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
     
     {/* Avatar */}
-    <div className="relative">
-      <img
-        src={safeUser.avatar || 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff'}
-        alt={safeUser.name || 'User'}
-        className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover shadow-[0_0_20px_#10b981] mx-auto sm:mx-0"
-        onError={(e) => {
-          e.target.src = 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff';
-        }}
-      />
+<div className="relative flex-shrink-0">
+  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden shadow-[0_0_20px_#10b981] mx-auto sm:mx-0">
+    <img
+      src={safeUser.avatar || 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff'}
+      alt={safeUser.name || 'User'}
+      className="w-full h-full object-cover"
+      onError={(e) => {
+        e.target.src = 'https://ui-avatars.com/api/?name=User&background=0f766e&color=fff';
+      }}
+    />
+  </div>
 
       {/* Avatar Actions */}
       <div className="absolute -bottom-2 -right-2 flex space-x-1">
@@ -413,28 +414,28 @@ const UserProfile = () => {
     </div>
   
 
-        {/* Action Buttons */}
-        <div className="flex space-x-2">
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className="bg-emerald-500 text-black px-4 py-2 rounded-md font-semibold hover:bg-emerald-400 transition-colors shadow-[0_0_10px_#10b981]"
-          >
-            {isEditing ? 'Cancel' : 'Edit Profile'}
-          </button>
-          {!loadingData && (
-            <button
-              onClick={refreshProfileData}
-              className="bg-gray-700 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors shadow-sm"
-              title="Refresh profile data"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+  <div className="w-full flex justify-center sm:justify-end items-center gap-2 mt-4 sm:mt-0">
+  <button
+    onClick={() => setIsEditing(!isEditing)}
+    className="bg-emerald-500 text-black px-4 py-2 rounded-md font-semibold text-sm hover:bg-emerald-400 transition-all shadow-[0_0_10px_#10b981]"
+  >
+    {isEditing ? 'Cancel' : 'Edit Profile'}
+  </button>
+
+  {!loadingData && (
+    <button
+      onClick={refreshProfileData}
+      className="bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-md shadow-sm transition"
+      title="Refresh profile data"
+    >
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+    </button>
+  )}
+</div>
+</div>
+</div>
 
     {/* Avatar Modal */}
     {isEditingAvatar && (
@@ -457,14 +458,14 @@ const UserProfile = () => {
             </div>
 {/* URL Input */}
 <div>
-  <label className="block text-sm font-medium text-cyber-green mb-2">
+  <label className="block text-sm font-medium text-emerald-400 mb-2">
     Profile Photo URL
   </label>
   <input
     type="url"
     value={avatarUrl}
     onChange={(e) => setAvatarUrl(e.target.value)}
-    className="w-full px-3 py-2 border border-cyber-green bg-black text-cyber-green rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-green"
+    className="w-full px-3 py-2 border border-emerald-text-emerald-400 bg-black text-emerald-400 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-text-emerald-400"
     placeholder="https://example.com/your-photo.jpg"
   />
   <p className="text-xs text-cyber-muted mt-1">
@@ -511,61 +512,61 @@ const UserProfile = () => {
   {/* Profile Information */}
   <div className="lg:col-span-1">
     <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30">
-      <h2 className="text-xl font-bold text-[#06d6a0] mb-6">Profile Information</h2>
+      <h2 className="text-xl font-bold text-emerald-500 mb-6">Profile Information</h2>
 
       {isEditing ? (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-[#94a3b8] mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-emerald-400 mb-1">Full Name</label>
             <input
               type="text"
               name="name"
               value={editData.name}
               onChange={handleEditChange}
-              className="w-full px-3 py-2 border border-[#94a3b8] bg-transparent text-[#06d6a0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#06d6a0]"
+              className="w-full px-3 py-2 border border-emerald-400 bg-transparent text-emerald-500 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#94a3b8] mb-1">Phone Number</label>
+            <label className="block text-sm font-medium text-emerald-400 mb-1">Phone Number</label>
             <input
               type="tel"
               name="phone"
               value={editData.phone}
               onChange={handleEditChange}
-              className="w-full px-3 py-2 border border-[#94a3b8] bg-transparent text-[#06d6a0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#06d6a0]"
+              className="w-full px-3 py-2 border border-emerald-400 bg-transparent text-emerald-500 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#94a3b8] mb-1">Department</label>
+            <label className="block text-sm font-medium text-emerald-400 mb-1">Department</label>
             <input
               type="text"
               name="department"
               value={editData.department}
               onChange={handleEditChange}
-              className="w-full px-3 py-2 border border-[#94a3b8] bg-transparent text-[#06d6a0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#06d6a0]"
+              className="w-full px-3 py-2 border border-emerald-400 bg-transparent text-emerald-500 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#94a3b8] mb-1">Institution</label>
+            <label className="block text-sm font-medium text-emerald-400 mb-1">Institution</label>
             <input
               type="text"
               name="institution"
               value={editData.institution}
               onChange={handleEditChange}
-              className="w-full px-3 py-2 border border-[#94a3b8] bg-transparent text-[#06d6a0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#06d6a0]"
+              className="w-full px-3 py-2 border border-emerald-400 bg-transparent text-emerald-500 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-[#94a3b8] mb-1">Experience Level</label>
+            <label className="block text-sm font-medium text-emerald-400 mb-1">Experience Level</label>
             <select
               name="experience"
               value={editData.experience}
               onChange={handleEditChange}
-              className="w-full px-3 py-2 border border-[#94a3b8] bg-transparent text-[#06d6a0] rounded-md focus:outline-none focus:ring-1 focus:ring-[#06d6a0]"
+              className="w-full px-3 py-2 border border-emerald-400 bg-transparent text-emerald-500 rounded-md focus:outline-none focus:ring-1 focus:ring-emerald-500"
             >
               <option value="Beginner">Beginner</option>
               <option value="Intermediate">Intermediate</option>
@@ -577,7 +578,7 @@ const UserProfile = () => {
           <button
             onClick={handleSaveProfile}
             disabled={loading}
-            className="w-full bg-[#06d6a0] text-[#0f172a] py-2 rounded-md hover:bg-[#2de2b2] transition-colors disabled:bg-opacity-30"
+            className="w-full bg-emerald-500 text-[#0f172a] py-2 rounded-md hover:bg-[#2de2b2] transition-colors disabled:bg-opacity-30"
           >
             {loading ? 'Saving...' : 'Save Changes'}
           </button>
@@ -586,42 +587,42 @@ const UserProfile = () => {
         <div className="space-y-4">
           <div>
             <p className="text-sm font-medium text-white">Phone</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.phone === 'string' ? safeUser.phone : 'Not provided'}
             </p>
           </div>
 
           <div>
             <p className="text-sm font-medium text-white">Student ID</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.studentId === 'string' ? safeUser.studentId : 'Not provided'}
             </p>
           </div>
 
           <div>
             <p className="text-sm font-medium text-white">Academic Year</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.year === 'string' ? safeUser.year : 'Not provided'}
             </p>
           </div>
 
           <div>
             <p className="text-sm font-medium text-white">Department</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.department === 'string' ? safeUser.department : 'Not provided'}
             </p>
           </div>
 
           <div>
             <p className="text-sm font-medium text-white">Institution</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.institution === 'string' ? safeUser.institution : 'Not provided'}
             </p>
           </div>
 
           <div>
             <p className="text-sm font-medium text-white">Experience Level</p>
-            <p className="text-[#06d6a0]">
+            <p className="text-emerald-500">
               {typeof safeUser.experience === 'string' ? safeUser.experience : 'Not specified'}
             </p>
           </div>
@@ -632,42 +633,42 @@ const UserProfile = () => {
 
 {/* Quick Stats */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30">
-  <h2 className="text-xl font-bold text-[#06d6a0] mb-4">Quick Stats</h2>
+  <h2 className="text-xl font-bold text-emerald-500 mb-4">Quick Stats</h2>
   <div className="space-y-3">
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Events Registered</span>
-      <span className="font-semibold text-[#06d6a0]">
+      <span className="text-gray-400">Events Registered</span>
+      <span className="font-semibold text-emerald-500">
         {userStats?.totalRegistrations || userRegistrations?.length || 0}
       </span>
     </div>
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Submissions Made</span>
-      <span className="font-semibold text-[#06d6a0]">
+      <span className="text-gray-400">Submissions Made</span>
+      <span className="font-semibold text-emerald-500">
         {userStats?.totalSubmissions || userSubmissions?.length || 0}
       </span>
     </div>
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Confirmed Events</span>
-      <span className="font-semibold text-[#06d6a0]">
+      <span className="text-gray-400">Confirmed Events</span>
+      <span className="font-semibold text-emerald-500">
         {userStats?.confirmedRegistrations || 0}
       </span>
     </div>
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Approved Submissions</span>
-      <span className="font-semibold text-[#06d6a0]">
+      <span className="text-gray-400">Approved Submissions</span>
+      <span className="font-semibold text-emerald-500">
         {userStats?.approvedSubmissions || 0}
       </span>
     </div>
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Awards Won</span>
-      <span className="font-semibold text-[#06d6a0]">
+      <span className="text-gray-400">Awards Won</span>
+      <span className="font-semibold text-emerald-500">
         {userSubmissions?.filter(submission =>
           submission?.award?.position && submission.award.position !== 'none'
         ).length || 0}
       </span>
     </div>
     <div className="flex justify-between">
-      <span className="text-[#94a3b8]">Member Since</span>
+      <span className="text-gray-400">Member Since</span>
       <span className="font-semibold text-[#f8fafc]">
         {safeUser.joinDate ? new Date(safeUser.joinDate).getFullYear() : 'Unknown'}
       </span>
@@ -678,17 +679,26 @@ const UserProfile = () => {
 
           {/* Event Registrations and Submissions */}
           <div className="lg:col-span-2 space-y-8">
-
 {/* Registered Events */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">
-  <h2 className="text-xl font-bold text-[#06d6a0] mb-6">Event Registrations</h2>
+  <h2 className="text-xl font-bold text-emerald-500 mb-6">Event Registrations</h2>
+        {userRegistrations && userRegistrations.length > 2 && (
+                <div className="mb-4 text-right">
+                  <button
+                    className="text-sm text-emerald-500 hover:text-emerald-400 font-medium underline"
+                    onClick={() => setShowAllRegistrations(v => !v)}
+                  >
+                    {showAllRegistrations ? 'Hide All Registrations' : 'View All Registrations'}
+                  </button>
+                </div>
+              )}
 
   {!userRegistrations || userRegistrations.length === 0 ? (
     <div className="text-center py-8">
-      <p className="text-[#94a3b8] mb-4">You haven't registered for any events yet.</p>
+      <p className="text-gray-400 mb-4">You haven't registered for any events yet.</p>
       <Link
   to="/events"
-  className="bg-[#06d6a0] text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
+  className="bg-emerald-500 text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
 >
   Browse Events
 </Link>
@@ -699,17 +709,12 @@ const UserProfile = () => {
     </div>
   ) : (
     <div className="space-y-4">
-      {userRegistrations
+      {(showAllRegistrations ? userRegistrations : userRegistrations.slice(0, 2) )
         ?.filter((registration) => registration && registration._id)
         .map((registration) => {
           const event = getEventDetails(registration?.eventId);
           const status = getRegistrationStatus(registration);
 
-          const statusStyles = {
-            completed: 'bg-[#f1f5f9] text-[#334155]',
-            ongoing: 'bg-[#bbf7d0] text-[#065f46]',
-            upcoming: 'bg-[#bfdbfe] text-[#1e40af]',
-          };
 
           return (
             <div
@@ -721,7 +726,7 @@ const UserProfile = () => {
                   <h3 className="font-semibold text-[#f8fafc]">
                     {event?.title || 'Unknown Event'}
                   </h3>
-                  <p className="text-sm text-[#94a3b8]">
+                  <p className="text-sm text-gray-400">
                     Registered on{' '}
                     {registration?.timestamps?.registeredAt ||
                     registration?.createdAt
@@ -752,19 +757,18 @@ const UserProfile = () => {
                 </div>
                 <div className="flex items-center space-x-3">
                   <span
-                     className={`px-2 py-1 bg-[#1e293b] text-emerald-300 rounded border border-emerald-400 text-xs`}
+                     className={`px-2 py-1 bg-emerald-900/50 text-emerald-300 rounded border border-emerald-400 text-xs`}
                   >
                     {status}
                   </span>
                   {event && (
                     <Link
                       to={`/events/${event._id}`}
-                      className="text-[#06d6a0] hover:text-[#2de2b2] text-sm font-medium"
+                      className="text-emerald-500 hover:text-[#2de2b2] text-sm font-medium"
                     >
                       View Event
                     </Link>
                   )}
-
                 </div>
               </div>
             </div>
@@ -775,30 +779,32 @@ const UserProfile = () => {
 </div>
 
 
-
+            
 
 {/* Submissions */}
 <div className="bg-[#0a1a1a] rounded-lg shadow-lg p-8 mb-8 border border-emerald-500/30 overflow-hidden">
   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-2">
-    <h2 className="text-xl font-bold text-[#06d6a0]">My Submissions</h2>
-    <Link 
-      to="/events" 
-      className="text-sm text-[#06d6a0] hover:text-[#05c28d] font-medium transition"
-    >
-      Find Events to Submit →
-    </Link>
+    <h2 className="text-xl font-bold text-emerald-500">My Submissions</h2>
+    {userSubmissions && userSubmissions.length > 1 && (
+      <button
+        className="text-sm text-emerald-500 hover:text-emerald-400 font-medium underline"
+        onClick={() => setShowAllSubmissions(v => !v)}
+      >
+        {showAllSubmissions ? 'Hide All Submissions' : 'View All Submissions'}
+      </button>
+    )}
   </div>
 
   {!userSubmissions || userSubmissions.length === 0 ? (
     <div className="text-center py-12">
       
-      <h3 className="text-lg font-semibold text-[#94a3b8] mb-2">No submissions yet</h3>
-      <p className="text-sm text-[#94a3b8] mb-6">
+      <h3 className="text-lg font-semibold text-gray-400 mb-2">No submissions yet</h3>
+      <p className="text-sm text-gray-400 mb-6">
         Submit your work to ongoing events and showcase your creativity!
       </p>
       <Link
   to="/events"
-  className="bg-[#06d6a0] text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
+  className="bg-emerald-500 text-[#0f172a] px-4 py-1.5 text-sm sm:px-6 sm:py-2 sm:text-base rounded-md hover:bg-[#2de2b2] transition-colors"
 >
   Browse Events
 </Link>
@@ -806,31 +812,31 @@ const UserProfile = () => {
     </div>
   ) : (
     <div className="space-y-4">
-      {userSubmissions?.filter(sub => sub && sub._id).map((submission) => {
+      {(showAllSubmissions ? userSubmissions  : userSubmissions.slice(0, 1) )?.filter(sub => sub && sub._id).map((submission) => {
         const event = getEventDetails(submission?.eventId);
         const status = getSubmissionStatus(submission);
         const awardInfo = getAwardInfo(submission);
 
         return (
-          <div key={submission._id} className="border border-[#06d6a0] rounded-lg p-4 bg-[#0f172a]">
+          <div key={submission._id} className="border border-emerald-500 rounded-lg p-4 bg-[#0a1a1a]">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <h3 className="font-semibold text-[#06d6a0]">
+                  <h3 className="font-semibold text-emerald-500">
                     {event?.title || 'Unknown Event'}
                   </h3>
                   {awardInfo && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-[#06d6a0] text-[#06d6a0]">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-emerald-500 text-emerald-500">
                       <span className="mr-1">{awardInfo.icon}</span>
                       {awardInfo.title}
                     </span>
                   )}
                 </div>
 
-                <p className="text-sm text-[#94a3b8] mb-1">
+                <p className="text-sm text-gray-400 mb-1">
                   {submission?.submissionDetails?.title || submission?.title || 'Untitled Submission'}
                 </p>
-                <p className="text-sm text-[#94a3b8] mb-2">
+                <p className="text-sm text-gray-400 mb-2">
                   {typeof (submission?.submissionDetails?.description || submission?.description) === 'string'
                     ? submission?.submissionDetails?.description || submission?.description
                     : 'No description available'}
@@ -844,7 +850,7 @@ const UserProfile = () => {
                           🎉 Congratulations! You won {awardInfo.title}
                         </p>
                         {awardInfo.prize && (
-                          <p className="text-xs text-[#94a3b8]">Prize: {awardInfo.prize}</p>
+                          <p className="text-xs text-gray-400">Prize: {awardInfo.prize}</p>
                         )}
                       </div>
                       {awardInfo.certificate && (
@@ -861,7 +867,7 @@ const UserProfile = () => {
                   </div>
                 )}
 
-                <p className="text-sm text-[#94a3b8]">
+                <p className="text-sm text-gray-400">
                   Submitted on{' '}
                   {submission.submissionTime
                     ? (() => {
@@ -895,22 +901,12 @@ const UserProfile = () => {
                   </div>
                 )}
               </div>
+              
+            <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs">
+              {status.charAt(0).toUpperCase() + status.slice(1)}
+            </span>
+          
 
-              <span
-                className={`inline-block px-3 py-1 text-xs font-semibold rounded-full self-start ${
-                  status === 'Approved' || status === 'Winner'
-                    ? 'bg-green-200 text-green-800'
-                    : status === 'Under Review'
-                    ? 'bg-yellow-200 text-yellow-800'
-                    : status === 'Rejected'
-                    ? 'bg-red-200 text-red-800'
-                    : status === 'Submitted'
-                    ? 'bg-blue-200 text-blue-800'
-                    : 'bg-gray-200 text-gray-800'
-                }`}
-              >
-                {status}
-              </span>
             </div>
           </div>
         );
@@ -918,11 +914,10 @@ const UserProfile = () => {
     </div>
   )}
 
-
-            </div>
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

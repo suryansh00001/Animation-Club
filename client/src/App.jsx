@@ -9,10 +9,8 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import AnnouncementPopup from './components/AnnouncementPopup'
 import SEOUpdater from './components/SEOUpdater'
-
-// import AdminOpportunities from './admin/AdminOpportunities'
+import AdminOpportunities from './admin/AdminOpportunities'
 import GlowingCursor from './components/GlowingCursor'
-
 
 // Pages
 const Home = React.lazy(() => import('./pages/Home'));
@@ -94,9 +92,7 @@ const App = () => {
             } />
             <Route path="freelancing-opportunities" element={
               <AdminRouteGuard page="freelancing-opportunities">
-
-                {/* <AdminOpportunities /> */}
-
+                <AdminOpportunities />
               </AdminRouteGuard>
             } />
             <Route path="members" element={

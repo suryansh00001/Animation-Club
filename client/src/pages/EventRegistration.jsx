@@ -299,7 +299,7 @@ if (isAlreadyRegistered) {
                   onChange={handleChange}
                   rows={3}
                   className="w-full border border-emerald-700 bg-[#0a1a1a] text-emerald-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
-                  placeholder="List team member names and their roles (leave blank if participating individually)"
+                  placeholder="List team members, one per line. Leave blank if participating individually."
                 />
               </div>
             )}

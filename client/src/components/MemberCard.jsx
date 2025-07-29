@@ -23,35 +23,30 @@ const MemberCard = ({ member, onViewProfile }) => {
         </div>
 
         {/* Name */}
-        <h3 className="text-lg font-bold text-emerald-400 mb-1">{member.name}</h3>
+        <h3 className="text-base font-bold text-emerald-300 mb-1">{member.name}</h3>
 
         {/* Position */}
-        <p className="text-white font-medium mb-2">{member.position || member.role}</p>
+        <p className="text-white font-medium text-sm capitalize mb-2">{member.position || member.role}</p>
 
         {/* Email */}
         {member.email && (
-          <p className="text-sm text-gray-400 mb-1"> {member.email}</p>
+          <p className="text-xs font-medium transition-colors text-gray-400 mb-1"> {member.email}</p>
         )}
 
         {/* Phone */}
         {member.profile?.mobile && (
-          <p className="text-sm text-gray-400">{member.profile.mobile}</p>
+          <p className="text-xs font-medium transition-colors text-gray-400">{member.profile.mobile}</p>
         )}
       </div>
-
-       {/*role*/}
-       {member.role && (
-         <p className="text-sm text-gray-400 mb-1"> {member.role}</p>
-       )}
         {/* Join Date */}
         {member.joinDate && (
-  <div className="text-sm text-gray-400">
-    Joined on {new Date(member.joinDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })}
-  </div>
+      <div className="text-xs font-medium transition-colors text-gray-400">
+        Joined on {new Date(member.joinDate).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })}
+      </div>
 )}
 
 
@@ -60,7 +55,7 @@ const MemberCard = ({ member, onViewProfile }) => {
       {/* View Profile Button */}
       <button
         onClick={() => onViewProfile(member)}
-        className="mt-4 text-emerald-300 text-sm hover:underline"
+        className="text-xs text-emerald-100 hover:text-emerald-300 font-medium transition-colors"
       >
         View Profile →
       </button>
