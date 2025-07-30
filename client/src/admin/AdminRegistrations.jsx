@@ -266,7 +266,7 @@ const AdminRegistrations = () => {
                                         Contact
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Academic Info
+                                        Team Members
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Registration Date
@@ -302,11 +302,19 @@ const AdminRegistrations = () => {
                                             <div className="text-sm text-gray-500">{registration.userId?.phone || registration.phone}</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{registration.userId?.major || registration.department}</div>
-                                            <div className="text-sm text-gray-500">{registration.userId?.year || registration.year}</div>
-                                        </td>
+                                            {registration.registrationData.teamMembers && registration.registrationData.teamMembers.length > 0 ? (
+                                                registration.registrationData.teamMembers.map((teammate, index) => (
+                                                <div key={index} className="text-sm text-gray-900">
+                                                    {teammate.name}
+                                                </div>
+                                                ))
+                                            ) : (
+                                                'Individual'
+                                            )}
+                                            </td>
+
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {new Date(registration.timestamps?.registeredAt || registration.registrationDate || '2024-01-01').toLocaleDateString()}
+                                            {new Date(registration?.createdAt || registration.registrationDate || '2024-01-01').toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
@@ -424,6 +432,35 @@ const RegistrationDetailModal = ({ registration, event, onClose, onStatusUpdate 
                                 </div>
                             </div>
                         </div>
+
+                        {/* registration data  */}
+
+                        <div>
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Team Members</h4>
+                            <div className="space-y-1">
+                                {registration.registrationData.teamMembers && registration.registrationData.teamMembers.length > 0 ? (
+                                registration.registrationData.teamMembers.map((teammate, index) => (
+                                    <div key={index} className="text-sm text-gray-700">
+                                    {teammate.name}
+                                    </div>
+                                ))
+                                ) : (
+                                <div className="text-sm text-gray-500">Individual (no team members)</div>
+                                )}
+                            </div>
+                            <br></br>
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Expectations:</h4>
+                            <div className="space-y-1">
+                                {registration.registrationData.expectations && (
+                                    <div  className="text-sm text-gray-700">
+                                    {registration.registrationData.expectations}
+                                    </div>
+                                )}
+                            </div>
+
+                        </div>
+
+
 
                         {/* Registration Status */}
                         <div>

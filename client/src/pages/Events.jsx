@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppContext } from '../context/appContext';
 import ScrollToTop from '../components/ScrollToTop';
+import Tilt from 'react-parallax-tilt';
 
 const Events = () => {
   const { 
@@ -18,6 +19,7 @@ const Events = () => {
   const [typeFilter, setTypeFilter] = useState('all');
 
   useEffect(() => {
+    scrollTo(0,0);
     let isMounted = true;
     
     const loadEvents = async () => {
@@ -113,31 +115,6 @@ const Events = () => {
     return statusMatch && typeMatch;
   });
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'upcoming':
-        return 'bg-blue-100 text-blue-800';
-      case 'ongoing':
-        return 'bg-green-100 text-green-800';
-      case 'completed':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'competition':
-        return 'bg-purple-100 text-purple-800';
-      case 'workshop':
-        return 'bg-orange-100 text-orange-800';
-      case 'seminar':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const getActionButton = (event) => {
     if (event.status === 'completed') {
@@ -178,7 +155,7 @@ const Events = () => {
             return (
               <Link
                 to={`/events/${event._id}/submit`}
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium"
+                className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-red-500 transition-colors text-sm font-medium"
               >
                 Submit Work
               </Link>
@@ -190,7 +167,7 @@ const Events = () => {
           return (
             <Link
               to={`/events/${event._id}/register`}
-              className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors text-sm font-medium"
+              className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium"
             >
               Register to Submit
             </Link>
@@ -200,14 +177,14 @@ const Events = () => {
         return (
           <Link
             to={`/events/${event._id}/submit`}
-            className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium"
+            className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors text-sm font-medium"
           >
             Submit Work
           </Link>
         );
       } else {
         return (
-          <span className="text-green-600 text-sm font-medium">Ongoing</span>
+          <span className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-sm font-medium">Ongoing</span>
         );
       }
     }
@@ -241,7 +218,7 @@ const Events = () => {
       return (
         <Link
           to={`/events/${event._id}/register`}
-          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors text-sm font-medium"
+          className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-green-400 transition-colors text-sm font-medium"
         >
           Register Now
         </Link>
@@ -251,7 +228,7 @@ const Events = () => {
     return (
       <Link
         to={`/events/${event._id}`}
-        className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors text-sm font-medium"
+        className="bg-emerald-500 text-white px-4 py-2 rounded-md hover:bg-blue-500 transition-colors text-sm font-medium"
       >
         View Details
       </Link>
@@ -259,190 +236,181 @@ const Events = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            Club Events
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore our exciting events, competitions, and workshops designed to enhance your animation skills.
-          </p>
-        </div>
+    <div className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-24 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {/* Header */}
+    <div className="text-center mb-12">
+      <h1 className="text-2xl sm:text-4xl font-bold text-emerald-400 mb-4">Club Events</h1>
+      <p className="text-sm sm:text-lg text-[#d1d5db] max-w-2xl mx-auto">
+        Explore our exciting events, competitions, and workshops designed to enhance your animation skills.
+      </p>
+    </div>
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Status Filter */}
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter by Status
-              </label>
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All Events</option>
-                <option value="upcoming">Upcoming</option>
-                <option value="ongoing">Ongoing</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
-
-            {/* Type Filter */}
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Filter by Type
-              </label>
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="all">All Types</option>
-                <option value="competition">Competition</option>
-                <option value="workshop">Workshop</option>
-                <option value="seminar">Seminar</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {loading ? (
-            // Loading skeleton
-            [...Array(6)].map((_, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden animate-pulse">
-                <div className="w-full h-48 bg-gray-300"></div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="h-4 bg-gray-300 rounded w-16"></div>
-                    <div className="h-4 bg-gray-300 rounded w-20"></div>
-                  </div>
-                  <div className="h-6 bg-gray-300 rounded w-3/4 mb-3"></div>
-                  <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-                  <div className="h-4 bg-gray-300 rounded w-2/3 mb-4"></div>
-                  <div className="space-y-2 mb-4">
-                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                    <div className="h-4 bg-gray-300 rounded w-1/3"></div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="h-4 bg-gray-300 rounded w-20"></div>
-                    <div className="h-8 bg-gray-300 rounded w-24"></div>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : filteredEvents.map((event) => (
-            <div key={event._id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-              <img
-                src={event.image}
-                alt={event.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                {/* Status and Type Badges */}
-                <div className="flex items-center justify-between mb-3">
-                  <span className={`inline-block text-xs px-2 py-1 rounded-full font-semibold ${getStatusColor(event.status)}`}>
-                    {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
-                  </span>
-                  <span className={`inline-block text-xs px-2 py-1 rounded-full font-semibold ${getTypeColor(event.type)}`}>
-                    {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
-                  </span>
-                </div>
-
-                {/* Event Title */}
-                <h3 className="text-xl font-bold text-gray-800 mb-3">
-                  {event.title}
-                </h3>
-
-                {/* Event Description */}
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {event.description}
-                </p>
-
-                {/* Event Details */}
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-500">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    Date: {new Date(event.date).toLocaleDateString()}
-                  </div>
-                  
-                  {event.registrationRequired && event.registrationDeadline && event.status === 'upcoming' && (
-                    <div className="flex items-center text-sm text-red-500">
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Registration Deadline: {new Date(event.registrationDeadline).toLocaleDateString()}
-                    </div>
-                  )}
-                </div>
-
-                {/* Action Button */}
-                <div className="flex items-center justify-between">
-                  <Link
-                    to={`/events/${event._id}`}
-                    className="text-purple-600 hover:text-purple-800 text-sm font-medium"
-                  >
-                    View Details →
-                  </Link>
-                  {getActionButton(event)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* No Events Message */}
-        {!loading && filteredEvents.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">📅</div>
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">
-              {error ? 'Unable to load events' : 
-               events.length === 0 ? 'No events available' : 
-               'No events match your filters'}
-            </h3>
-            <p className="text-gray-500">
-              {error ? 'Please try refreshing the page or check your connection.' :
-               events.length === 0 ? 'Check back soon for exciting new events!' :
-               'Try adjusting your filters to see more events.'}
-            </p>
-            {error && (
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors"
-              >
-                Refresh Page
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Call to Action */}
-        <div className="text-center mt-12 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Want to suggest an event?
-          </h2>
-          <p className="text-gray-600 mb-6">
-            Have an idea for a workshop, competition, or seminar? We'd love to hear from you!
-          </p>
-          <Link
-            to="/contact"
-            className="inline-block bg-purple-500 text-white px-6 py-3 rounded-md hover:bg-purple-600 transition-colors font-medium"
+    {/* Filters */}
+    <div className="bg-[#0a1a1a] rounded-lg shadow-[0_0_20px_#10b981] p-6 mb-8 border border-emerald-600/30">
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Status Filter */}
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-[#94a3b8] mb-2">Filter by Status</label>
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="w-full bg-[#0a1a1a] border text-sm sm:text-[0.9rem] border-[#06d6a0]/40 text-white rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#06d6a0]"
           >
-            Contact Us
-          </Link>
+            <option value="all">All Events</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="ongoing">Ongoing</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
+        {/* Type Filter */}
+        <div className="flex-1">
+          <label className="block text-sm font-medium  text-[#94a3b8] mb-2">Filter by Type</label>
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value)}
+            className="w-full bg-[#0a1a1a] border border-[#06d6a0]/40 text-white text-sm sm:text-[0.9rem] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#06d6a0]"
+          >
+            <option value="all">All Types</option>
+            <option value="competition">Competition</option>
+            <option value="workshop">Workshop</option>
+            <option value="seminar">Seminar</option>
+          </select>
         </div>
       </div>
-
-      {/* Scroll to Top Button */}
-      <ScrollToTop />
     </div>
+
+<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 sm:gap-8">
+  {loading ? (
+    [...Array(6)].map((_, index) => (
+      <div key={index} className="bg-emerald-900 rounded-lg shadow-lg overflow-hidden animate-pulse">
+        <div className="w-full h-48 bg-emerald-800"></div>
+        <div className="p-6">
+          <div className="h-4 bg-emerald-700 rounded w-3/4 mb-3"></div>
+          <div className="h-4 bg-emerald-700 rounded w-full mb-2"></div>
+          <div className="h-4 bg-emerald-700 rounded w-1/2 mb-4"></div>
+          <div className="h-6 bg-emerald-700 rounded w-2/3 mb-4"></div>
+          <div className="h-8 bg-emerald-700 rounded w-1/3"></div>
+        </div>
+      </div>
+    ))
+  ) : filteredEvents.map((event) => (
+    <Tilt
+      key={event._id}
+      tiltMaxAngleX={10}
+      tiltMaxAngleY={10}
+      scale={1.03}
+      transitionSpeed={400}
+      className="rounded-lg"
+    >
+      <div className="bg-white/10 border border-emerald-400/30 rounded-xl shadow-[0_0_20px_#00ffcc33] hover:shadow-[0_0_30px_#00ffcce6] transition duration-500 ease-in-out transform max-w-sm w-full mx-auto h-[550px] flex flex-col justify-between overflow-hidden">
+        
+        {/* Image */}
+        <img
+          src={event.image}
+          alt={event.title}
+          className="w-full h-48 object-cover"
+        />
+
+        {/* Body */}
+        <div className="flex flex-col justify-between flex-grow p-4 sm:p-6">
+          
+          {/* Tags */}
+          <div className="flex items-center justify-between mb-3">
+            <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs">
+              {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+            </span>
+            <span className="px-2 py-1 bg-emerald-900/50 text-emerald-300 border border-emerald-400 rounded text-xs">
+              {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-2">{event.title}</h3>
+
+          {/* Description */}
+          <p className="text-gray-400 text-sm mb-4 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>
+            {event.description}
+          </p>
+
+          {/* Info */}
+          <div className="text-sm text-emerald-300 space-y-2 mb-4">
+            <div className="flex items-center">
+              <svg className="w-4 h-4 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Date: {new Date(event.date).toLocaleDateString()}
+            </div>
+
+            {event.registrationRequired && event.registrationDeadline && event.status === 'upcoming' && (
+              <div className="flex items-center text-red-400">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Registration Deadline: {new Date(event.registrationDeadline).toLocaleDateString()}
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="mt-auto flex items-center justify-between pt-4 border-t border-emerald-500/20">
+            <Link
+              to={`/events/${event._id}`}
+              className="text-emerald-400 hover:text-emerald-300 font-medium text-sm whitespace-nowrap"
+            >
+              View Details →
+            </Link>
+            {getActionButton(event)}
+          </div>
+        </div>
+      </div>
+    </Tilt>
+  ))}
+</div>
+
+
+    {/* No Events Message */}
+    {!loading && filteredEvents.length === 0 && (
+      <div className="text-center py-12">
+        <div className="text-[#94a3b8] text-6xl mb-4">📅</div>
+        <h3 className="text-xl font-semibold text-white mb-2">
+          {error ? 'Unable to load events' : events.length === 0 ? 'No events available' : 'No events match your filters'}
+        </h3>
+        <p className="text-[#94a3b8]">
+          {error ? 'Please try refreshing the page or check your connection.' :
+            events.length === 0 ? 'Check back soon for exciting new events!' :
+            'Try adjusting your filters to see more events.'}
+        </p>
+        {error && (
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-[#06d6a0] text-black px-4 py-2 rounded-md hover:bg-[#05c392] transition-colors"
+          >
+            Refresh Page
+          </button>
+        )}
+      </div>
+    )}
+
+    {/* Call to Action */}
+<div className="text-center mt-16 bg-[#064e3b] rounded-lg shadow-[0_0_20px_#10b981] p-10 border border-emerald-400/30 transition-all duration-300">
+  <h2 className="text-2xl font-bold text-white mb-4">Want to suggest an event?</h2>
+  <p className="text-[#94a3b8] mb-6">
+    Have an idea for a workshop, competition, or seminar? We'd love to hear from you!
+  </p>
+  <Link
+    to="/contact"
+    className="inline-block bg-emerald-400 text-black px-6 py-3 rounded-md hover:bg-emerald-300 transition-colors font-semibold shadow-lg hover:shadow-[0_0_15px_#10b981]"
+  >
+    Contact Us
+  </Link>
+</div>
+  </div>
+
+  <ScrollToTop />
+</div>
+
   );
 };
 
