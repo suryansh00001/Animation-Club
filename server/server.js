@@ -29,9 +29,8 @@ await connectDB();
 
 // Allow multiple origins
 const allowedOrigins = [
-    'http://localhost:5173',
+    // 'http://localhost:5173',
     'https://animation-club.vercel.app',
-    'https://animation-club-backend.vercel.app',
     'https://animation-club-sandy.vercel.app'
 ];
 
