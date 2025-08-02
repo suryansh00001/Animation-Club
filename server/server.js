@@ -36,7 +36,8 @@ const allowedOrigins = [
   'https://animation-club-sandy.vercel.app'
 ];
 
-// CORS configuration (only allow from allowedOrigins)
+
+// CORS configuration (only allow from allowedOrigins) - should be first
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
@@ -47,10 +48,8 @@ app.use(cors({
 // Middleware to block requests from disallowed origins
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  // Allow requests with no origin (e.g., curl, server-to-server)
   if (!origin) return next();
   if (allowedOrigins.includes(origin)) return next();
-  // Block all other origins
   res.status(403).json({ error: 'Forbidden: This API is only accessible from the official Animation Club website.' });
 });
 
@@ -87,13 +86,7 @@ app.get('/robots.txt', (req, res) => {
   res.send(`User-agent: *\nDisallow: /admin\nDisallow: /api/v1/admin\n`);
 });
 
-// CORS configuration (only allow from allowedOrigins)
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+
 
 // Routes
 app.get('/', (req, res) => res.send("API is working"));
