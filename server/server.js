@@ -20,6 +20,9 @@ import opportunityRoutes from './routes/opportunityRoutes.js';
 // Import middlewares
 import { apiRateLimit } from './middlewares/rateLimitMiddleware.js';
 import { sanitizeInput } from './middlewares/validationMiddleware.js';
+import jwt from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -51,6 +54,30 @@ app.use(sanitizeInput);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// --- Authentication middleware for admin routes ---
+function requireAdminAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded || (decoded.role !== 'admin' && decoded.role !== 'manager')) {
+      return res.status(403).json({ error: 'Forbidden: Admins or Managers only' });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+  }
+}
+
+// --- Serve robots.txt to disallow admin paths ---
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *\nDisallow: /admin\nDisallow: /api/v1/admin\n`);
+});
 
 // CORS configuration (only allow from allowedOrigins)
 app.use(cors({
@@ -67,8 +94,8 @@ app.get('/', (req, res) => res.send("API is working"));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
-app.use('/api/v1/admin/events', adminEventRoutes);
-app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/admin', requireAdminAuth, adminRoutes);
+app.use('/api/v1/admin/events', requireAdminAuth, adminEventRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/achievements', achievementRoutes);
 app.use('/api/v1/gallery', galleryRoutes);
