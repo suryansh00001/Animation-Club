@@ -22,3 +22,5 @@ const getMembers = async (req, res) => {
         });
     }
 };
+
+export { getMembers };
