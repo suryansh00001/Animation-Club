@@ -37,7 +37,7 @@ const About = () => {
       setLoading(true);
       
       // Just fetch all members and sort them on frontend
-      const response = await axios.get('/api/v1/admin/members/public');
+      const response = await axios.get('/api/v1/users/members');
       if (response.data.success) {
         const allMembers = response.data.members;
         

@@ -432,7 +432,7 @@ const LeadershipSection = () => {
     const fetchLeadership = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('/api/v1/admin/members/public');
+            const response = await axios.get('/api/v1/users/members');
             if (response.data.success) {
                 const allMembers = response.data.members;
                 // Filter for current active leadership only
