@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Calendar, Award, Users, Mail, MapPin, Star, Briefcase } from 'lucide-react';
+import { X, Calendar, Award, Phone, Mail, MapPin, Star, Briefcase } from 'lucide-react';
 import Tilt from 'react-parallax-tilt';
 
 
@@ -94,6 +94,8 @@ const MemberProfileModal = ({ member, onClose }) => {
                             <div className="flex items-center space-x-1">
                               <Mail className="w-4 h-4" />
                               <span className="truncate">{member.email}</span>
+                              {member.profile?.mobile && (<><Phone className="w-4 h-4" />
+                              <span className="truncate">{member.profile?.mobile}</span></>)}
                             </div>
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
@@ -128,7 +130,7 @@ const MemberProfileModal = ({ member, onClose }) => {
                                   </div>
                                   <div>
                                     <h3 className="text-emerald-400 font-medium text-sm mb-1">Department</h3>
-                                    <p className="text-sm capitalize">{member.currentPosition.department}</p>
+                                    <p className="text-sm capitalize">{member?.dept || 'Not Available'}</p>
                                   </div>
                                   <div>
                                     <h3 className="text-emerald-400 font-medium text-sm mb-1">Start Date</h3>
