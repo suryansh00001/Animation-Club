@@ -8,7 +8,6 @@ const EventRegistration = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, registerForEvent, isRegisteredForEvent, loading, fetchEventById } = useAppContext();
   
-  console.log('EventRegistration - Event ID from params:', { id, type: typeof id, length: id?.length });
   
   const [event, setEvent] = useState(null);
   const [eventLoading, setEventLoading] = useState(true);

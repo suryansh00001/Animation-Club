@@ -40,8 +40,6 @@ const About = () => {
       const response = await axios.get('/api/v1/admin/members/public');
       if (response.data.success) {
         const allMembers = response.data.members;
-        console.log('📊 All members fetched:', allMembers.length);
-        console.log('📊 Sample member:', allMembers[0]);
         
         // Simple separation: active members vs alumni
         const active = allMembers.filter(member => 
@@ -50,9 +48,6 @@ const About = () => {
         const alumni = allMembers.filter(member => 
           member.status === 'alumni' || member.membershipType === 'alumni'
         );
-        
-        console.log('👥 Active members found:', active.length);
-        console.log('📚 Alumni members found:', alumni.length);
         
         setCurrentMembers(active);
         setPreviousMembers(alumni);
@@ -69,10 +64,6 @@ const About = () => {
   const jointSecretaries = currentMembers.filter(member => member.currentPosition?.role === 'joint-secretary');
   const coreMembers = currentMembers.filter(member => member.currentPosition?.role === 'core-member');
 
-  console.log('🔍 Current member breakdown:');
-  console.log('  Secretary:', secretary?.name || 'None');
-  console.log('  Joint Secretaries:', jointSecretaries.map(m => m.name));
-  console.log('  Core Members:', coreMembers.map(m => m.name));
 
   // Simple legacy member grouping - group by academic period from position history
   const legacyMembersByPeriod = {};
@@ -100,12 +91,6 @@ const About = () => {
 
   // Sort periods in descending order (most recent first)
   const sortedPeriods = Object.keys(legacyMembersByPeriod).sort((a, b) => b.localeCompare(a));
-
-  console.log('🔍 Legacy member breakdown:');
-  console.log('  Periods found:', sortedPeriods);
-  sortedPeriods.forEach(period => {
-    console.log(`  ${period}:`, legacyMembersByPeriod[period].map(m => `${m.name} (${m.historicalRole})`));
-  });
 
   return (
     <div className="relative bg-gradient-to-br from-[#0f0f0f] via-[#041d1b] to-[#0a1a17] font-orbitron text-white py-24 overflow-hidden">

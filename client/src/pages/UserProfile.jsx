@@ -85,15 +85,7 @@ const UserProfile = () => {
   // Debug: Log the data to console (safely)
   React.useEffect(() => {
     if (safeUser) {
-      console.log('User loaded:', {
-        name: safeUser.name,
-        email: safeUser.email,
-        _id: safeUser._id
-      });
     }
-    console.log('Registrations count:', userRegistrations?.length || 0);
-    console.log('Submissions count:', userSubmissions?.length || 0);
-    console.log('Events count:', events?.length || 0);
   }, [safeUser, userRegistrations, userSubmissions, events]);
 
   const handleEditChange = (e) => {
@@ -106,7 +98,6 @@ const UserProfile = () => {
 
   const handleSaveProfile = async () => {
     try {
-      console.log('Saving profile with data:', editData);
       
       // Validate required fields
       if (!editData.name || editData.name.trim().length < 2) {

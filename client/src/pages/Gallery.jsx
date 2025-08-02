@@ -272,7 +272,6 @@ const Gallery = () => {
           alt={selectedImage.title}
           className="w-full max-h-[70vh] object-contain"
           onError={(e) => {
-            console.log('Modal image failed to load, using fallback:', e.target.src);
             e.target.src = '/api/placeholder/400/300';
           }}
         />

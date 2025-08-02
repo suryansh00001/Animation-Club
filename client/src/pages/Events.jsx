@@ -30,9 +30,6 @@ const Events = () => {
         // Fetch events from API
         const fetchedEvents = await fetchEvents();
         
-        console.log('Events fetched:', fetchedEvents?.length || 0);
-        console.log('Sample event data:', fetchedEvents?.[0]);
-        console.log('Event IDs:', fetchedEvents?.map(e => ({ id: e._id, title: e.title })));
         
         if (isMounted) {
           setEvents(fetchedEvents || []);

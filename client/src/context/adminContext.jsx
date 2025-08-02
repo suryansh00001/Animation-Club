@@ -170,7 +170,6 @@ export const AdminContextProvider = ({ children }) => {
         await axios.patch(`/api/v1/admin/opportunity/${id}/edit`, data);
         await fetchAdminOpportunities();
         } catch (err) {
-            console.log(err);
         }
         setLoading(false);
     };
@@ -297,7 +296,6 @@ export const AdminContextProvider = ({ children }) => {
                 return false;
             }
         } catch (error) {
-            console.log(error);
             console.error('Admin login error:', error);
             const errorMessage = error.response?.data?.message || 'Admin login failed';
             toast.error(errorMessage);
@@ -412,7 +410,6 @@ export const AdminContextProvider = ({ children }) => {
     const createMember = async (memberData) => {
         setLoading(true);
         try {
-            console.log('Creating member with data:', memberData);
             const response = await axios.post('/api/v1/admin/members', memberData);
             if (response.data.success) {
                 const newMember = response.data.member;
@@ -492,7 +489,6 @@ export const AdminContextProvider = ({ children }) => {
     const updateMemberPosition = async (memberId, { newPosition, reason }) => {
         setLoading(true);
         try {
-            console.log('Updating member position:', { memberId, newPosition, reason });
             const response = await axios.patch(`/api/v1/admin/members/${memberId}/position`, {
                 newPosition,
                 reason

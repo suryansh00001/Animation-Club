@@ -313,7 +313,7 @@ const AdminMembers = () => {
             return;
         }
         
-        console.log('🔍 Valid positions to add:', validPositions);
+        
         
         try {
             // Process previous positions into position history
@@ -329,8 +329,6 @@ const AdminMembers = () => {
                     period: pos.period,
                     achievements: []
                 }));
-
-            console.log('🏗️ Creating legacy member with position history:', positionHistory);
 
             // Create legacy member with no current position (alumni)
             const memberData = {
@@ -353,8 +351,6 @@ const AdminMembers = () => {
                 },
                 status: 'alumni'
             };
-
-            console.log('📤 Sending legacy member data:', memberData);
             await createMember(memberData);
             
             // Reset form

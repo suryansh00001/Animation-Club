@@ -19,7 +19,6 @@ axios.interceptors.response.use(
       localStorage.removeItem('userAuth');
       localStorage.removeItem('adminAuth');
       localStorage.removeItem('authToken');
-      console.log('401 error - clearing authentication');
     }
     return Promise.reject(error);
   }
@@ -101,7 +100,6 @@ export const AppContextProvider = ({ children }) => {
                             loaded: true,
                             loading: false
                         });
-                        console.log('Site settings loaded from API');
                     } else {
                         console.warn('Failed to load settings from API');
                         setSettings(prev => ({ ...prev, loading: false }));
@@ -133,7 +131,6 @@ export const AppContextProvider = ({ children }) => {
                             
                             // Check if it's a rate limiting error and we have retries left
                             if (error.response?.status === 429 && retries > 0) {
-                                console.log(`Rate limited, retrying in 2 seconds... (${retries} retries left)`);
                                 setTimeout(() => verifySession(retries - 1), 2000);
                                 return;
                             }
@@ -144,7 +141,6 @@ export const AppContextProvider = ({ children }) => {
                                 localStorage.removeItem('authToken');
                             } else {
                                 // For other errors, keep the session but don't set user yet
-                                console.log('Session verification temporarily failed');
                             }
                         }
                     };
@@ -157,7 +153,6 @@ export const AppContextProvider = ({ children }) => {
                     const response = await axios.get('/api/v1/events');
                     if (response.data.success) {
                         setEvents(response.data.events);
-                        console.log('Events loaded from API:', response.data.events.length);
                     } else {
                         console.warn('Failed to load events from API');
                     }
@@ -282,7 +277,6 @@ export const AppContextProvider = ({ children }) => {
     const updateProfile = async (profileData) => {
         setLoading(true);
         try {
-            console.log('Updating profile with data:', profileData);
             
             const response = await axios.put('/api/v1/users/profile', profileData);
 
@@ -418,14 +412,12 @@ export const AppContextProvider = ({ children }) => {
         
         // Don't load if no user or not authenticated
         if (!user || !user._id || !isAuthenticated) {
-            console.log('Not loading profile data - user not authenticated');
             return profileData;
         }
 
         setProfileData(prev => ({ ...prev, loading: true }));
 
         try {
-            console.log('Loading centralized profile data...');
             
             // Load all profile data in parallel with individual error handling
             const [registrations, submissions, activity, stats] = await Promise.allSettled([
@@ -450,7 +442,6 @@ export const AppContextProvider = ({ children }) => {
             };
 
             setProfileData(newProfileData);
-            console.log('Centralized profile data loaded successfully');
             
             return newProfileData;
 
@@ -459,7 +450,6 @@ export const AppContextProvider = ({ children }) => {
             
             // If it's an authentication error, clear the session
             if (error.response?.status === 401) {
-                console.log('Authentication failed - clearing session');
                 localStorage.removeItem('userAuth');
                 localStorage.removeItem('authToken');
                 setUser(null);
@@ -513,10 +503,8 @@ export const AppContextProvider = ({ children }) => {
     // Auto-load profile data when user logs in
     useEffect(() => {
         if (user && user._id && isAuthenticated && !profileData.loaded && !profileData.loading) {
-            console.log('Auto-loading profile data for authenticated user');
             loadProfileData();
         } else if (!isAuthenticated && profileData.loaded) {
-            console.log('User not authenticated - clearing profile data');
             setProfileData({
                 registrations: [],
                 submissions: [],
@@ -530,7 +518,6 @@ export const AppContextProvider = ({ children }) => {
 
     // Event registration function (MongoDB optimized)
     const registerForEvent = async (eventId, registrationData) => {
-        console.log('🔵 Registering for event:', { eventId, type: typeof eventId, length: eventId?.length });
         setLoading(true);
         try {
             const response = await axios.post(`/api/v1/events/${eventId}/register`, registrationData);
