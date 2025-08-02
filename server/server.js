@@ -27,12 +27,21 @@ const port = process.env.PORT || 4000;
 // Connect to DB before starting server
 await connectDB();
 
-// Allow multiple origins
+// Allow only Vercel production URLs
 const allowedOrigins = [
-    // 'http://localhost:5173',
-    'https://animation-club.vercel.app',
-    'https://animation-club-sandy.vercel.app'
+  'https://animation-club.vercel.app',
+  'https://animation-club-sandy.vercel.app'
 ];
+
+// Middleware to block requests from disallowed origins
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // Allow requests with no origin (e.g., curl, server-to-server)
+  if (!origin) return next();
+  if (allowedOrigins.includes(origin)) return next();
+  // Block all other origins
+  res.status(403).json({ error: 'Forbidden: This API is only accessible from the official Animation Club website.' });
+});
 
 // Security and utility middleware
 app.use(apiRateLimit);
@@ -43,22 +52,12 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS configuration
+// CORS configuration (only allow from allowedOrigins)
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            console.log('Blocked origin:', origin);
-            callback(null, true); // Allow all origins in development
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS','PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Routes
