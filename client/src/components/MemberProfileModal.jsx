@@ -260,6 +260,8 @@ const MemberProfileModal = ({ member, onClose }) => {
                                   <a href={`mailto:${member.email}`} className="text-emerald-300 hover:text-emerald-100 truncate">
                                     {member.email}
                                   </a>
+                                </div>
+                                <div className="flex items-center space-x-2">
                                   {member.profile?.mobile && (<><Phone className="w-4 h-4 text-emerald-500" />
                                   <a href={`tel:${member.profile.mobile}`} className="text-emerald-300 hover:text-emerald-100 truncate">
                                     {member.profile.mobile}
