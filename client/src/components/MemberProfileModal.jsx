@@ -94,8 +94,6 @@ const MemberProfileModal = ({ member, onClose }) => {
                             <div className="flex items-center space-x-1">
                               <Mail className="w-4 h-4" />
                               <span className="truncate">{member.email}</span>
-                              {member.profile?.mobile && (<><Phone className="w-4 h-4" />
-                              <span className="truncate">{member.profile?.mobile}</span></>)}
                             </div>
                             <div className="flex items-center space-x-1">
                               <Calendar className="w-4 h-4" />
@@ -262,6 +260,10 @@ const MemberProfileModal = ({ member, onClose }) => {
                                   <a href={`mailto:${member.email}`} className="text-emerald-300 hover:text-emerald-100 truncate">
                                     {member.email}
                                   </a>
+                                  {member.profile?.mobile && (<><Phone className="w-4 h-4 text-emerald-500" />
+                                  <a href={`tel:${member.profile.mobile}`} className="text-emerald-300 hover:text-emerald-100 truncate">
+                                    {member.profile.mobile}
+                                  </a></>)}                                  
                                 </div>
                                 {member.profile?.portfolio?.url && (
                                   <div className="flex items-center space-x-2">
