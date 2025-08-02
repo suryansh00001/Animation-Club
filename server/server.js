@@ -36,6 +36,14 @@ const allowedOrigins = [
   'https://animation-club-sandy.vercel.app'
 ];
 
+// CORS configuration (only allow from allowedOrigins)
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+}));
+
 // Middleware to block requests from disallowed origins
 app.use((req, res, next) => {
   const origin = req.headers.origin;
