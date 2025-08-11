@@ -34,8 +34,7 @@ npm install
 
 2. **Add your environment file (`.env`):**
 ```env
-VITE_BACKEND_URL=http://localhost:5000
-VITE_APP_NAME=Animation Club
+VITE_BACKEND_URL=http://localhost:4000
 ```
 
 3. **Start the development server:**
@@ -60,6 +59,7 @@ npm run preview  # Preview the production build
 - **Gallery** - Photo memories from events
 - **Artworks** - Member creative showcases
 - **Achievements** - Awards and accomplishments
+- **Opportunities** - Freelancing Opportunities
 
 ### Member Features
 - **Login/Register** - Join the club
@@ -74,6 +74,7 @@ npm run preview  # Preview the production build
 - **Review Artworks** - Approve member submissions
 - **Upload Photos** - Add to gallery
 - **Track Achievements** - Document club success
+- **Manage Opportunities** - Create and manager Freelancing Opportunities
 
 ## 🎨 Design Features
 
@@ -93,13 +94,14 @@ We use React Context to keep track of:
 
 ### Page Routing
 ```
-/                    -> Home page
-/about              -> About us
-/events             -> Events list
-/gallery            -> Photo gallery
-/artworks           -> Member artworks
-/achievements       -> Club achievements
-/admin/dashboard    -> Admin panel
+/                            -> Home page
+/about                       -> About us
+/events                      -> Events list
+/gallery                     -> Photo gallery
+/freelancing-opportunities   -> Photo gallery
+/artworks                    -> Member artworks
+/achievements                -> Club achievements
+/admin/dashboard             -> Admin panel
 ```
 
 ### Component Structure
@@ -114,31 +116,6 @@ We use React Context to keep track of:
 - **Image optimization** - Fast-loading photos
 - **Lazy loading** - Load content as you scroll
 - **Minified builds** - Smaller file sizes
-
-## � For Developers
-
-### Adding New Components
-```javascript
-import React, { useState } from 'react';
-
-const MyComponent = ({ title }) => {
-  const [count, setCount] = useState(0);
-  
-  return (
-    <div className="p-4 bg-white rounded-lg">
-      <h2 className="text-xl font-bold">{title}</h2>
-      <button 
-        onClick={() => setCount(count + 1)}
-        className="mt-2 px-4 py-2 bg-purple-600 text-white rounded"
-      >
-        Count: {count}
-      </button>
-    </div>
-  );
-};
-
-export default MyComponent;
-```
 
 ### File Organization
 - Use `PascalCase` for component files (`MyComponent.jsx`)

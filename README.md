@@ -1,28 +1,39 @@
 # 🎬 Animation Club Website
 
-A complete website for our animation club where members can connect, share their work, and stay updated with events and achievements.
+A modern, full-featured website for the Animation Club. Members can connect, share work, and stay updated with events and achievements. Admins manage everything securely and efficiently.
 
-## ✨ What You Can Do
+## ✨ Features
 
 ### For Members
-- Create your profile and showcase your skills
+- Create and manage your profile
 - Register for workshops and events
-- Submit your artwork for everyone to see
-- Browse the gallery of club memories
-- Check out our achievements and awards
+- Submit artwork and view the gallery
+- Browse club achievements and awards
+- Secure authentication with strong password    requirements
 
-### For Admins
+### For Admins & Managers
+- Role-based access for admins and event managers
 - Manage member registrations and profiles
-- Create and organize events
+- Create, organize, and moderate events
 - Review and approve member artwork
-- Upload photos to the gallery
+- Manage gallery photos
 - Track club achievements
+- Lazy loading and code splitting for fast admin panel
 
-## 🛠️ Built With
+### Security & Performance
+- JWT authentication with HttpOnly cookies
+- Rate limiting and brute-force protection (configurable via `.env`)
+- Password strength validation
+- Input validation and error handling
+- HTTPS-ready, secure headers recommended
+- Optimized frontend with React.lazy and Suspense
 
-**Frontend:** React + Vite + Tailwind CSS  
-**Backend:** Node.js + Express + MongoDB  
-**Authentication:** JWT tokens
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React + Vite + Tailwind CSS
+- **Backend:** Node.js + Express + MongoDB
+- **Authentication:** JWT tokens
 
 ## 📁 Project Structure
 
@@ -44,15 +55,13 @@ Animation Club/
 │
 ├── server/                # Backend Node.js application
 │   ├── configs/           # Configuration files
-│   │   ├── db.js          # Database connection
-│   │   └── multer.js      # File upload configuration
 │   ├── controllers/       # Route controllers
-│   ├── middlewares/       # Custom middleware
-│   ├── models/           # MongoDB schemas
-│   ├── routes/           # API routes
-│   ├── scripts/          # Utility scripts
+│   ├── middlewares/       # Custom middleware (rate limiting, validation, etc.)
+│   ├── models/            # MongoDB schemas
+│   ├── routes/            # API routes
+│   ├── scripts/           # Utility scripts (sample data, admin creation)
 │   ├── package.json
-│   └── server.js         # Main server file
+│   └── server.js          # Main server file
 │
 ├── .gitignore
 └── README.md
@@ -60,114 +69,97 @@ Animation Club/
 
 ## 🚀 Getting Started
 
-### What You Need
-- Node.js (version 14 or newer)
-- MongoDB (you can use a free MongoDB Atlas account)
+### Prerequisites
+- Node.js (v14+)
+- MongoDB (local or Atlas)
 
 ### Quick Setup
+1. **Clone the repo:**
+   ```bash
+   git clone <your-repo-url>
+   cd Animation-Club
+   ```
+2. **Install backend dependencies:**
+   ```bash
+   cd server
+   npm install
+   ```
+3. **Install frontend dependencies:**
+   ```bash
+   cd ../client
+   npm install
+   ```
+4. **Configure environment variables:**
+   - In `server/.env`:
+     ```env
+     MONGODB_URI=your-mongodb-connection
+     JWT_SECRET=your-secret-key
+     PORT=5000
+     CLIENT_URL=http://localhost:4000
+     NODE_ENV=development #production
+     SESSION_TIMEOUT=30
+     MAX_LOGIN_ATTEMPTS=5
+     PASSWORD_MIN_LENGTH=6
+     AUTH_RATE_LIMIT_WINDOW_MS=900000         # 15 minutes
+     AUTH_RATE_LIMIT_MAX=20                  # 20 auth attempts per 15 minutes
+     AUTH_RATE_LIMIT_MESSAGE=Too many authentication attempts, please try again later.
+     API_RATE_LIMIT_WINDOW_MS=60000          # 1 minute
+     API_RATE_LIMIT_MAX=50                   # 100 API calls per minute
+     API_RATE_LIMIT_MESSAGE=API rate limit exceeded, please try again later.
+     ```
+   - In `client/.env`:
+     ```env
+     VITE_BACKEND_URL=http://localhost:4000
+     ```
+5. **Run the backend:**
+   ```bash
+   cd server
+   npm run server
+   ```
+6. **Run the frontend:**
+   ```bash
+   cd client
+   npm run dev
+   ```
 
-1. **Download the project**
-```bash
-git clone <your-repo-url>
-cd "Animation Club"
-```
+Visit [http://localhost:5173](http://localhost:5173) to view the site.
 
-2. **Set up the backend**
-```bash
-cd server
-npm install
-```
+## 🎯 Key Features
 
-3. **Set up the frontend**
-```bash
-cd ../client
-npm install
-```
+- Member registration, login, and profile management
+- Event creation, registration, and moderation
+- Artwork submission and approval
+- Gallery management with categories and featured images
+- Achievements tracking
+- Freelancing Opportunities tracking
+- Admin and event manager roles with restricted access
+- Secure authentication and rate limiting
+- Lazy loading for fast admin experience
+- Sample data scripts for quick setup
 
-4. **Configure your environment**
+## �️ Security Highlights
 
-Create `.env` in the server folder:
-```env
-MONGODB_URI=your-mongodb-connection-string
-JWT_SECRET=your-secret-key
-```
+- Password strength validation (min 8 chars, uppercase, lowercase, number, special char)
+- Rate limiting and brute-force protection on all sensitive endpoints
+- JWT authentication with HttpOnly cookies
+- Input validation and error handling
+- Environment-based configuration for all limits
 
-Create `.env` in the client folder:
-```env
-VITE_BACKEND_URL=http://localhost:5000
-```
+## 👥 Contributors
 
-### Running the Website
-
-**Start the backend:**
-```bash
-cd server
-npm run dev
-```
-
-**Start the frontend:**
-```bash
-cd client
-npm run dev
-```
-
-Visit http://localhost:5173 to see your website!
-
-## 🎯 Main Features
-
-### 🏆 Achievements
-Track and showcase club accomplishments, awards, and recognitions with photos and details.
-
-### 🖼️ Gallery
-Upload and organize club photos by categories like events, workshops, and general moments.
-
-### 🎨 Artworks
-Members can submit their creative work for review and showcase approved pieces to everyone.
-
-### 👥 Member Management
-Keep track of current members, alumni, and their roles within the club.
-
-### 📅 Events
-Create workshops, screenings, and other club activities with registration management.
-
-## 🚀 For Developers
-
-### Project Structure
-```
-Animation Club/
-├── client/          # React frontend
-├── server/          # Node.js backend
-├── README.md        # You are here
-└── .gitignore      # What to ignore in git
-```
-
-### Available Commands
-```bash
-# Backend
-cd server
-npm run dev         # Start development server
-npm start          # Start production server
-
-# Frontend  
-cd client
-npm run dev        # Start development server
-npm run build      # Build for production
-```
+- **Owner:** [nikunjagarwal17](https://github.com/nikunjagarwal17)
+- **Contributor:** [SahithiKokkula](https://github.com/SahithiKokkula);
 
 ## 🚀 Deployment
 
-When you're ready to put your website online:
-
 1. **Build the frontend:**
-```bash
-cd client
-npm run build
-```
-
-2. **Set up your production environment variables**
-
+   ```bash
+   cd client
+   npm run build
+   ```
+2. **Set up production environment variables**
 3. **Deploy to your preferred platform:**
-   - **Frontend**: Vercel, Netlify
-   - **Backend**: Heroku, Railway
-   - **Database**: MongoDB Atlas
+   - **Frontend:** Vercel, Netlify
+   - **Backend:** Heroku, Railway
+   - **Database:** MongoDB Atlas
 

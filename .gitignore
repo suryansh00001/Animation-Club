@@ -282,8 +282,6 @@ uploads/
 public/uploads/
 client/public/uploads/
 
-# Cloudinary cache (if any)
-.cloudinary/
 
 # PM2 ecosystem file
 ecosystem.config.js

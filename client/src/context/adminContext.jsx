@@ -14,6 +14,7 @@ export const AdminContextProvider = ({ children }) => {
     const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
     const [adminUser, setAdminUser] = useState(null);
     const [events, setEvents] = useState([]);
+    const [opportunities, setOpportunities] = useState([]);
     const [members, setMembers] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [galleryImages, setGalleryImages] = useState([]);
@@ -23,20 +24,25 @@ export const AdminContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     
     const navigate = useNavigate();
+    const [isEventManager, setIsEventManager] = useState(false);
+    const [eventManagerUser, setEventManagerUser] = useState(null);
 
     useEffect(() => {
         const initializeAdminData = async () => {
             try {
-                // Check for existing admin session
+                // Check for existing admin or manager session
                 const adminData = localStorage.getItem('adminAuth');
+                const managerData = localStorage.getItem('eventManagerAuth');
                 const authToken = localStorage.getItem('authToken');
-                
+
                 if (adminData && authToken) {
                     try {
                         const response = await axios.get('/api/v1/auth/me');
                         if (response.data.success && response.data.user.role === 'admin') {
                             setAdminUser(response.data.user);
                             setIsAdminAuthenticated(true);
+                            setIsEventManager(false);
+                            setEventManagerUser(null);
                             await loadAdminData();
                         } else {
                             localStorage.removeItem('adminAuth');
@@ -47,9 +53,29 @@ export const AdminContextProvider = ({ children }) => {
                         localStorage.removeItem('adminAuth');
                         localStorage.removeItem('authToken');
                     }
+                } else if (managerData && authToken) {
+                    try {
+                        const response = await axios.get('/api/v1/auth/me');
+                        if (response.data.success && response.data.user.role === 'manager') {
+                            setEventManagerUser(response.data.user);
+                            setIsEventManager(true);
+                            setIsAdminAuthenticated(false);
+                            setAdminUser(null);
+                            // Load events and submissions for manager
+                            await fetchAdminEvents();
+                            await fetchSubmissions();
+                        } else {
+                            localStorage.removeItem('eventManagerAuth');
+                            localStorage.removeItem('authToken');
+                        }
+                    } catch (error) {
+                        console.error('Manager session verification failed:', error);
+                        localStorage.removeItem('eventManagerAuth');
+                        localStorage.removeItem('authToken');
+                    }
                 }
             } catch (error) {
-                console.error('Error initializing admin data:', error);
+                console.error('Error initializing admin/manager data:', error);
             }
         };
 
@@ -102,6 +128,70 @@ export const AdminContextProvider = ({ children }) => {
         }
     };
 
+    const fetchAdminOpportunities = async (filters = {}) => {
+        try {
+            setLoading(true);
+            const response = await axios.get('/api/v1/admin/opportunities', {
+                timeout: 5000
+            });
+            
+            if (response.data?.success) {
+                const sortedOpportunities = response.data.opportunities.sort(
+                    (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+                );
+                setOpportunities(sortedOpportunities);
+                return sortedOpportunities;
+            }
+            
+            console.error('Fetch admin opportunities failed:', response.data?.message);
+            setOpportunities([]);
+            return [];
+        } catch (error) {
+            console.error('Failed to fetch opportunities:', error.message);
+            setOpportunities([]);
+            return [];
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateOpportunityStatus = async (id, status) => {
+        setLoading(true);
+        try {
+        await axios.put(`/api/v1/admin/opportunity/${id}/status`, { status });
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+
+    const updateOpportunity = async (id, data) => {
+        setLoading(true);
+        try {
+        await axios.patch(`/api/v1/admin/opportunity/${id}/edit`, data);
+        await fetchAdminOpportunities();
+        } catch (err) {
+        }
+        setLoading(false);
+    };
+
+    const deleteOpportunity = async (id) => {
+        setLoading(true);
+        try {
+        await axios.delete(`/api/v1/admin/opportunity/${id}`);
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+
+    const createOpportunity = async (data) => {
+        setLoading(true);
+        try {
+        await axios.post('/api/v1/admin/opportunity', data);
+        await fetchAdminOpportunities();
+        } catch (err) {}
+        setLoading(false);
+    };
+    
     const fetchMembers = async () => {
         try {
             const response = await axios.get('/api/v1/admin/members');
@@ -154,7 +244,6 @@ export const AdminContextProvider = ({ children }) => {
     const adminLogin = async (credentials) => {
         setLoading(true);
         try {
-            // Make actual API call to backend for admin login
             const response = await axios.post('/api/v1/auth/login', {
                 email: credentials.email,
                 password: credentials.password
@@ -162,27 +251,46 @@ export const AdminContextProvider = ({ children }) => {
 
             if (response.data.success) {
                 const userData = response.data.user;
+            
+            // Check if user has admin role
+            
+                if (userData.role === 'admin') {
+                    setAdminUser(userData);
+                    setIsAdminAuthenticated(true);
+                    setIsEventManager(false);
+                    setEventManagerUser(null);
+                    localStorage.setItem('adminAuth', JSON.stringify(userData));
+                    if (response.data.token) {
+                        localStorage.setItem('authToken', response.data.token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    }
+                    toast.success('Admin login successful!');
+                    navigate('/admin');
+                    return true;
+                } else if (userData.role === 'manager') {
+                    setEventManagerUser(userData);
+                    setIsEventManager(true);
+                    setIsAdminAuthenticated(false);
+                    setAdminUser(null);
+                    localStorage.setItem('eventManagerAuth', JSON.stringify(userData));
+                    if (response.data.token) {
+                        localStorage.setItem('authToken', response.data.token);
+                        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    } else {
+                        // Remove any previous token if not present for manager
+                        localStorage.removeItem('authToken');
+                        delete axios.defaults.headers.common['Authorization'];
+                    }
+                    toast.success('Event Manager login successful!');
+                    navigate('/admin');
+                    return true;
+                }
                 
-                // Check if user has admin role
-                if (userData.role !== 'admin') {
+                else{
                     toast.error('Admin access required');
                     return false;
                 }
-                
-                setAdminUser(userData);
-                setIsAdminAuthenticated(true);
-                localStorage.setItem('adminAuth', JSON.stringify(userData));
-                
-                // Store token if provided in response (for API calls without cookies)
-                if (response.data.token) {
-                    localStorage.setItem('authToken', response.data.token);
-                    // Set the Authorization header immediately for subsequent requests
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                }
-                
-                toast.success('Admin login successful!');
-                navigate('/admin');
-                return true;
+
             } else {
                 toast.error(response.data.message || 'Admin login failed');
                 return false;
@@ -192,11 +300,11 @@ export const AdminContextProvider = ({ children }) => {
             const errorMessage = error.response?.data?.message || 'Admin login failed';
             toast.error(errorMessage);
             return false;
+            
         } finally {
             setLoading(false);
         }
     };
-
     const adminLogout = async () => {
         try {
             // Make API call to logout
@@ -302,7 +410,6 @@ export const AdminContextProvider = ({ children }) => {
     const createMember = async (memberData) => {
         setLoading(true);
         try {
-            console.log('Creating member with data:', memberData);
             const response = await axios.post('/api/v1/admin/members', memberData);
             if (response.data.success) {
                 const newMember = response.data.member;
@@ -382,7 +489,6 @@ export const AdminContextProvider = ({ children }) => {
     const updateMemberPosition = async (memberId, { newPosition, reason }) => {
         setLoading(true);
         try {
-            console.log('Updating member position:', { memberId, newPosition, reason });
             const response = await axios.patch(`/api/v1/admin/members/${memberId}/position`, {
                 newPosition,
                 reason
@@ -434,6 +540,8 @@ export const AdminContextProvider = ({ children }) => {
                     updatedAt: new Date().toISOString()
                 }
             };
+            setIsEventManager(false);
+            setEventManagerUser(null);
             setGalleryImages(prev => [...prev, newImage]);
             toast.success('Image added to gallery!');
             return newImage;
@@ -448,6 +556,8 @@ export const AdminContextProvider = ({ children }) => {
     const updateGalleryImage = async (imageId, imageData) => {
         setLoading(true);
         try {
+            setIsEventManager(false);
+            setEventManagerUser(null);
             setGalleryImages(prev => prev.map(image => 
                 image._id === imageId ? { 
                     ...image, 
@@ -798,6 +908,8 @@ export const AdminContextProvider = ({ children }) => {
         // Auth state
         isAdminAuthenticated,
         adminUser,
+        isEventManager,
+        eventManagerUser,
         loading,
         
         // Data state
@@ -808,6 +920,7 @@ export const AdminContextProvider = ({ children }) => {
         registrations,
         submissions,
         settings,
+        opportunities,
         
         // Auth functions
         adminLogin,
@@ -819,7 +932,15 @@ export const AdminContextProvider = ({ children }) => {
         fetchRegistrations,
         fetchSubmissions,
         loadAdminData,
+        fetchAdminOpportunities,
         
+        // Opportunity functions
+        updateOpportunityStatus,
+        deleteOpportunity,
+        updateOpportunity,
+        createOpportunity,
+
+
         // Event functions
         createEvent,
         updateEvent,
@@ -873,7 +994,7 @@ export const AdminContextProvider = ({ children }) => {
             {children}
         </AdminContext.Provider>
     );
-};
+}
 
 export const useAdminContext = () => {
     const context = useContext(AdminContext);

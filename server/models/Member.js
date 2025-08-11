@@ -70,6 +70,10 @@ const memberSchema = new mongoose.Schema({
             default: true
         }
     },
+    dept: {
+        type: String,
+        default:'not-available'
+    },
     // Position history for tracking previous roles
     positionHistory: [{
         title: String,
@@ -197,7 +201,6 @@ memberSchema.pre('save', function(next) {
 
 // Index for better query performance
 memberSchema.index({ membershipType: 1 });
-memberSchema.index({ 'currentPosition.department': 1 });
 memberSchema.index({ 'currentPosition.role': 1 });
 
 export default mongoose.model('Member', memberSchema);

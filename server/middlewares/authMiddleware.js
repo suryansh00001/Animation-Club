@@ -83,6 +83,31 @@ export const requireAdmin = async (req, res, next) => {
     }
 };
 
+// Middleware to verify admin or manager role (for event management)
+export const requireAdminOrManager = async (req, res, next) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Authentication required'
+            });
+        }
+        if (!['admin', 'manager'].includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                message: 'Admin or Manager access required'
+            });
+        }
+        next();
+    } catch (error) {
+        console.error('AdminOrManager middleware error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Authorization failed'
+        });
+    }
+};
+
 // Middleware to verify user role (student or admin)
 export const requireUser = async (req, res, next) => {
     try {
@@ -93,7 +118,7 @@ export const requireUser = async (req, res, next) => {
             });
         }
 
-        if (!['student', 'admin'].includes(req.user.role)) {
+        if (!['student', 'admin','manager'].includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
                 message: 'User access required'
@@ -110,26 +135,7 @@ export const requireUser = async (req, res, next) => {
     }
 };
 
-// Optional authentication - doesn't fail if no token
-export const optionalAuth = async (req, res, next) => {
-    try {
-        const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
-        
-        if (token) {
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            const user = await User.findById(decoded.userId).select('-password');
-            
-            if (user && user.isActive) {
-                req.user = user;
-            }
-        }
-        
-        next();
-    } catch (error) {
-        // Continue without authentication if token is invalid
-        next();
-    }
-};
+
 
 // Middleware to check if user owns the resource
 export const checkOwnership = (resourceIdField = 'userId') => {

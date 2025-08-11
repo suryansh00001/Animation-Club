@@ -14,16 +14,15 @@ import {
 } from '../controllers/userController.js';
 
 
-import { getPublicMembers } from '../controllers/adminController.js';
+import { getMembers } from '../controllers/memberController.js';
 
 // Import middlewares
 import { authenticateToken, requireUser } from '../middlewares/authMiddleware.js';
-import { apiRateLimit } from '../middlewares/rateLimitMiddleware.js';
 
 const router = express.Router();
 
 // Public routes (no authentication required)
-router.get('/members', getPublicMembers);
+router.get('/members', getMembers);
 
 // All other routes require authentication
 router.use(authenticateToken);
@@ -47,5 +46,7 @@ router.get('/achievements', getUserAchievements);
 // User Events
 router.get('/events/upcoming', getUserUpcomingEvents);
 router.get('/events/past', getUserPastEvents);
+
+
 
 export default router;

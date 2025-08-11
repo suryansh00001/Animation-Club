@@ -17,7 +17,6 @@ const AdminMembers = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingMember, setEditingMember] = useState(null);
     const [showPromotionModal, setShowPromotionModal] = useState(false);
-    const [selectedMember, setSelectedMember] = useState(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [editingProfile, setEditingProfile] = useState(null);
     
@@ -42,6 +41,7 @@ const AdminMembers = () => {
             profileImage: '',
             skills: []
         },
+        dept : '',
         status: 'active'
     });
 
@@ -66,6 +66,7 @@ const AdminMembers = () => {
         email: '',
         membershipType: 'alumni',
         previousPositions: [{
+            title : '',
             role: 'secretary',
             department: 'leadership',
             startDate: '',
@@ -73,6 +74,7 @@ const AdminMembers = () => {
             period: '',
             responsibilities: []
         }],
+        dept : '',
         profile: {
             bio: '',
             mobile: '',
@@ -109,14 +111,6 @@ const AdminMembers = () => {
         { value: 'general', label: 'General' }
     ];
 
-    // Member statistics
-    const memberStats = {
-        total: members.length,
-        active: members.filter(m => m.status === 'active').length,
-        leadership: members.filter(m => ['secretary', 'joint-secretary'].includes(m.currentPosition?.role)).length,
-        core: members.filter(m => m.currentPosition?.role === 'core-member').length,
-        currentAcademicYear: members.filter(m => m.currentPosition?.period === currentAcademicYear).length
-    };
 
     useEffect(() => {
         getMembers();
@@ -156,7 +150,8 @@ const AdminMembers = () => {
                     profileImage: '',
                     skills: []
                 },
-                status: 'active'
+                status: 'active',
+                dept : '',
             });
         } catch (error) {
             console.error('Error creating member:', error);
@@ -183,7 +178,8 @@ const AdminMembers = () => {
                     profileImage: '',
                     skills: []
                 },
-                status: 'active'
+                status: 'active',
+                dept : '',
             });
         } catch (error) {
             console.error('Error updating member:', error);
@@ -210,33 +206,6 @@ const AdminMembers = () => {
         }
     };
 
-    // Handle member promotion
-    const handlePromoteMember = async (e) => {
-        e.preventDefault();
-        
-        if (!selectedMember) return;
-
-        try {
-            const updatedMember = await updateMemberPosition(selectedMember._id, {
-                newPosition: promotionData,
-                reason: promotionData.reason
-            });
-
-            setShowPromotionModal(false);
-            setSelectedMember(null);
-            setPromotionData({
-                role: 'core-member',
-                department: 'general',
-                responsibilities: [],
-                reason: ''
-            });
-
-            // Refresh members list
-            getMembers();
-        } catch (error) {
-            console.error('Failed to promote member:', error);
-        }
-    };
 
     // Handle profile editing
     const handleEditProfile = (member) => {
@@ -245,7 +214,8 @@ const AdminMembers = () => {
             bio: member.profile?.bio || '',
             mobile: member.profile?.mobile || '',
             profileImage: member.profile?.profileImage || '',
-            skills: member.profile?.skills || []
+            skills: member.profile?.skills || [],
+            dept : member?.dept || '',
         });
         setShowProfileModal(true);
     };
@@ -263,7 +233,8 @@ const AdminMembers = () => {
                 bio: '',
                 mobile: '',
                 profileImage: '',
-                skills: []
+                skills: [],
+                dept : '',
             });
             // Refresh members list
             getMembers();
@@ -320,142 +291,7 @@ const AdminMembers = () => {
         return roleTitleMap[role] || role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
     };
 
-    // Render member card with tenure information
-    const renderMemberCard = (member) => {
-        const isLeadershipRole = ['president', 'vice-president', 'secretary', 'joint-secretary', 'treasurer'].includes(member.currentPosition?.role);
-        const isExecutiveRole = ['technical-head', 'creative-head', 'events-head', 'marketing-head', 'operations-head'].includes(member.currentPosition?.role);
-        
-        const roleColor = isLeadershipRole ? 'bg-purple-100 text-purple-800' : 
-                         isExecutiveRole ? 'bg-blue-100 text-blue-800' : 
-                         'bg-gray-100 text-gray-800';
-
-        const tenureLength = member.positionHistory?.length || 0;
-        const startDate = new Date(member.currentPosition?.startDate);
-        const monthsInPosition = Math.floor((new Date() - startDate) / (30 * 24 * 60 * 60 * 1000));
-
-        return (
-            <div key={member._id} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-                <div className="flex justify-between items-start mb-4">
-                    <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                            <h3 className="text-lg font-semibold text-gray-900">{member.name}</h3>
-                            {isLeadershipRole && <Crown className="w-5 h-5 text-yellow-500" />}
-                            {isExecutiveRole && <Award className="w-5 h-5 text-blue-500" />}
-                        </div>
-                        
-                        <p className="text-sm text-gray-600 mb-2">{member.email}</p>
-                        
-                        <div className="flex flex-wrap gap-2 mb-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${roleColor}`}>
-                                {member.currentPosition?.title || member.currentPosition?.role}
-                            </span>
-                            <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700">
-                                {member.currentPosition?.department}
-                            </span>
-                            <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
-                                {member.currentPosition?.period || currentAcademicYear}
-                            </span>
-                        </div>
-
-                        <div className="text-sm text-gray-600 space-y-1">
-                            <p><Calendar className="inline w-4 h-4 mr-1" />
-                                Started: {new Date(member.currentPosition?.startDate).toLocaleDateString()}
-                                {monthsInPosition > 0 && <span className="ml-2">({monthsInPosition} months)</span>}
-                            </p>
-                            
-                            {tenureLength > 0 && (
-                                <p><Users className="inline w-4 h-4 mr-1" />
-                                    Previous positions: {tenureLength}
-                                </p>
-                            )}
-                            
-                            {member.currentPosition?.responsibilities?.length > 0 && (
-                                <div className="mt-2">
-                                    <p className="font-medium">Responsibilities:</p>
-                                    <ul className="list-disc list-inside text-xs text-gray-600 ml-2">
-                                        {member.currentPosition.responsibilities.slice(0, 3).map((resp, idx) => (
-                                            <li key={idx}>{resp}</li>
-                                        ))}
-                                        {member.currentPosition.responsibilities.length > 3 && (
-                                            <li>... and {member.currentPosition.responsibilities.length - 3} more</li>
-                                        )}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => {
-                                setSelectedMember(member);
-                                setPromotionData({
-                                    role: member.currentPosition?.role || 'core-member',
-                                    department: member.currentPosition?.department || 'general',
-                                    responsibilities: member.currentPosition?.responsibilities || [],
-                                    reason: ''
-                                });
-                                setShowPromotionModal(true);
-                            }}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Promote/Change Position"
-                        >
-                            <UserPlus className="w-4 h-4" />
-                        </button>
-                        
-                        <button
-                            onClick={() => {
-                                setEditingMember(member);
-                                // Set complete form data for editing
-                                setFormData({
-                                    name: member.name || '',
-                                    email: member.email || '',
-                                    membershipType: member.membershipType || 'core',
-                                    currentPosition: {
-                                        role: member.currentPosition?.role || 'core-member',
-                                        department: member.currentPosition?.department || 'general',
-                                        responsibilities: member.currentPosition?.responsibilities || []
-                                    },
-                                    profile: {
-                                        bio: member.profile?.bio || '',
-                                        mobile: member.profile?.mobile || '',
-                                        profileImage: member.profile?.profileImage || '',
-                                        skills: member.profile?.skills || []
-                                    },
-                                    status: member.status || 'active'
-                                });
-                                setShowForm(true);
-                            }}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                            title="Edit Member"
-                        >
-                            <Edit className="w-4 h-4" />
-                        </button>
-                        
-                        <button
-                            onClick={() => handleEditProfile(member)}
-                            className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                            title="Edit Profile"
-                        >
-                            <Eye className="w-4 h-4" />
-                        </button>
-                        
-                        <button
-                            onClick={() => {
-                                if (window.confirm(`Are you sure you want to delete ${member.name}?`)) {
-                                    deleteMember(member._id);
-                                }
-                            }}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete Member"
-                        >
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    };
+    
 
     // Update the handleAddLegacyMember function
     const handleAddLegacyMember = async (e) => {
@@ -477,7 +313,7 @@ const AdminMembers = () => {
             return;
         }
         
-        console.log('🔍 Valid positions to add:', validPositions);
+        
         
         try {
             // Process previous positions into position history
@@ -493,8 +329,6 @@ const AdminMembers = () => {
                     period: pos.period,
                     achievements: []
                 }));
-
-            console.log('🏗️ Creating legacy member with position history:', positionHistory);
 
             // Create legacy member with no current position (alumni)
             const memberData = {
@@ -517,8 +351,6 @@ const AdminMembers = () => {
                 },
                 status: 'alumni'
             };
-
-            console.log('📤 Sending legacy member data:', memberData);
             await createMember(memberData);
             
             // Reset form
@@ -540,7 +372,8 @@ const AdminMembers = () => {
                     profileImage: '',
                     skills: []
                 },
-                status: 'alumni'
+                status: 'alumni',
+                dept : '',
             });
             setShowLegacyForm(false);
         } catch (error) {
@@ -558,7 +391,8 @@ const AdminMembers = () => {
                 startDate: '',
                 endDate: '',
                 period: '',
-                responsibilities: []
+                responsibilities: [],
+                dept : ''
             }]
         }));
     };
@@ -601,7 +435,8 @@ const AdminMembers = () => {
                                         profileImage: '',
                                         skills: []
                                     },
-                                    status: 'active'
+                                    status: 'active',
+                                    dept : '',
                                 });
                                 setEditingMember(null);
                                 setShowForm(true);
@@ -723,6 +558,9 @@ const AdminMembers = () => {
                                             </div>
                                             <div className="flex items-center space-x-4 mt-1">
                                                 <p className="text-sm text-gray-500">{member.email}</p>
+                                                <p className="text-sm text-gray-500">
+                                                    {member?.dept?.charAt(0).toUpperCase() + member?.dept?.slice(1) || 'Not Found'}
+                                                </p>
                                                 <p className="text-sm text-gray-500">
                                                     {member.currentPosition?.department?.charAt(0).toUpperCase() + member.currentPosition?.department?.slice(1) || 'General'}
                                                 </p>
@@ -1006,6 +844,7 @@ const MemberForm = ({ member, onSubmit, onCancel, title, formData, setFormData }
                     profileImage: member.profile?.profileImage || '',
                     skills: member.profile?.skills || []
                 },
+                dept : member?.dept || '',
                 status: member.status || 'active'
             });
         }
@@ -1036,6 +875,17 @@ const MemberForm = ({ member, onSubmit, onCancel, title, formData, setFormData }
                                 required
                                 value={formData.email}
                                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Department</label>
+                            <input
+                                type="dept"
+                                required
+                                value={formData.dept}
+                                onChange={(e) => setFormData(prev => ({ ...prev, dept: e.target.value }))}
                                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
                             />
                         </div>
@@ -1128,7 +978,7 @@ const MemberForm = ({ member, onSubmit, onCancel, title, formData, setFormData }
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Department</label>
+                            <label className="block text-sm font-medium text-gray-700">Work Department</label>
                             <select
                                 value={formData.currentPosition.department}
                                 onChange={(e) => setFormData(prev => ({
@@ -1152,7 +1002,7 @@ const MemberForm = ({ member, onSubmit, onCancel, title, formData, setFormData }
                             >
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
-                                <option value="suspended">Suspended</option>
+                                <option value="alumni">Alumni</option>
                                 <option value="graduated">Graduated</option>
                             </select>
                         </div>
@@ -1346,6 +1196,17 @@ const LegacyMemberForm = ({ onSubmit, onCancel, formData, setFormData, positionR
                                     </div>
                                 )}
                             </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Department</label>
+                                <input
+                                    type="dept"
+                                    required
+                                    value={formData.dept}
+                                    onChange={(e) => setFormData(prev => ({ ...prev, dept: e.target.value }))}
+                                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                                />
+                            </div>
                         </div>
 
                         {/* Previous Positions */}
@@ -1486,92 +1347,6 @@ const LegacyMemberForm = ({ onSubmit, onCancel, formData, setFormData, positionR
                                 className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
                             >
                                 Add Legacy Member
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Profile Form Component
-const ProfileForm = ({ member, onSubmit, onCancel, profileData, setProfileData, handleAddSkill, handleUpdateSkill, handleRemoveSkill }) => {
-    return (
-        <div className="fixed inset-0 bg-[rgba(75,85,99,0.5)] overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white max-h-[80vh] overflow-y-auto">
-                <div className="mt-3">
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">
-                        Edit Profile for {member.name}
-                    </h3>
-                    <form onSubmit={onSubmit} className="space-y-4">
-                        {/* Bio */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Bio</label>
-                            <textarea
-                                value={profileData.bio}
-                                onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
-                                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                                rows={3}
-                            />
-                        </div>
-
-                        {/* Mobile */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Mobile</label>
-                            <input
-                                type="text"
-                                value={profileData.mobile}
-                                onChange={(e) => setProfileData(prev => ({ ...prev, mobile: e.target.value }))}
-                                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                            />
-                        </div>
-
-                        {/* Skills */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Skills</label>
-                            <div className="flex flex-wrap gap-2">
-                                {profileData.skills.map((skill, index) => (
-                                    <div key={index} className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={skill}
-                                            onChange={(e) => handleUpdateSkill(index, e.target.value)}
-                                            className="block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-purple-500"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveSkill(index)}
-                                            className="text-red-600 hover:text-red-800"
-                                        >
-                                            Remove
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                            <button
-                                type="button"
-                                onClick={handleAddSkill}
-                                className="mt-2 px-3 py-1 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700"
-                            >
-                                Add Skill
-                            </button>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex justify-end space-x-3 pt-4">
-                            <button
-                                type="button"
-                                onClick={onCancel}
-                                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
-                            >
-                                Update Profile
                             </button>
                         </div>
                     </form>

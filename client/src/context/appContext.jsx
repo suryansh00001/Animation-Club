@@ -1,21 +1,3 @@
-/**
- * App Context - Centralized State Management
- * 
- * This context provides centralized user authentication and profile management.
- * 
- * User Validation Approach:
- * - All user validation is centralized through the /auth/me endpoint
- * - No separate validation endpoints (/validate/*) are used
- * - User authentication is verified through session validation on app load
- * - Profile data is loaded and cached centrally to avoid repeated API calls
- * 
- * Key Features:
- * - Centralized authentication state
- * - Cached profile data with smart reloading
- * - Error handling with user-friendly messages
- * - Rate limiting protection with retry logic
- */
-
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
@@ -24,33 +6,22 @@ import toast from "react-hot-toast";
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
-// Add axios request interceptor to include auth token
-axios.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('authToken');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
-// Add axios response interceptor to handle auth errors
+// Axios interceptors for auth token and error handling
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('authToken');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response?.status === 401) {
-            // Clear both user and admin auth data on 401 errors
-            localStorage.removeItem('userAuth');
-            localStorage.removeItem('adminAuth');
-            localStorage.removeItem('authToken');
-            console.log('401 error - clearing authentication');
-        }
-        return Promise.reject(error);
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('userAuth');
+      localStorage.removeItem('adminAuth');
+      localStorage.removeItem('authToken');
     }
+    return Promise.reject(error);
+  }
 );
 
 export const AppContext = createContext();
@@ -91,19 +62,6 @@ export const AppContextProvider = ({ children }) => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                // Load events from API instead of dummy data
-                try {
-                    const response = await axios.get('/api/v1/events');
-                    if (response.data.success) {
-                        setEvents(response.data.events);
-                        console.log('Events loaded from API:', response.data.events.length);
-                    } else {
-                        console.warn('Failed to load events from API');
-                    }
-                } catch (eventsError) {
-                    console.warn('Events API error:', eventsError);
-                }
-                
                 // Load site settings
                 try {
                     setSettings(prev => ({ ...prev, loading: true }));
@@ -142,7 +100,6 @@ export const AppContextProvider = ({ children }) => {
                             loaded: true,
                             loading: false
                         });
-                        console.log('Site settings loaded from API');
                     } else {
                         console.warn('Failed to load settings from API');
                         setSettings(prev => ({ ...prev, loading: false }));
@@ -151,7 +108,7 @@ export const AppContextProvider = ({ children }) => {
                     console.warn('Settings API error:', settingsError);
                     setSettings(prev => ({ ...prev, loading: false }));
                 }
-                
+
                 // Check for existing user session
                 const userData = localStorage.getItem('userAuth');
                 const authToken = localStorage.getItem('authToken');
@@ -174,7 +131,6 @@ export const AppContextProvider = ({ children }) => {
                             
                             // Check if it's a rate limiting error and we have retries left
                             if (error.response?.status === 429 && retries > 0) {
-                                console.log(`Rate limited, retrying in 2 seconds... (${retries} retries left)`);
                                 setTimeout(() => verifySession(retries - 1), 2000);
                                 return;
                             }
@@ -185,13 +141,28 @@ export const AppContextProvider = ({ children }) => {
                                 localStorage.removeItem('authToken');
                             } else {
                                 // For other errors, keep the session but don't set user yet
-                                console.log('Session verification temporarily failed');
                             }
                         }
                     };
                     
                     verifySession();
                 }
+
+
+                try {
+                    const response = await axios.get('/api/v1/events');
+                    if (response.data.success) {
+                        setEvents(response.data.events);
+                    } else {
+                        console.warn('Failed to load events from API');
+                    }
+                } catch (eventsError) {
+                    console.warn('Events API error:', eventsError);
+                }
+
+                
+                
+                
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -306,7 +277,6 @@ export const AppContextProvider = ({ children }) => {
     const updateProfile = async (profileData) => {
         setLoading(true);
         try {
-            console.log('Updating profile with data:', profileData);
             
             const response = await axios.put('/api/v1/users/profile', profileData);
 
@@ -442,14 +412,12 @@ export const AppContextProvider = ({ children }) => {
         
         // Don't load if no user or not authenticated
         if (!user || !user._id || !isAuthenticated) {
-            console.log('Not loading profile data - user not authenticated');
             return profileData;
         }
 
         setProfileData(prev => ({ ...prev, loading: true }));
 
         try {
-            console.log('Loading centralized profile data...');
             
             // Load all profile data in parallel with individual error handling
             const [registrations, submissions, activity, stats] = await Promise.allSettled([
@@ -474,7 +442,6 @@ export const AppContextProvider = ({ children }) => {
             };
 
             setProfileData(newProfileData);
-            console.log('Centralized profile data loaded successfully');
             
             return newProfileData;
 
@@ -483,7 +450,6 @@ export const AppContextProvider = ({ children }) => {
             
             // If it's an authentication error, clear the session
             if (error.response?.status === 401) {
-                console.log('Authentication failed - clearing session');
                 localStorage.removeItem('userAuth');
                 localStorage.removeItem('authToken');
                 setUser(null);
@@ -503,6 +469,23 @@ export const AppContextProvider = ({ children }) => {
         }
     }, [user, profileData.loaded, profileData.loading, fetchUserRegistrations, fetchUserSubmissions, getUserActivity, getUserStats]);
 
+    const fetchOpportunities = async () => {
+        try {
+            const response = await axios.get('/api/v1/opportunities');
+            if (response.data?.success) {
+            return response.data.opportunities.sort(
+                (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+            );
+            } else {
+            console.warn('Failed to load opportunities from API');
+            return [];
+            }
+        } catch (error) {
+            console.error('Opportunities API error:', error);
+            return [];
+        }
+    };
+
     // Reset profile data when user changes
     useEffect(() => {
         if (!user) {
@@ -520,10 +503,8 @@ export const AppContextProvider = ({ children }) => {
     // Auto-load profile data when user logs in
     useEffect(() => {
         if (user && user._id && isAuthenticated && !profileData.loaded && !profileData.loading) {
-            console.log('Auto-loading profile data for authenticated user');
             loadProfileData();
         } else if (!isAuthenticated && profileData.loaded) {
-            console.log('User not authenticated - clearing profile data');
             setProfileData({
                 registrations: [],
                 submissions: [],
@@ -537,7 +518,6 @@ export const AppContextProvider = ({ children }) => {
 
     // Event registration function (MongoDB optimized)
     const registerForEvent = async (eventId, registrationData) => {
-        console.log('🔵 Registering for event:', { eventId, type: typeof eventId, length: eventId?.length });
         setLoading(true);
         try {
             const response = await axios.post(`/api/v1/events/${eventId}/register`, registrationData);
@@ -936,139 +916,72 @@ export const AppContextProvider = ({ children }) => {
         }
     }, []);
 
-    // Utility functions for user state (MongoDB ObjectId compatible)
-    const isRegisteredForEvent = (eventId) => {
-        // Early safety checks with detailed logging
-        if (!eventId) {
-            console.log('isRegisteredForEvent: No eventId provided');
-            return false;
+
+    // Utility functions for user state
+    const isRegisteredForEvent = eventId => {
+      if (!eventId || !user || !Array.isArray(userRegistrations)) return false;
+      const eventIdStr = String(eventId);
+      const userId = String(user._id);
+      return userRegistrations.some(reg => {
+        if (!reg) return false;
+        let regEventId = '';
+        if (reg.eventId) {
+          regEventId = typeof reg.eventId === 'object' && reg.eventId._id ? String(reg.eventId._id) : String(reg.eventId);
         }
-        
-        if (!user) {
-            console.log('isRegisteredForEvent: No user logged in');
-            return false;
-        }
-        
-        if (!userRegistrations) {
-            console.log('isRegisteredForEvent: userRegistrations is undefined');
-            return false;
-        }
-        
-        if (!Array.isArray(userRegistrations)) {
-            console.log('isRegisteredForEvent: userRegistrations is not an array');
-            return false;
-        }
-        
-        try {
-            // Convert eventId to string for comparison
-            const eventIdStr = String(eventId);
-            const userId = String(user._id);
-            
-            // Simple implementation to avoid nested properties access
-            for (const reg of userRegistrations) {
-                // Skip invalid registrations
-                if (!reg) continue;
-                
-                // Handle different formats of eventId
-                let regEventId = '';
-                
-                if (reg.eventId) {
-                    if (typeof reg.eventId === 'object' && reg.eventId._id) {
-                        regEventId = String(reg.eventId._id);
-                    } else {
-                        regEventId = String(reg.eventId);
-                    }
-                }
-                
-                // Check if this is a match
-                if (regEventId === eventIdStr && String(reg.userId) === userId) {
-                    return true;
-                }
-            }
-            
-            return false;
-        } catch (error) {
-            console.error('Error in isRegisteredForEvent:', error);
-            return false;
-        }
+        return regEventId === eventIdStr && String(reg.userId) === userId;
+      });
     };
 
-    const hasSubmittedForEvent = (eventId) => {
-        if (!eventId || !user || !user._id || !userSubmissions || !Array.isArray(userSubmissions)) {
-            return false;
+    const hasSubmittedForEvent = eventId => {
+      if (!eventId || !user || !Array.isArray(userSubmissions)) return false;
+      const eventIdString = eventId?.toString();
+      if (!eventIdString) return false;
+      return userSubmissions.some(sub => {
+        if (!sub) return false;
+        let subEventIdString;
+        if (typeof sub.eventId === 'object' && sub.eventId?._id) {
+          subEventIdString = sub.eventId._id.toString();
+        } else if (sub.eventId) {
+          subEventIdString = sub.eventId.toString();
+        } else {
+          return false;
         }
-
-        try {
-            const eventIdString = eventId?.toString();
-            if (!eventIdString) return false;
-
-            return userSubmissions.some(sub => {
-                if (!sub) return false;
-                
-                let subEventIdString;
-                if (typeof sub.eventId === 'object' && sub.eventId && sub.eventId._id) {
-                    subEventIdString = sub.eventId._id.toString();
-                } else if (sub.eventId) {
-                    subEventIdString = sub.eventId.toString();
-                } else {
-                    return false;
-                }
-                
-                return subEventIdString === eventIdString && sub.userId === user._id;
-            });
-        } catch (error) {
-            console.error('Error in hasSubmittedForEvent:', error);
-            return false;
-        }
+        return subEventIdString === eventIdString && sub.userId === user._id;
+      });
     };
 
-    const getEventSubmission = (eventId) => {
-        if (!eventId || !user || !user._id || !userSubmissions || !Array.isArray(userSubmissions)) {
-            return null;
+    const getEventSubmission = eventId => {
+      if (!eventId || !user || !Array.isArray(userSubmissions)) return null;
+      const eventIdString = eventId?.toString();
+      if (!eventIdString) return null;
+      return userSubmissions.find(sub => {
+        if (!sub) return false;
+        let subEventIdString;
+        if (typeof sub.eventId === 'object' && sub.eventId?._id) {
+          subEventIdString = sub.eventId._id.toString();
+        } else if (sub.eventId) {
+          subEventIdString = sub.eventId.toString();
+        } else {
+          return false;
         }
-
-        try {
-            const eventIdString = eventId?.toString();
-            if (!eventIdString) return null;
-            
-            return userSubmissions.find(sub => {
-                if (!sub) return false;
-                
-                let subEventIdString;
-                if (typeof sub.eventId === 'object' && sub.eventId && sub.eventId._id) {
-                    subEventIdString = sub.eventId._id.toString();
-                } else if (sub.eventId) {
-                    subEventIdString = sub.eventId.toString();
-                } else {
-                    return false;
-                }
-                
-                return subEventIdString === eventIdString && sub.userId === user._id;
-            });
-        } catch (error) {
-            console.error('Error in getEventSubmission:', error);
-            return null;
-        }
+        return subEventIdString === eventIdString && sub.userId === user._id;
+      }) || null;
     };
 
     const getUserRegistrations = () => {
-        if (!user || !user._id || !userRegistrations || !Array.isArray(userRegistrations)) {
-            return [];
-        }
-        
-        try {
-            return userRegistrations.filter(reg => reg && reg.userId === user._id);
-        } catch (error) {
-            console.error('Error in getUserRegistrations:', error);
-            return [];
-        }
+      if (!user || !Array.isArray(userRegistrations)) return [];
+      try {
+        return userRegistrations.filter(reg => reg && reg.userId === user._id);
+      } catch {
+        return [];
+      }
     };
 
     const getUserSubmissions = () => {
-        return userSubmissions.filter(sub => sub.userId === user?._id);
+      if (!user || !Array.isArray(userSubmissions)) return [];
+      return userSubmissions.filter(sub => sub.userId === user._id);
     };
 
-    // Keep consistent naming with original functions
     const submitForEvent = submitToEvent;
 
     const value = {
@@ -1109,6 +1022,7 @@ export const AppContextProvider = ({ children }) => {
         fetchGallery,
         fetchArtworks,
         submitArtwork,
+        fetchOpportunities,
         
         // Settings functions
         fetchSettings,

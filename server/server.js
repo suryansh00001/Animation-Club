@@ -15,10 +15,14 @@ import achievementRoutes from './routes/achievementRoutes.js';
 import galleryRoutes from './routes/galleryRoutes.js';
 import artworkRoutes from './routes/artworkRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import opportunityRoutes from './routes/opportunityRoutes.js';
 
 // Import middlewares
 import { apiRateLimit } from './middlewares/rateLimitMiddleware.js';
 import { sanitizeInput } from './middlewares/validationMiddleware.js';
+import jwt from 'jsonwebtoken';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -26,13 +30,28 @@ const port = process.env.PORT || 4000;
 // Connect to DB before starting server
 await connectDB();
 
-// Allow multiple origins
+// Allow only Vercel production URLs
 const allowedOrigins = [
-    'http://localhost:5173',
-    'https://animation-club.vercel.app',
-    'https://animation-club-backend.vercel.app',
-    'https://animation-club-sandy.vercel.app'
+  'https://animation-club.vercel.app',
+  'https://animation-club-sandy.vercel.app'
 ];
+
+
+// CORS configuration (only allow from allowedOrigins) - should be first
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+}));
+
+// Middleware to block requests from disallowed origins
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin) return next();
+  if (allowedOrigins.includes(origin)) return next();
+  res.status(403).json({ error: 'Forbidden: This API is only accessible from the official Animation Club website.' });
+});
 
 // Security and utility middleware
 app.use(apiRateLimit);
@@ -42,24 +61,32 @@ app.use(sanitizeInput);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// --- Authentication middleware for admin routes ---
+function requireAdminAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: No token provided' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (!decoded || (decoded.role !== 'admin' && decoded.role !== 'manager')) {
+      return res.status(403).json({ error: 'Forbidden: Admins or Managers only' });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+  }
+}
 
-// CORS configuration
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        
-        if (allowedOrigins.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            console.log('Blocked origin:', origin);
-            callback(null, true); // Allow all origins in development
-        }
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
+// --- Serve robots.txt to disallow admin paths ---
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send(`User-agent: *\nDisallow: /admin\nDisallow: /api/v1/admin\n`);
+});
+
+
 
 // Routes
 app.get('/', (req, res) => res.send("API is working"));
@@ -68,13 +95,14 @@ app.get('/', (req, res) => res.send("API is working"));
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/events', eventRoutes);
-app.use('/api/v1/admin/events', adminEventRoutes);
-app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/admin', requireAdminAuth, adminRoutes);
+app.use('/api/v1/admin/events', requireAdminAuth, adminEventRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/v1/achievements', achievementRoutes);
 app.use('/api/v1/gallery', galleryRoutes);
 app.use('/api/v1/artworks', artworkRoutes);
 app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/opportunities', opportunityRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
