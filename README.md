@@ -149,6 +149,7 @@ Visit [http://localhost:5173](http://localhost:5173) to view the site.
 
 - **Owner:** [nikunjagarwal17](https://github.com/nikunjagarwal17)
 - **Contributor:** [SahithiKokkula](https://github.com/SahithiKokkula);
+- **Contributor:** [suryansh00001](https://github.com/suryansh00001);
 
 ## 🚀 Deployment
 
