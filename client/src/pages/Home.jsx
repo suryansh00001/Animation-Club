@@ -329,11 +329,13 @@ const Home = () => {
       {/* Right Side – Floating Images Grid */}
       <div className="grid grid-cols-2 md:grid-cols-2 gap-6 transform-gpu transition-all duration-500">
       {[
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80",
-        "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&q=80",
-        "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=400&q=80",
-        "https://images.unsplash.com/photo-1559028006-448665bd7c7f?w=400&q=80",
-      ].map((src, i) => (
+
+  "https://i.ibb.co/wFJGT951/image.png",
+  "https://i.ibb.co/fdG5JgQ5/image.png",
+  "https://i.ibb.co/xqGWmLQF/image.png",
+  "https://i.ibb.co/21YbHSd4/image.png"
+]
+.map((src, i) => (
         <div
           key={i}
           className={`rounded-xl overflow-hidden border border-[#34d399] shadow-[0_0_15px_#10b98155] hover:shadow-[0_0_30px_#10b981aa] transition duration-500 transform hover:scale-105 backdrop-blur-sm ${

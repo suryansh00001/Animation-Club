@@ -159,9 +159,9 @@ const Gallery = () => {
     </div>
 
     <div className="p-4">
-      <h3 className="text-lg font-bold text-[#f9fafb] mb-1 line-clamp-2 tracking-wide">
-        {gallery.title}
-      </h3>
+            <h3 className="text-lg font-bold text-[#f9fafb] mb-1 tracking-wide overflow-hidden line-clamp-2 h-[5rem]">
+  {gallery.title}
+</h3>
       <p className="text-[#9ca3af] text-sm mb-3 line-clamp-2">
         {gallery.description}
       </p>
